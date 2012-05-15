@@ -25,3 +25,16 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+# Virtual Environment
+ENV
+
+# Temp files
+*~
+
+# Log files
+*.log
+
+# Django configs
+*wsgi.py
+*local_settings.py
