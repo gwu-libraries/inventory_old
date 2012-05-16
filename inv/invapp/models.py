@@ -5,19 +5,16 @@ class Entity(models.Model):
     gwulid = models.CharField(max_length=17, blank=True)
     create_date = models.DateTimeField()
     
-    class Meta:
-        abstract = True
-    
 class Collection(Entity):
     description = models.TextField(blank=True)
-    manager = models.ForeignKey(Person, related_name='collection_manager')
+    manager = models.ForeignKey('Person', related_name='collection_manager')
 
 class Item(Entity):
     collection = models.ForeignKey(Collection, related_name='item_collection', blank=True)
 
 class Copy(Entity):
     item = models.ForeignKey(Item, related_name='copy_item')
-    machine = models.ForeignKey(Machine, related_name='copy_machine')
+    machine = models.ForeignKey('Machine', related_name='copy_machine')
     path = models.URLField()
     
     def get_full_path(self):
@@ -26,11 +23,8 @@ class Copy(Entity):
 class Machine(models.Model):
     name = models.CharField(max_length=256)
     create_date = models.DateTimeField()
-    owner = models.ForeignKey(Organization, related_name='%(class)s_owner')
-    address = models.ForeignKey(Address, blank=True, related_name='%(class)s_address')
-        
-    class Meta:
-        abstract = True
+    owner = models.ForeignKey('Organization', related_name='%(class)s_owner')
+    address = models.ForeignKey('Address', blank=True, related_name='%(class)s_address')
 
 class Address(models.Model):
     street_number = models.CharField(max_length=36, blank=True)
@@ -42,14 +36,11 @@ class Address(models.Model):
     zip_code = models.IntegerField(max_length=5, blank=True)
         
 class Server(Machine):
-    ip = models.IPAddress()
+    ip = models.IPAddressField()
     os = models.CharField(max_length=36)
 
 class OfflineStorage(Machine):
-    type = models.CharField(max_length=1, choices=TYPES)
-    notes = models.TextField(blank=True)
-    
-    TYPES = (
+    HARDWARE_TYPES = (
         ('h','hard drive'),
         ('u','USB drive'),
         ('c','CD-ROM'),
@@ -57,18 +48,17 @@ class OfflineStorage(Machine):
         ('z','Iomega Zip disk'), # :P
         # and so on...
         )
+    hardware_type = models.CharField(max_length=1, choices=HARDWARE_TYPES)
+    notes = models.TextField(blank=True)
 
 class Actor(models.Model):
     name = models.CharField(max_length=256)
     create_date = models.DateTimeField()
-    
-    class Meta:
-        abstract = True
 
 class Person(Actor):
-    phone = models.PhoneNumber(blank=True)
+    phone = models.IntegerField(blank=True)
     email = models.EmailField()
-    organization = models.ForeignKey(Organization, blank=True, related_name='person_organization')
+    organization = models.ForeignKey('Organization', blank=True, related_name='person_organization')
 
 class System(Actor):
     machine = models.ForeignKey(Machine, related_name='system_machine')
@@ -77,20 +67,20 @@ class Organization(models.Model):
     create_date = models.DateTimeField()
     name = models.CharField(max_length=256)
     address = models.ForeignKey(Address, related_name='organization_address')
-    parent_org = models.ForeignKey(Organization, blank=True, related_name='organization_parent')
+    parent_org = models.ForeignKey('Organization', blank=True, related_name='organization_parent')
     primary_contact = models.ForeignKey(Person, blank=True, related_name='organization_contact')
 
 class Action(models.Model):
-    timestamp = models.DateTimeField()
-    action = models.CharField(max_length=1, choices=ACTIONS)
-    actor = models.ForeignKey(Actor, related_name='action_actor')
-    entity = models.ForeignKey(Entity, related_name='action_entity')
-    
     ACTIONS = (
         ('1','minted GWUL identifier'),
         ('2','physical item submitted to library'),
         # and so on...
         )
+        
+    timestamp = models.DateTimeField()
+    action = models.CharField(max_length=1, choices=ACTIONS)
+    actor = models.ForeignKey(Actor, related_name='action_actor')
+    entity = models.ForeignKey(Entity, related_name='action_entity')
 
 class Project(models.Model):
     create_date = models.DateTimeField()
@@ -112,6 +102,11 @@ class ReformattingProject(Project):
         abstract = True
 
 class ImageReformattingProject(ReformattingProject):
+    OUTPUT_FORMATS = (
+        ('jpeg','jpeg'),
+        ('tiff','TIFF'),
+        ('jp2k','JPEG2000'),
+        )
     # scanning recipe info
     scan_dpi = models.IntegerField(max_length=4)
     # QC recipe info
@@ -129,39 +124,33 @@ class ImageReformattingProject(ReformattingProject):
     ocr = models.BooleanField()
     alto = models.BooleanField()
     
-    OUTPUT_FORMATS = (
-        ('jpeg','jpeg'),
-        ('tiff','TIFF'),
-        ('jp2k','JPEG2000'),
-        )
-    
     class Meta():
         abstract = True
     
 class BookScanningProject(ImageReformattingProject):
-    scan_format = models.CharField(max_length=4, choices=SCAN_FORMATS)
-    
     SCAN_FORMATS = (
         ('jpeg','jpeg'),
         ('raw','raw'),
         )
-
-class MicrofilmScanningProject(ImageReformattingProject):
+    
     scan_format = models.CharField(max_length=4, choices=SCAN_FORMATS)
     
+class MicrofilmScanningProject(ImageReformattingProject):
     SCAN_FORMATS = (
         ('jpeg','jpeg'),
         ('tiff','tiff'),
         )
+    
+    scan_format = models.CharField(max_length=4, choices=SCAN_FORMATS)
 
 class LoosePaperScanningProject(ImageReformattingProject):
-    scan_format = models.CharField(max_length=4, choices=SCAN_FORMATS)
-    
     SCAN_FORMATS = (
         ('jpeg','jpeg'),
         ('raw','raw'),
         )
 
+    scan_format = models.CharField(max_length=4, choices=SCAN_FORMATS)
+    
 class AudioReformattingProject(ReformattingProject):
     pass
     
