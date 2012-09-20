@@ -22,15 +22,15 @@ urlpatterns = patterns('',
 # BASIC SITE PAGES
 urlpatterns += patterns('invapp',
     url(r'^$', 'home', name='home'),
-    url(r'^browse/(?P<plural_type>[a-z]+)$', 'browse', name='browse'),
+    url(r'^browse/(?P<plural_otype>[a-z]+)$', 'browse', name='browse'),
     url(r'^about$', 'about', name='about'),
     url(r'^robots.txt$', 'robots', name='robots'),
 )
 
 # BASIC CRUD OPERATIONS
 urlpatterns += patterns('invapp',
-    url(r'^(?P<singular_type>[a-z]+)/new', 'create', name='create'),
-    url(r'^(?P<singular_type>[a-z]+)/(?P<pid>\w+)$', 'read', name='read'),
-    url(r'^(?P<singular_type>[a-z]+)/(?P<pid>\w+)/edit$', 'update', name='update'),
-    url(r'^(?P<singular_type>[a-z]+)/(?P<pid>\w+)/delete$', 'delete', name='delete'),
+    url(r'^(?P<otype>[a-z]+)/new', 'create', name='create'),
+    url(r'^(?P<otype>[a-z]+)/(?P<pid>\w+)$', 'read', name='read'),
+    url(r'^(?P<otype>[a-z]+)/(?P<pid>\w+)/edit$', 'update', name='update'),
+    url(r'^(?P<otype>[a-z]+)/(?P<pid>\w+)/delete$', 'delete', name='delete'),
 )
