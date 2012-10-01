@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Collection(models.Model):
-    collection_id = models.CharField(max_length=16)
+    pid = models.CharField(max_length=18)
     name = models.CharField(max_length=256)
     created = models.DateTimeField()
     description = models.TextField(blank=True)
@@ -10,7 +10,7 @@ class Collection(models.Model):
 
 
 class Project(models.Model):
-    create_date = models.DateTimeField()
+    created = models.DateTimeField()
     name = models.CharField(max_length=256)
     manager = models.CharField(max_length=256)
     collection = models.ForeignKey(Collection,
@@ -24,7 +24,7 @@ class Item(models.Model):
         ('1', 'book'),
         ('2', 'microfilm'),
         )
-    item_id = models.CharField(max_length=16)
+    pid = models.CharField(max_length=18)
     title = models.CharField(max_length=256)
     local_id = models.CharField(max_length=256, blank=True)
     collection = models.ForeignKey(Collection, related_name='item_collection')
