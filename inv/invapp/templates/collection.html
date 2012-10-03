@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ collection.name }}
+{{% end block title %}
+
+{% block content %}
+<section id="collection">
+    <header>
+        <h1>{{ collection.name }}</h2>
+        <p id="description">{{ collection.description }}</p>
+        <ul>
+            <li>Persistent ID: {{ collection.pid }}</li>
+            <li>Created: {{ collection.created }}</li>
+            <li>Manager: {{ collection.manager }}</li>
+
+        </ul>
+    </header>
+    <div id="projects">
+        <h3>Projects contributing to this collection</h3>
+        <table>
+            <tr>
+                <th>PID</th>
+                <th>Project</th>
+                <th>Manager</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+            {% for project in projects %}
+                <tr class="project">
+                    <td>project.pid</td>
+                    <td>project.name</td>
+                    <td>project.manager</td>
+                    <td>project.start_date</td>
+                    <td>project.end_date</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div id="items">
+        <h3>Items in this Collection</h3>
+        <table>
+            <tr>
+                <th>PID</th>
+                <th>Title</th>
+                <th>Local ID</th>
+                <th>Project</th>
+            </tr>
+            {% for item in items %}
+                <tr class="item">
+                    <td>item.pid</td>
+                    <td>item.title</td>
+                    <td>item.local_id</td>
+                    <td>item.project.name</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+<!-- TODO: build out recent activity section
+<section id="recent-activity">
+    <header>
+        <h4>Recent Activity</h4>
+    </header>
+    <div id="actions">
+        ...
+    </div>
+</section>
+-->
+
+{% endblock content %}

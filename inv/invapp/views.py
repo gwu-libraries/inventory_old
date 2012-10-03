@@ -1,28 +1,29 @@
-from django.conf import settings
-from django.http import Http404
-from invapp import models
+from django.shortcuts import get_object_or_404, render_to_response
 
-def home(request):
-    pass
+from invapp.models import Collection, Project, Item, Bag
 
-def about(request):
-    pass
 
-def robots(request):
-    pass
+def collection(request, pid):
+    collection = get_object_or_404(Collection, pid=pid)
+    projects = collection.project_set.all()
+    items = collection.item_set.all()
+    return render_to_response('collection.html',
+        {'collection': collection, 'projects': projects, 'items': items})
 
-def browse(request, plural_type):
-    pass
 
-def create(request, singular_type):
-    pass
+def project(request, pid):
+    project = get_object_or_404(Project, pid=pid)
+    items = project.item_set.all()
+    return render_to_response('project.html',
+        {'project': project, 'items': items})
 
-def read(request, otype, pid):
-    thing = models.get(otype.capitalize()).objects.get(pid=pid)
-    return render(request, '%s.html' % otype, {otype:otype})
 
-def update(request, singular_type, pid):
-    pass
+def item(request, pid):
+    item = get_object_or_404(Item, pid=pid)
+    bags = item.bag_set.all()
+    return render_to_response('item.html', {'item': item, 'bags': bags})
 
-def delete(request, singular_type, pid):
-    pass
+
+def bag(request, pid):
+    bag = get_object_or_404(Bag, pid=pid)
+    return render_to_response('bag.html', {'bag': bag})
