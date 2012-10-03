@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Collection(models.Model):
-    pid = models.CharField(max_length=18)
+    pid = models.CharField(max_length=18, unique=True)
     name = models.CharField(max_length=256)
     created = models.DateTimeField()
     description = models.TextField(blank=True)
@@ -24,7 +24,7 @@ class Item(models.Model):
         ('1', 'book'),
         ('2', 'microfilm'),
         )
-    pid = models.CharField(max_length=18)
+    pid = models.CharField(max_length=18, unique=True)
     title = models.CharField(max_length=256)
     local_id = models.CharField(max_length=256, blank=True)
     collection = models.ForeignKey(Collection, related_name='item_collection')
@@ -40,12 +40,16 @@ class Item(models.Model):
 
 
 class Bag(models.Model):
+    bagnum = models.IntegerField()
     item = models.ForeignKey(Item, related_name='copy_item')
     machine = models.URLField()
     path = models.URLField()
 
-    def get_full_path(self):
-        pass
+    def fullpath(self):
+        return '%s/%s' % (self.machine.rstrip('/'), self.path.lstrip('/'))
+
+    def bagname(self):
+        return '%s_bag%s' % (self.item.pid, self.bagnum)
 
 
 class BagAction(models.Model):
@@ -54,6 +58,7 @@ class BagAction(models.Model):
         ('2', 'validated'),
         # and so on...
         )
+    bag = models.ForeignKey(Bag, related_name='bag_action')
     timestamp = models.DateTimeField()
     action = models.CharField(max_length=1, choices=ACTIONS)
     note = models.TextField()
