@@ -16,21 +16,13 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-                       
 )
 
-# BASIC SITE PAGES
 urlpatterns += patterns('invapp',
     url(r'^$', 'home', name='home'),
-    url(r'^browse/(?P<plural_otype>[a-z]+)$', 'browse', name='browse'),
-    url(r'^about$', 'about', name='about'),
-    url(r'^robots.txt$', 'robots', name='robots'),
-)
-
-# BASIC CRUD OPERATIONS
-urlpatterns += patterns('invapp',
-    url(r'^(?P<otype>[a-z]+)/new', 'create', name='create'),
-    url(r'^(?P<otype>[a-z]+)/(?P<pid>\w+)$', 'read', name='read'),
-    url(r'^(?P<otype>[a-z]+)/(?P<pid>\w+)/edit$', 'update', name='update'),
-    url(r'^(?P<otype>[a-z]+)/(?P<pid>\w+)/delete$', 'delete', name='delete'),
+    url(r'^collection/(?P<pid>\w{5}/\w{10,12})$', 'collection',
+        name='collection'),
+    url(r'^project/(?P<pid>\w{5}/\w{10,12})$', 'project', name='project'),
+    url(r'^item/(?P<pid>\w{5}/\w{10,12})$', 'item', name='tem'),
+    url(r'^bag/(?P<bagid>\w{5}/\w{15,19})$', 'collection', name='bag'),
 )

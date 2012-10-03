@@ -10,6 +10,7 @@ class Collection(models.Model):
 
 
 class Project(models.Model):
+    pid = models.CharField(max_length=18, unique=True)
     created = models.DateTimeField()
     name = models.CharField(max_length=256)
     manager = models.CharField(max_length=256)
