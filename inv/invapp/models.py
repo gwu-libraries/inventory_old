@@ -55,7 +55,8 @@ class Bag(models.Model):
 class BagAction(models.Model):
     ACTIONS = (
         ('1', 'updated'),
-        ('2', 'validated'),
+        ('2', 'moved'),
+        ('3', 'validated'),
         # and so on...
         )
     bag = models.ForeignKey(Bag, related_name='bag_action')
