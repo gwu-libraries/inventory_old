@@ -16,8 +16,8 @@ class Project(models.Model):
     manager = models.CharField(max_length=256)
     collection = models.ForeignKey(Collection,
         related_name='project_collection')
-    start_date = models.DateField(blank=True)
-    end_date = models.DateField(blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
 
 
 class Item(models.Model):
@@ -41,16 +41,14 @@ class Item(models.Model):
 
 
 class Bag(models.Model):
-    bagnum = models.IntegerField()
+    bagname = models.CharField(max_length=36)
+    created = models.DateTimeField()
     item = models.ForeignKey(Item, related_name='copy_item')
     machine = models.URLField()
     path = models.URLField()
 
     def fullpath(self):
         return '%s/%s' % (self.machine.rstrip('/'), self.path.lstrip('/'))
-
-    def bagname(self):
-        return '%s_bag%s' % (self.item.pid, self.bagnum)
 
 
 class BagAction(models.Model):

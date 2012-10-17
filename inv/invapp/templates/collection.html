@@ -2,12 +2,12 @@
 
 {% block title %}
     {{ collection.name }}
-{{% end block title %}
+{% endblock title %}
 
 {% block content %}
 <section id="collection">
     <header>
-        <h1>{{ collection.name }}</h2>
+        <h1>{{ collection.name }}</h1>
         <p id="description">{{ collection.description }}</p>
         <ul>
             <li>Persistent ID: {{ collection.pid }}</li>
@@ -28,11 +28,11 @@
             </tr>
             {% for project in projects %}
                 <tr class="project">
-                    <td>project.pid</td>
-                    <td>project.name</td>
-                    <td>project.manager</td>
-                    <td>project.start_date</td>
-                    <td>project.end_date</td>
+                    <td>{{ project.pid }}</td>
+                    <td>{{ project.name }}</td>
+                    <td>{{ project.manager }}</td>
+                    <td>{{ project.start_date }}</td>
+                    <td>{{ project.end_date }}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -48,10 +48,10 @@
             </tr>
             {% for item in items %}
                 <tr class="item">
-                    <td>item.pid</td>
-                    <td>item.title</td>
-                    <td>item.local_id</td>
-                    <td>item.project.name</td>
+                    <td>{{ item.pid }}</td>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.local_id }}</td>
+                    <td>{{ item.project.name }}</td>
                 </tr>
             {% endfor %}
         </table>

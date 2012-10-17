@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+	{{ project.name }}
+{% endblock title %}
+
+{% block content %}
+<section id="project">
+	<header>
+		<h1>{{ project.name }}</h1>
+		<ul>
+			<li>Persistent ID: {{ project.pid }}</li>
+			<li>Manager: {{ project.manager }}</li>
+			<li>Collection: {{ project.collection.name }}</li>
+			<li>Start Date: {{ project.start_date }}</li>
+			<li>End Date: {{ project.end_date }}</li>
+		</ul>
+	</header>
+	<div id="items">
+		<h3>Items in this project</h3>
+		<table>
+            <tr>
+                <th>PID</th>
+                <th>Title</th>
+                <th>Local ID</th>
+            </tr>
+            {% for item in items %}
+                <tr class="item">
+                    <td>{{ item.pid }}</td>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.local_id }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+{% endblock content %}
