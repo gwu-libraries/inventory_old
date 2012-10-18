@@ -6,19 +6,19 @@
 
 {% block content %}
 <section id="project">
-	<header>
-		<h1>{{ project.name }}</h1>
-		<ul>
-			<li>Persistent ID: {{ project.pid }}</li>
-			<li>Manager: {{ project.manager }}</li>
-			<li>Collection: {{ project.collection.name }}</li>
-			<li>Start Date: {{ project.start_date }}</li>
-			<li>End Date: {{ project.end_date }}</li>
-		</ul>
-	</header>
-	<div id="items">
-		<h3>Items in this project</h3>
-		<table>
+    <header>
+	<h1>{{ project.name }}</h1>
+	<ul>
+	    <li>Persistent ID: {{ project.pid }}</li>
+	    <li>Manager: {{ project.manager }}</li>
+	    <li>Collection: {{ project.collection.name }}</li>
+	    <li>Start Date: {{ project.start_date }}</li>
+	    <li>End Date: {{ project.end_date }}</li>
+	</ul>
+    </header>
+    <div id="items">
+	<h3>Items in this project</h3>
+	<table>
             <tr>
                 <th>PID</th>
                 <th>Title</th>

@@ -39,3 +39,5 @@ ENV
 # Django configs
 *wsgi.py
 *local_settings.py
+
+sample_data

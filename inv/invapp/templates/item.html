@@ -6,27 +6,27 @@
 
 {% block content %}
 <section id="item">
-	<header>
-		<h1>{{ item.title }}</h1>
-		<ul>
-			<li>Persistent ID: {{ item.pid }}</li>
-			<li>Local ID: {{item.local_id }}</li>
-			<li>Collection: {{ item.collection.name }}</li>
-			<li>Project: {{ item.project.name }}</li>
-			<li>Created: {{ item.created }}</li>
-			<li>Original Item Type: {{ item.original_item_type }}</li>
-			<li>Raw files location: {{ item.rawfiles_loc }}</li>
-			<li>QC files location: {{ item.qcfiles_loc }}</li>
-			<li>QA files location: {{ item.qafiles_loc }}</li>
-			<li>FIN files location: {{ item.finfiles_loc }}</li>
-			<li>OCR files location: {{ item.ocrfiles_loc }}</li>
-		</ul>
-		<p>Item notes:</p>
-		<p>{{ item.notes }}</p>
-	</header>
-	<div id="bags">
-		<h3>Bags for this item</h3>
-		<table>
+    <header>
+	<h1>{{ item.title }}</h1>
+	<ul>
+	    <li>Persistent ID: {{ item.pid }}</li>
+	    <li>Local ID: {{item.local_id }}</li>
+	    <li>Collection: {{ item.collection.name }}</li>
+	    <li>Project: {{ item.project.name }}</li>
+	    <li>Created: {{ item.created }}</li>
+	    <li>Original Item Type: {{ item.original_item_type }}</li>
+	    <li>Raw files location: {{ item.rawfiles_loc }}</li>
+	    <li>QC files location: {{ item.qcfiles_loc }}</li>
+	    <li>QA files location: {{ item.qafiles_loc }}</li>
+	    <li>FIN files location: {{ item.finfiles_loc }}</li>
+	    <li>OCR files location: {{ item.ocrfiles_loc }}</li>
+	</ul>
+	<p>Item notes:</p>
+	<p>{{ item.notes }}</p>
+    </header>
+    <div id="bags">
+	<h3>Bags for this item</h3>
+	<table>
             <tr>
                 <th>Bag Name</th>
                 <th>Location (machine)</th>
