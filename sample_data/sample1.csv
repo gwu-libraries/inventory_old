@@ -1,0 +1,14 @@
+Collection,38989/1234567890,TestColl-1,,Our 1st test collection,Joshua Gomez
+Collection,38989/9876543210,TestColl-2,2012-01-01,Our 2nd test collection,Orson Welles
+Project,38989/1223334444,,TestProj-1,Harvey Keitel,38989/1234567890,2012-08-01,2012-09-01
+Project,38989/3216549870,2012-06-15,TestProj-2,Sam Jackson,38989/1234567890,,
+Project,38989/9873216540,,TestProj-3,Harvey Keitel,38989/9876543210,,
+Item,38989/1111111110,TestItem-1,38989/322876543210,38989/1234567890,38989/1223334444,,1,,,,,,
+Item,38989/2222222220,TestItem-2,38989/322876123450,38989/9876543210,38989/9873216540,,2,machine1/scans/222222222,machine1/qc/222222222,machine2/qa/222222222,finfiles,machine2/fin/222222222,machine3/ocr/222222222,blah blah blah
+Bag,38989/111111111-bag1,,38989/1111111110,inv1,access/TestColl-1
+Bag,38989/111111111-bag2,,38989/1111111110,inv1,preservation/TestColl-1
+Bag,38989/222222222-bag1,,38989/2222222220,inv1,access/TestColl-2
+Bag,38989/222222222-bag2,,38989/2222222220,inv2,export
+BagAction,38989/111111111-bag1,,1,added file x
+BagAction,38989/222222222-bag2,,2,moved to export dock
+BagAction,38989/222222222-bag2,,3,validated new copy
