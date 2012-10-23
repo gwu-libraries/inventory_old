@@ -8,7 +8,7 @@
 <section id="item">
     <header class="container-fluid">
     	<h1>{{ item.title }}</h1>
-        <div class="span4">
+        <div class="span3">
         	<dl>
         	    <dt>Persistent ID</dt><dd>{{ item.pid }}</dd>
         	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
@@ -17,14 +17,14 @@
         	
         	</dl>
         </div>
-        <div class="span4">
+        <div class="span3">
             <dl>
                 <dt>Created</dt><dd>{{ item.created }}</dd>
                 <dt>Original Item Type</dt><dd>{{ item.get_original_item_type_display }}</dd>
                 <dt>Item notes</dt><dd>{{ item.notes }}</dd>
             </dl>
         </div>
-        <div class="span4">
+        <div class="span3">
             <dl>
                 <dt>Raw files location</dt><dd>{{ item.rawfiles_loc }}</dd>
                 <dt>QC files location</dt><dd>{{ item.qcfiles_loc }}</dd>

@@ -12,11 +12,13 @@
 
 
         {% block styles %}
-        <link rel="stylesheet" href="/static/css/libheader.css" type="text/css" media="screen" />
-        <!--[if lt IE 9]>
-            <link rel="stylesheet" href="/static/css/libheader_ie.css" type="text/css" media="screen" />
-        <![endif]-->
         <link href="/static/css/bootstrap.css" rel="stylesheet" />
+        <style type="text/css">
+            body {
+                padding-top: 40px;
+            }
+        </style>
+        <link href="/static/css/bootstrap-responsive.css" rel="stylesheet" />
         {%endblock styles %}
 
         {% block styles_extra %}
@@ -37,7 +39,14 @@
     <body>
 
         {% block header %}
-            {% include "header.html" %}
+            <header class="navbar navbar-fixed-top">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <a class="brand" href="http://library.gwu.edu">GWU Libraries</a>
+                        <a class="brand" href="/">Digital Inventory</a>
+                    </div>
+                </div>
+            </header>
         {% endblock header %}
 
         {% block content %}
