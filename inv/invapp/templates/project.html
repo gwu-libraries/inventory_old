@@ -11,7 +11,7 @@
 	<ul>
 	    <li>Persistent ID: {{ project.pid }}</li>
 	    <li>Manager: {{ project.manager }}</li>
-	    <li>Collection: {{ project.collection.name }}</li>
+	    <li>Collection: <a href="/collection/{{ project.collection.pid }}">{{ project.collection.name }}</a></li>
 	    <li>Start Date: {{ project.start_date }}</li>
 	    <li>End Date: {{ project.end_date }}</li>
 	</ul>
@@ -26,7 +26,7 @@
             </tr>
             {% for item in items %}
                 <tr class="item">
-                    <td>{{ item.pid }}</td>
+                    <td><a href="/item/{{ item.pid }}">{{ item.pid }}</a></td>
                     <td>{{ item.title }}</td>
                     <td>{{ item.local_id }}</td>
                 </tr>

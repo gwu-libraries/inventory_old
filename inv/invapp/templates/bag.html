@@ -9,7 +9,7 @@
     <header>
         <h1>{{ bag.bagname }}</h1>
         <ul>
-            <li>Item: {{ bag.item.name }}</li>
+            <li>Item: <a href="/item/{{ bag.item.pid }}">{{ bag.item.title }}</a></li>
             <li>Location (machine): {{ bag.machine }}</li>
             <li>Location (path): {{ bag.path }}</li>
         </ul>
