@@ -6,27 +6,37 @@
 
 {% block content %}
 <section id="item">
-    <header>
-	<h1>{{ item.title }}</h1>
-	<ul>
-	    <li>Persistent ID: {{ item.pid }}</li>
-	    <li>Local ID: {{item.local_id }}</li>
-	    <li>Collection: <a href="/collection/{{ item.collection.pid }}">{{ item.collection.name }}</a></li>
-	    <li>Project: <a href="/project/{{ item.project.pid }}">{{ item.project.name }}</a></li>
-	    <li>Created: {{ item.created }}</li>
-	    <li>Original Item Type: {{ item.original_item_type }}</li>
-	    <li>Raw files location: {{ item.rawfiles_loc }}</li>
-	    <li>QC files location: {{ item.qcfiles_loc }}</li>
-	    <li>QA files location: {{ item.qafiles_loc }}</li>
-	    <li>FIN files location: {{ item.finfiles_loc }}</li>
-	    <li>OCR files location: {{ item.ocrfiles_loc }}</li>
-	</ul>
-	<p>Item notes:</p>
-	<p>{{ item.notes }}</p>
+    <header class="container-fluid">
+    	<h1>{{ item.title }}</h1>
+        <div class="span4">
+        	<dl>
+        	    <dt>Persistent ID</dt><dd>{{ item.pid }}</dd>
+        	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
+        	    <dt>Collection</dt><dd><a href="/collection/{{ item.collection.pid }}">{{ item.collection.name }}</a></dd>
+        	    <dt>Project</dt><dd><a href="/project/{{ item.project.pid }}">{{ item.project.name }}</a></dd>
+        	
+        	</dl>
+        </div>
+        <div class="span4">
+            <dl>
+                <dt>Created</dt><dd>{{ item.created }}</dd>
+                <dt>Original Item Type</dt><dd>{{ item.get_original_item_type_display }}</dd>
+                <dt>Item notes</dt><dd>{{ item.notes }}</dd>
+            </dl>
+        </div>
+        <div class="span4">
+            <dl>
+                <dt>Raw files location</dt><dd>{{ item.rawfiles_loc }}</dd>
+                <dt>QC files location</dt><dd>{{ item.qcfiles_loc }}</dd>
+                <dt>QA files location</dt><dd>{{ item.qafiles_loc }}</dd>
+                <dt>FIN files location</dt><dd>{{ item.finfiles_loc }}</dd>
+                <dt>OCR files location</dt><dd>{{ item.ocrfiles_loc }}</dd>
+            </dl>
+        </div>
     </header>
-    <div id="bags">
+    <div id="bags" class="container-fluid">
 	<h3>Bags for this item</h3>
-	<table>
+	<table class="table table-striped">
             <tr>
                 <th>Bag Name</th>
                 <th>Location (machine)</th>

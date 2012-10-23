@@ -6,19 +6,19 @@
 
 {% block content %}
 <section id="collection">
-    <header>
+    <header class="container-fluid">
         <h1>{{ collection.name }}</h1>
         <p id="description">{{ collection.description }}</p>
-        <ul>
-            <li>Persistent ID: {{ collection.pid }}</li>
-            <li>Created: {{ collection.created }}</li>
-            <li>Manager: {{ collection.manager }}</li>
+        <dl>
+            <dt>Persistent ID</dt><dd>{{ collection.pid }}</dd>
+            <dt>Created</dt><dd>{{ collection.created }}</dd>
+            <dt>Manager</dt><dd>{{ collection.manager }}</dd>
 
-        </ul>
+        </dl>
     </header>
-    <div id="projects">
+    <div id="projects" class="container-fluid">
         <h3>Projects contributing to this collection</h3>
-        <table>
+        <table class="table table-striped">
             <tr>
                 <th>PID</th>
                 <th>Project</th>
@@ -37,9 +37,9 @@
             {% endfor %}
         </table>
     </div>
-    <div id="items">
+    <div id="items" class="container-fluid">
         <h3>Items in this Collection</h3>
-        <table>
+        <table class="table table-striped">
             <tr>
                 <th>PID</th>
                 <th>Title</th>

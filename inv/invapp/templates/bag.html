@@ -6,18 +6,18 @@
 
 {% block content %}
 <section id="bag">
-    <header>
+    <header class="container-fluid">
         <h1>{{ bag.bagname }}</h1>
-        <ul>
-            <li>Item: <a href="/item/{{ bag.item.pid }}">{{ bag.item.title }}</a></li>
-            <li>Location (machine): {{ bag.machine }}</li>
-            <li>Location (path): {{ bag.path }}</li>
-        </ul>
+        <dl>
+            <dt>Item</dt><dd><a href="/item/{{ bag.item.pid }}">{{ bag.item.title }}</a></dd>
+            <dt>Location (machine)</dt><dd>{{ bag.machine }}</dd>
+            <dt>Location (path)</dt><dd>{{ bag.path }}</dd>
+        </dl>
     </header>
     <!-- TODO: add div with list of files -->
-    <div id="actions">
+    <div id="actions" class="container-fluid">
         <h3>History of this bag</h3>
-        <table>
+        <table class="table table-striped">
             <tr>
                 <th>Timestamp</th>
                 <th>Action</th>

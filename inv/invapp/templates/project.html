@@ -6,19 +6,25 @@
 
 {% block content %}
 <section id="project">
-    <header>
+    <header class="container-fluid">
 	<h1>{{ project.name }}</h1>
-	<ul>
-	    <li>Persistent ID: {{ project.pid }}</li>
-	    <li>Manager: {{ project.manager }}</li>
-	    <li>Collection: <a href="/collection/{{ project.collection.pid }}">{{ project.collection.name }}</a></li>
-	    <li>Start Date: {{ project.start_date }}</li>
-	    <li>End Date: {{ project.end_date }}</li>
-	</ul>
+    <div class="span4">
+    	<dl>
+    	    <dt>Persistent ID</dt><dd>{{ project.pid }}</dd>
+    	    <dt>Manager</dt><dd>{{ project.manager }}</dd>
+    	    <dt>Collection</dt><dd><a href="/collection/{{ project.collection.pid }}">{{ project.collection.name }}</a></dd>
+        </dl>
+    </div>
+    <div class="span4">
+        <dl>
+            <dt>Start Date</dt><dd>{{ project.start_date }}</dd>
+            <dt>End Date</dt><dd>{{ project.end_date }}</dd>
+        </dl>
+    </div>
     </header>
-    <div id="items">
+    <div id="items" class="container-fluid">
 	<h3>Items in this project</h3>
-	<table>
+	<table class="table table-striped">
             <tr>
                 <th>PID</th>
                 <th>Title</th>
