@@ -19,6 +19,7 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('invapp.views',
+    url(r'^$', 'home', name='home'),
     url(r'^collection/(?P<pid>\w{5}/\w{10,12})$', 'collection',
         name='collection'),
     url(r'^project/(?P<pid>\w{5}/\w{10,12})$', 'project', name='project'),

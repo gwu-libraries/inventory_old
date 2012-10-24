@@ -28,3 +28,10 @@ def bag(request, bagname):
     bag = get_object_or_404(Bag, bagname=bagname)
     actions = BagAction.objects.filter(bag=bag)
     return render_to_response('bag.html', {'bag': bag, 'actions': actions})
+
+def home(request):
+    collections = Collection.objects.all()
+    projects = Project.objects.all()
+    items = Item.objects.all()
+    return render_to_response('home.html', {'collections': collections,
+        'projects': projects, 'items': items})

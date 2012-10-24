@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}
+    GWU Libraries Digital Inventory
+{% endblock title %}
+
+{% block content %}
+<section id="collections" class="container-fluid">
+    <h3>Our Collections</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>PID</th>
+            <th>Collection</th>
+            <th>Manager</th>
+            <th>Description</th>
+        </tr>
+        {% for collection in collections %}
+            <tr class="collection">
+                <td><a href="/collection/{{ collection.pid }}">{{ collection.pid }}</a></td>
+                <td>{{ collection.name }}</td>
+                <td>{{ collection.manager }}</td>
+                <td>{{ collection.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+<section id="projects" class="container-fluid">
+    <h3>Current Projects</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>PID</th>
+            <th>Project</th>
+            <th>Manager</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+        {% for project in projects %}
+            <tr class="project">
+                <td><a href="/project/{{ project.pid }}">{{ project.pid }}</a></td>
+                <td>{{ project.name }}</td>
+                <td>{{ project.manager }}</td>
+                <td>{{ project.start_date }}</td>
+                <td>{{ project.end_date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+<section id="items" class="container-fluid">
+    <h3>Recently Added Items</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>PID</th>
+            <th>Title</th>
+            <th>Local ID</th>
+            <th>Project</th>
+            <th>Collection</th>
+            <th>Created</th>
+            <th>Item Type</th>
+        </tr>
+        {% for item in items %}
+            <tr class="item">
+                <td><a href="/item/{{ item.pid }}">{{ item.pid }}</a></td>
+                <td>{{ item.title }}</td>
+                <td>{{ item.local_id }}</td>
+                <td>{{ item.project.name }}</td>
+                <td>{{ item.collection.name }}</td>
+                <td>{{ item.created }}</td>
+                <td>{{ item.get_original_item_type_display }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+
+{% endblock content %}
