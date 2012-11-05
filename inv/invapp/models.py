@@ -48,13 +48,30 @@ class Bag(models.Model):
         )
     bagname = models.CharField(max_length=36)
     created = models.DateTimeField()
-    item = models.ForeignKey(Item, related_name='copy_item')
+    item = models.ForeignKey(Item, related_name='bag_item')
     machine = models.URLField()
     path = models.URLField()
     bag_type = models.CharField(max_length=1, choices=BAG_TYPES)
 
     def fullpath(self):
         return '%s/%s' % (self.machine.rstrip('/'), self.path.lstrip('/'))
+
+
+def BagFile(models.Model):
+    FILE_TYPES = (
+        ('1', 'image'),
+        ('2', 'text'),
+        ('3', 'pdf'),
+        ('4', 'audio'),
+        ('5', 'video'),
+        ('6', 'spreadsheet'),
+        ('7', 'presentation'),
+        ('8', 'other')
+        )
+    bag = models.ForeignKey(Bag, related_name='file_bag')
+    name = models.CharField(max_length=64)
+    size = models.IntegerField()
+    filetype = models.CharField(max_length=2, choices=FILE_TYPES)
 
 
 class BagAction(models.Model):
