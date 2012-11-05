@@ -23,6 +23,6 @@ urlpatterns += patterns('invapp.views',
     url(r'^collection/(?P<pid>\w{5}/\w{10,12})$', 'collection',
         name='collection'),
     url(r'^project/(?P<pid>\w{5}/\w{10,12})$', 'project', name='project'),
-    url(r'^item/(?P<pid>\w{5}/\w{10,12})$', 'item', name='item'),
-    url(r'^bag/(?P<bagname>\w{5}/[0-9A-Za-z-]{12,19})$', 'bag', name='bag'),
+    url(r'^item/(?P<pid>\w{5}/\w{9,12})$', 'item', name='item'),
+    url(r'^bag/(?P<bagname>.*)$', 'bag', name='bag'),
 )

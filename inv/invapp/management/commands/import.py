@@ -24,7 +24,7 @@ Item, pid, title, local_id, collection (pid), project (pid), created (date),
 original_item_type, rawfiles_loc, qcfiles_loc, qafiles_loc, finfiles_loc,
 ocrfiles_loc, notes
 
-Bag, bagname, created, item, machine, path
+Bag, bagname, created, item, machine, path, bag_type
 
 BagAction, bag (bagname), timestamp, action, note'''
 
@@ -32,12 +32,15 @@ BagAction, bag (bagname), timestamp, action, note'''
 
         try:
             f = open(args[0], 'rb')
+            error_log = open('../logs/import_errors.log', 'a')
         except IndexError:
             raise CommandError('Please specify a csv file to read')
         reader = csv.reader(f)
         success = []
         errors = []
+        rownum = 0
         for row in reader:
+            rownum += 1
             object_type = row[0].lower()
             if object_type == 'collection':
                 error = self._import_collection(row)
@@ -50,11 +53,12 @@ BagAction, bag (bagname), timestamp, action, note'''
             elif object_type == 'bagaction':
                 error = self._import_action(row)
             if error:
-                errors.append((row, error))
-                print 'ERROR! %s' % ','.join(row)
+                msg = 'ERROR! at row %s: %s\n%s\n\n' % (rownum, error, ','.join(row))
+                errors.append(msg)
+                #print msg
             else:
                 success.append(row)
-                print 'SUCCESS! %s' % ','.join(row)
+                #print 'SUCCESS! %s' % ','.join(row)
         print '\nImport Complete\nTotal objects: %s' % str(len(success) +
             len(errors))
         print 'Successful: %s' % str(len(success))
@@ -62,8 +66,8 @@ BagAction, bag (bagname), timestamp, action, note'''
         if errors:
             print 'The following objects failed:'
             for error in errors:
-                print error[0]
-                print ','.join(error[1])
+                error_log.write(error)
+                print error
         f.close()
 
     def _convert_date(self, date_string, null=False):
@@ -126,12 +130,18 @@ BagAction, bag (bagname), timestamp, action, note'''
 
     def _import_bag(self, row):
         try:
+            if row[3] == 'None':
+                barcode = row[1][:14]
+                item = Item.objects.get(local_id=barcode)
+            else:
+                item = Item.objects.get(pid=row[3])
             bag = Bag.objects.create(
                 bagname=row[1],
                 created=self._convert_date(row[2]),
-                item=Item.objects.get(pid=row[3]),
+                item=item,
                 machine=row[4],
-                path=row[5]
+                path=row[5],
+                bag_type=row[6]
                 )
             bag.save()
         except Exception, e:

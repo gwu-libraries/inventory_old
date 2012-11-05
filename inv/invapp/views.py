@@ -32,6 +32,6 @@ def bag(request, bagname):
 def home(request):
     collections = Collection.objects.all()
     projects = Project.objects.all()
-    items = Item.objects.all()
+    items = Item.objects.order_by('created').reverse()[:20]
     return render_to_response('home.html', {'collections': collections,
         'projects': projects, 'items': items})

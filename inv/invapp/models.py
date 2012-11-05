@@ -41,11 +41,17 @@ class Item(models.Model):
 
 
 class Bag(models.Model):
+    BAG_TYPES = (
+        ('1', 'Access'),
+        ('2', 'Preservation'),
+        ('3', 'Export')
+        )
     bagname = models.CharField(max_length=36)
     created = models.DateTimeField()
     item = models.ForeignKey(Item, related_name='copy_item')
     machine = models.URLField()
     path = models.URLField()
+    bag_type = models.CharField(max_length=1, choices=BAG_TYPES)
 
     def fullpath(self):
         return '%s/%s' % (self.machine.rstrip('/'), self.path.lstrip('/'))
@@ -56,6 +62,7 @@ class BagAction(models.Model):
         ('1', 'updated'),
         ('2', 'moved'),
         ('3', 'validated'),
+        ('4', 'imported to DSpace')
         # and so on...
         )
     bag = models.ForeignKey(Bag, related_name='bag_action')
