@@ -5,22 +5,27 @@ from invapp.models import Collection, Project, Item, Bag, BagAction
 
 def collection(request, pid):
     collection = get_object_or_404(Collection, pid=pid)
-    projects = Project.objects.filter(collection=collection)
-    items = Item.objects.filter(collection=collection)
+    projects = Project.objects.filter(collection=collection).defer('collection',
+        'created')
+    items = Item.objects.defer('created', 'original_item_type', 'rawfiles_loc',
+        'qcfiles_loc', 'qafiles_loc', 'finfiles_loc', 'ocrfiles_loc',
+        'notes').filter(collection=collection)
     return render_to_response('collection.html',
         {'collection': collection, 'projects': projects, 'items': items})
 
 
 def project(request, pid):
     project = get_object_or_404(Project, pid=pid)
-    items = Item.objects.filter(project=project)
+    items = Item.objects.defer('collection', 'created', 'original_item_type',
+        'rawfiles_loc', 'qcfiles_loc', 'qafiles_loc', 'finfiles_loc',
+        'ocrfiles_loc', 'notes').filter(project=project)
     return render_to_response('project.html',
         {'project': project, 'items': items})
 
 
 def item(request, pid):
     item = get_object_or_404(Item, pid=pid)
-    bags = Bag.objects.filter(item=item)
+    bags = Bag.objects.defer('created', 'bag_type', 'manifest').filter(item=item)
     return render_to_response('item.html', {'item': item, 'bags': bags})
 
 

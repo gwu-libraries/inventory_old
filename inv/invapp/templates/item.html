@@ -46,7 +46,7 @@
             {% for bag in bags %}
                 <tr class="bag">
                     <td><a href="/bag/{{ bag.bagname }}">{{ bag.bagname }}</a></td>
-                    <td>{{ bag.machine }}</td>
+                    <td>{{ bag.machine.name }}</td>
                     <td>{{ bag.path }}</td>
                 </tr>
             {% endfor %}
