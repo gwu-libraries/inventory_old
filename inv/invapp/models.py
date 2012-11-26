@@ -1,4 +1,10 @@
 from django.db import models
+from django.conf import settings
+
+
+class Machine(models.Model):
+    name = models.CharField(max_length=64, unique=True)
+    url = models.URLField(unique=True)
 
 
 class Collection(models.Model):
@@ -39,6 +45,9 @@ class Item(models.Model):
     ocrfiles_loc = models.URLField(blank=True)
     notes = models.TextField(blank=True)
 
+    def pidurl(self):
+        return '%s/%s' % (settings.ID_SERVICE_URL, self.pid)
+
 
 class Bag(models.Model):
     BAG_TYPES = (
@@ -46,32 +55,19 @@ class Bag(models.Model):
         ('2', 'Preservation'),
         ('3', 'Export')
         )
-    bagname = models.CharField(max_length=36)
+    bagname = models.CharField(max_length=36, unique=True)
     created = models.DateTimeField()
     item = models.ForeignKey(Item, related_name='bag_item')
-    machine = models.URLField()
+    machine = models.ForeignKey(Machine, related_name='bag_machine')
     path = models.URLField()
     bag_type = models.CharField(max_length=1, choices=BAG_TYPES)
+    manifest = models.TextField(blank=True)
 
-    def fullpath(self):
-        return '%s/%s' % (self.machine.rstrip('/'), self.path.lstrip('/'))
+    def urlpath(self):
+        return '%s/%s' % (self.machine.url.rstrip('/'), self.path.lstrip('/'))
 
-
-def BagFile(models.Model):
-    FILE_TYPES = (
-        ('1', 'image'),
-        ('2', 'text'),
-        ('3', 'pdf'),
-        ('4', 'audio'),
-        ('5', 'video'),
-        ('6', 'spreadsheet'),
-        ('7', 'presentation'),
-        ('8', 'other')
-        )
-    bag = models.ForeignKey(Bag, related_name='file_bag')
-    name = models.CharField(max_length=64)
-    size = models.IntegerField()
-    filetype = models.CharField(max_length=2, choices=FILE_TYPES)
+    def listmanifest(self):
+        return [line.split() for line in self.manifest.split('\n')]
 
 
 class BagAction(models.Model):

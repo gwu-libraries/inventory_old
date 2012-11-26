@@ -10,11 +10,25 @@
         <h1>{{ bag.bagname }}</h1>
         <dl>
             <dt>Item</dt><dd><a href="/item/{{ bag.item.pid }}">{{ bag.item.title }}</a></dd>
-            <dt>Location (machine)</dt><dd>{{ bag.machine }}</dd>
-            <dt>Location (path)</dt><dd>{{ bag.path }}</dd>
+            <dt>Machine</dt><dd>{{ bag.machine.name }}</dd>
+            <dt>URL path</dt><dd><a href="http://{{ bag.urlpath }}">{{ bag.urlpath }}</a></dd>
         </dl>
     </header>
-    <!-- TODO: add div with list of files -->
+    <div id="manifest" class="container-fluid">
+        <h3>Bag Manifest</h3>
+        <table class="table table-striped">
+            <tr>
+                <th>Hash</th>
+                <th>File</th>
+            </tr>
+        {% for line in bag.listmanifest %}
+            <tr>
+                <td>{{ line.0 }}</td>
+                <td>{{ line.1 }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
     <div id="actions" class="container-fluid">
         <h3>History of this bag</h3>
         <table class="table table-striped">

@@ -7,14 +7,15 @@
 {% block content %}
 <section id="item">
     <header class="container-fluid">
-    	<h1>{{ item.title }}</h1>
+    	<h1>{{ item.title }}
+            <a class="btn btn-primary" href="{{ item.pidurl }}">View Access Version</a>
+        </h1>
         <div class="span3">
         	<dl>
         	    <dt>Persistent ID</dt><dd>{{ item.pid }}</dd>
         	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
         	    <dt>Collection</dt><dd><a href="/collection/{{ item.collection.pid }}">{{ item.collection.name }}</a></dd>
-        	    <dt>Project</dt><dd><a href="/project/{{ item.project.pid }}">{{ item.project.name }}</a></dd>
-        	
+        	    <dt>Project</dt><dd><a href="/project/{{ item.project.pid }}">{{ item.project.name }}</a></dd>        	
         	</dl>
         </div>
         <div class="span3">

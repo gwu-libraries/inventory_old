@@ -3,7 +3,7 @@ import datetime
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.timezone import utc
-from invapp.models import Collection, Project, Item, Bag, BagAction
+from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
 
 now = datetime.datetime.utcnow().replace(tzinfo=utc)
 
@@ -52,6 +52,8 @@ BagAction, bag (bagname), timestamp, action, note'''
                 error = self._import_bag(row)
             elif object_type == 'bagaction':
                 error = self._import_action(row)
+            elif object_type == 'machine':
+                error = self._import_machine(row)
             if error:
                 msg = 'ERROR! at row %s: %s\n%s\n\n' % (rownum, error, ','.join(row))
                 errors.append(msg)
@@ -64,10 +66,8 @@ BagAction, bag (bagname), timestamp, action, note'''
         print 'Successful: %s' % str(len(success))
         print 'Failed: %s' % str(len(errors))
         if errors:
-            print 'The following objects failed:'
             for error in errors:
                 error_log.write(error)
-                print error
         f.close()
 
     def _convert_date(self, date_string, null=False):
@@ -139,7 +139,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 bagname=row[1],
                 created=self._convert_date(row[2]),
                 item=item,
-                machine=row[4],
+                machine=Machine.objects.get(url=row[4]),
                 path=row[5],
                 bag_type=row[6]
                 )
@@ -158,3 +158,13 @@ BagAction, bag (bagname), timestamp, action, note'''
             action.save()
         except Exception, e:
             return e
+
+    def _import_machine(self, row):
+        try:
+            machine = Machine.objects.create(
+                name = row[1],
+                url = row[2]
+                )
+        except Exception, e:
+            return e
+

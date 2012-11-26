@@ -154,3 +154,5 @@ LOGGING = {
         },
     }
 }
+
+ID_SERVICE_URL = "http://id.library.gwu.edu"
