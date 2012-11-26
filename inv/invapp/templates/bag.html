@@ -14,21 +14,6 @@
             <dt>URL path</dt><dd><a href="http://{{ bag.urlpath }}">{{ bag.urlpath }}</a></dd>
         </dl>
     </header>
-    <div id="manifest" class="container-fluid">
-        <h3>Bag Manifest</h3>
-        <table class="table table-striped">
-            <tr>
-                <th>Hash</th>
-                <th>File</th>
-            </tr>
-        {% for line in bag.listmanifest %}
-            <tr>
-                <td>{{ line.0 }}</td>
-                <td><a href="http://{{ bag.urlpath }}/{{ line.1 }}">{{ line.1 }}</a></td>
-            </tr>
-        {% endfor %}
-        </table>
-    </div>
     <div id="actions" class="container-fluid">
         <h3>History of this bag</h3>
         <table class="table table-striped">
@@ -44,6 +29,21 @@
                 <td>{{ action.note }}</td>
             </tr>
             {% endfor %}
+        </table>
+    </div>
+    <div id="manifest" class="container-fluid">
+        <h3>Bag Manifest</h3>
+        <table class="table table-striped">
+            <tr>
+                <th>Hash</th>
+                <th>File</th>
+            </tr>
+        {% for line in bag.listmanifest %}
+            <tr>
+                <td>{{ line.0 }}</td>
+                <td><a href="http://{{ bag.urlpath }}/{{ line.1 }}">{{ line.1 }}</a></td>
+            </tr>
+        {% endfor %}
         </table>
     </div>
 </section>
