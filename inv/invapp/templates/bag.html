@@ -24,7 +24,7 @@
         {% for line in bag.listmanifest %}
             <tr>
                 <td>{{ line.0 }}</td>
-                <td>{{ line.1 }}</td>
+                <td><a href="http://{{ bag.urlpath }}/{{ line.1 }}">{{ line.1 }}</a></td>
             </tr>
         {% endfor %}
         </table>
