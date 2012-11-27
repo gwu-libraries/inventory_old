@@ -61,13 +61,41 @@ class Bag(models.Model):
     machine = models.ForeignKey(Machine, related_name='bag_machine')
     path = models.URLField()
     bag_type = models.CharField(max_length=1, choices=BAG_TYPES)
-    manifest = models.TextField(blank=True)
+    payload = models.TextField(blank=True)
+    '''
+    lines in payload should be formatted as such:
+    relative_filepath_from_bag_directory file_size(MB)\n
+    '''
 
     def urlpath(self):
         return '%s/%s' % (self.machine.url.rstrip('/'), self.path.lstrip('/'))
 
-    def listmanifest(self):
-        return [line.split() for line in self.manifest.split('\n')]
+    def listpayload(self):
+        return [line.split() for line in self.payload.split('\n')]
+
+    def parse_payload(self):
+        payloaddict = {
+            'files': [],
+            'total_files': 0,
+            'total_size': 0,
+            'total_file_types': {},
+            'total_size_types': {}
+        }
+        if self.payload:
+            for line in self.payload.split('\n'):
+                filepath, filesize = line.split()
+                filetype = filepath[-3:]
+                payloaddict['files'].append((filepath, filesize))
+                payloaddict['total_files'] += 1
+                payloaddict['total_size'] += int(filesize)
+                if filetype not in payloaddict['total_file_types'].keys():
+                    payloaddict['total_file_types'][filetype] = 1
+                    payloaddict['total_size_types'][filetype] = int(filesize)
+                else:
+                    payloaddict['total_file_types'][filetype] += 1
+                    payloaddict['total_size_types'][filetype] += int(filesize)
+        self.payloaddict = payloaddict
+        return self.payloaddict
 
 
 class BagAction(models.Model):

@@ -31,17 +31,26 @@
             {% endfor %}
         </table>
     </div>
-    <div id="manifest" class="container-fluid">
-        <h3>Bag Manifest</h3>
+    <div id="payload" class="container-fluid">
+        <h3>Bag Payload</h3>
+        <dl>
+            <dt>Total files</dt><dd>{{ bag.payloaddict.total_files }}
+                {% for filetype, count in bag.payloaddict.total_file_types.items %}
+                    {% if forloop.first %}({% endif %}{{ filetype }}: {{ count }}{% if forloop.last %}){% endif %}
+                {% endfor %}</dd>
+            <dt>Total size</dt><dd>{{ bag.payloaddict.total_size }}
+                {% for filetype, size in bag.payloaddict.total_size_types.items %}
+                    {% if forloop.first %}({% endif %}{{ filetype }}: {{ size }}{% if forloop.last %}){% endif %}
+                {% endfor %}</dd>
         <table class="table table-striped">
             <tr>
-                <th>Hash</th>
                 <th>File</th>
+                <th>Size</th>
             </tr>
-        {% for line in bag.listmanifest %}
+        {% for line in bag.listpayload %}
             <tr>
-                <td>{{ line.0 }}</td>
-                <td><a href="http://{{ bag.urlpath }}/{{ line.1 }}">{{ line.1 }}</a></td>
+                <td><a href="http://{{ bag.urlpath }}/{{ line.1 }}">{{ line.0 }}</a></td>
+                <td>{{ line.1 }}</td>
             </tr>
         {% endfor %}
         </table>
