@@ -18,15 +18,15 @@
         <h3>History of this bag</h3>
         <table class="table table-striped">
             <tr>
-                <th>Timestamp</th>
                 <th>Action</th>
+                <th>Timestamp</th>
                  <th>Note</th>
             </tr>
             {% if actions %}
                 {% for action in actions %}
                 <tr class="action">
-                    <td>{{ action.timestamp }}</td>
                     <td>{{ action.get_action_display }}</td>
+                    <td>{{ action.timestamp }}</td>
                     <td>{{ action.note }}</td>
                 </tr>
                 {% endfor %}

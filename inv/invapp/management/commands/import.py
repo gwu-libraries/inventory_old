@@ -1,9 +1,9 @@
-import os, csv
+import os, csv, re
 import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.utils.timezone import utc
+from django.utils.timezone import utc, make_aware
 from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
 
 now = datetime.datetime.utcnow().replace(tzinfo=utc)
@@ -73,9 +73,10 @@ BagAction, bag (bagname), timestamp, action, note'''
         f.close()
 
     def _convert_date(self, date_string, null=False):
-        format = '%Y-%m-%d %H:%M:%S'
         try:
-            return datetime.strptime(date_string, format)
+            format = '%Y-%m-%d %H:%M:%S'
+            return make_aware(datetime.datetime.strptime(date_string, format),
+                utc)
         except Exception:
             if null:
                 return None
