@@ -1,8 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-from invapp.utils.bytes2human import bytes2human as b2h
-
 
 class Machine(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -64,9 +62,6 @@ class Bag(models.Model):
     def urlpath(self):
         return '%s/%s' % (self.machine.url.rstrip('/'), self.path.lstrip('/'))
 
-    def listpayload(self):
-        return [line.split() for line in self.payload.split('\n')]
-
     def parse_payload(self):
         payloaddict = {
             'files': [],
@@ -78,9 +73,8 @@ class Bag(models.Model):
             for line in self.payload.split('\n'):
                 if line:
                     filepath, filesize = line.split()
-                    human_size = b2h(filesize)
                     filetype = filepath[-3:]
-                    payloaddict['files'].append((filepath, filesize, human_size))
+                    payloaddict['files'].append((filepath, filesize))
                     payloaddict['total_files'] += 1
                     payloaddict['total_size'] += int(filesize)
                     if filetype not in payloaddict['types'].keys():
@@ -88,10 +82,6 @@ class Bag(models.Model):
                     else:
                         payloaddict['types'][filetype][0] += 1
                         payloaddict['types'][filetype][1] += int(filesize)
-        # convert bytes to human readable form before passing
-        payloaddict['total_size_human'] = b2h(payloaddict['total_size'])
-        for ft in payloaddict['types']:
-            payloaddict['types'][ft].append(b2h(payloaddict['types'][ft][1]))
         payloaddict['files'] = sorted(payloaddict['files'],
             key=lambda filetup: filetup[0])
         self.payloaddict = payloaddict
@@ -103,3 +93,6 @@ class BagAction(models.Model):
     timestamp = models.DateTimeField()
     action = models.CharField(max_length=1, choices=settings.ACTIONS)
     note = models.TextField()
+
+    class Meta:
+        unique_together = ("bag", "action", "timestamp")

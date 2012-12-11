@@ -52,13 +52,13 @@
             <tr>
                 <td>{{ filetype }}</td>
                 <td>{{ values.0 }}</td>
-                <td>{{ values.1 }} ({{ values.2 }})</td>
+                <td>{{ values.1 }} ({{ values.1|filesizeformat }})</td>
             </tr>
             {% endfor %}
             <tr>
                 <td><b>Total</b></td>
                 <td>{{ bag.payloaddict.total_files }}</td>
-                <td>{{ bag.payloaddict.total_size }} ({{ bag.payloaddict.total_size_human }})</td>
+                <td>{{ bag.payloaddict.total_size }} ({{ bag.payloaddict.total_size|filesizeformat }})</td>
             </tr>
         </table>
         <h5>Individual Files</h5>
@@ -70,7 +70,7 @@
         {% for file in bag.payloaddict.files %}
             <tr>
                 <td><a href="http://{{ bag.urlpath }}/{{ file.0 }}">{{ file.0 }}</a></td>
-                <td>{{ file.1 }} ({{ file.2 }})</td>
+                <td>{{ file.1 }} ({{ file.1|filesizeformat }})</td>
             </tr>
         {% endfor %}
         </table>
