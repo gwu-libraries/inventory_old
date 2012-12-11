@@ -39,3 +39,7 @@ ENV
 # Django configs
 *wsgi.py
 *local_settings.py
+
+# development files
+*bag2inv_export.py
+*sample_data/bagdb_export

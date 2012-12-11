@@ -7,10 +7,17 @@
 {% block content %}
 <section id="item">
     <header class="container-fluid">
-    	<h1>{{ item.title }}
-            <a class="btn btn-primary" href="{{ item.pidurl }}">View Access Version</a>
-        </h1>
+    	{% if item.title %}
+            <h1>{{ item.title }}</h1>
+        {% else %}
+            <p>
+                <h1>{{ item.pid }}</h1>
+                (title not available)
+            </p>
+        {% endif %}
+        <p><a class="btn btn-primary" href="{{ item.pidurl }}">View Access Version</a></p>
         <div class="span3">
+
         	<dl>
         	    <dt>Persistent ID</dt><dd>{{ item.pid }}</dd>
         	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
@@ -47,7 +54,7 @@
                 <tr class="bag">
                     <td><a href="/bag/{{ bag.bagname }}">{{ bag.bagname }}</a></td>
                     <td>{{ bag.machine.name }}</td>
-                    <td>{{ bag.path }}</td>
+                    <td>{{ bag.urlpath }}</td>
                 </tr>
             {% endfor %}
         </table>

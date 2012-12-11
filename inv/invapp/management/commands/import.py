@@ -1,6 +1,7 @@
-import csv
+import os, csv
 import datetime
 
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.timezone import utc
 from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
@@ -32,6 +33,7 @@ BagAction, bag (bagname), timestamp, action, note'''
 
         try:
             f = open(args[0], 'rb')
+            payload_dir = os.path.join(os.path.dirname(args[0]), 'payloads')
             error_log = open('../logs/import_errors.log', 'a')
         except IndexError:
             raise CommandError('Please specify a csv file to read')
@@ -49,7 +51,7 @@ BagAction, bag (bagname), timestamp, action, note'''
             elif object_type == 'item':
                 error = self._import_item(row)
             elif object_type == 'bag':
-                error = self._import_bag(row)
+                error = self._import_bag(row, payload_dir)
             elif object_type == 'bagaction':
                 error = self._import_action(row)
             elif object_type == 'machine':
@@ -109,12 +111,16 @@ BagAction, bag (bagname), timestamp, action, note'''
 
     def _import_item(self, row):
         try:
+            c = Collection.objects.filter(pid=row[4])
+            p = Project.objects.filter(pid=row[5])
+            collection = c[0] if c else None
+            project = p[0] if p else None
             item = Item.objects.create(
                 pid=row[1],
                 title=row[2],
                 local_id=row[3],
-                collection=Collection.objects.get(pid=row[4]),
-                project=Project.objects.get(pid=row[5]),
+                collection=collection,
+                project=project,
                 created=self._convert_date(row[6]),
                 original_item_type=row[7],
                 rawfiles_loc=row[8],
@@ -128,20 +134,28 @@ BagAction, bag (bagname), timestamp, action, note'''
         except Exception, e:
             return e
 
-    def _import_bag(self, row):
+    def _import_bag(self, row, payload_dir):
         try:
-            if row[3] == 'None':
+            # handle preservation bags from bagdb that don't have pid of item
+            if row[3] == '' or row[3] == 'None':
                 barcode = row[1][:14]
                 item = Item.objects.get(local_id=barcode)
             else:
                 item = Item.objects.get(pid=row[3])
+            bag_type = None
+            for tup in settings.BAG_TYPES:
+                if tup[1].lower() == row[6].lower():
+                    bag_type = tup[0]
+            bag_type = bag_type if bag_type else row[6]
+            payload_file = open(os.path.join(payload_dir, row[1]))
             bag = Bag.objects.create(
                 bagname=row[1],
                 created=self._convert_date(row[2]),
                 item=item,
                 machine=Machine.objects.get(url=row[4]),
                 path=row[5],
-                bag_type=row[6]
+                bag_type=bag_type,
+                payload=payload_file.read()
                 )
             bag.save()
         except Exception, e:
@@ -167,4 +181,3 @@ BagAction, bag (bagname), timestamp, action, note'''
                 )
         except Exception, e:
             return e
-
