@@ -48,7 +48,7 @@
                 <th>Count</th>
                 <th>Size</th>
             </tr>
-            {% for filetype, values in bag.payloaddict.types.items %}
+            {% for filetype, values in bag.payload.types.items %}
             <tr>
                 <td>{{ filetype }}</td>
                 <td>{{ values.0 }}</td>
@@ -57,8 +57,8 @@
             {% endfor %}
             <tr>
                 <td><b>Total</b></td>
-                <td>{{ bag.payloaddict.total_files }}</td>
-                <td>{{ bag.payloaddict.total_size }} ({{ bag.payloaddict.total_size|filesizeformat }})</td>
+                <td>{{ bag.payload.files|length }}</td>
+                <td>{{ bag.payload.size }} ({{ bag.payload.size|filesizeformat }})</td>
             </tr>
         </table>
         <h5>Individual Files</h5>
@@ -67,7 +67,7 @@
                 <th>File</th>
                 <th>Size</th>
             </tr>
-        {% for file in bag.payloaddict.files %}
+        {% for file in bag.payload.files %}
             <tr>
                 <td><a href="http://{{ bag.urlpath }}/{{ file.0 }}">{{ file.0 }}</a></td>
                 <td>{{ file.1 }} ({{ file.1|filesizeformat }})</td>

@@ -64,29 +64,31 @@ class Bag(models.Model):
 
     @property
     def payload(self):
-        payloaddict = {
-            'files': [],
-            'total_files': 0,
-            'total_size': 0,
-            'types': {},
-        }
-        if self.payload:
-            for line in self.payload.split('\n'):
+        # create a static data dict if one doesn't exist and use that
+        # to avoid recalculating data every time the property is needed
+        try:
+            return self.payload_dict
+        except:
+            payload_dict = {
+                'files': [],
+                'size': 0,
+                'types': {},
+            }
+            for line in self.payload_raw.split('\n'):
                 if line:
                     filepath, filesize = line.split()
                     filetype = filepath[-3:]
-                    payloaddict['files'].append((filepath, filesize))
-                    payloaddict['total_files'] += 1
-                    payloaddict['total_size'] += int(filesize)
-                    if filetype not in payloaddict['types'].keys():
-                        payloaddict['types'][filetype] = [1, int(filesize)]
+                    payload_dict['files'].append((filepath, filesize))
+                    payload_dict['size'] += int(filesize)
+                    if filetype not in payload_dict['types'].keys():
+                        payload_dict['types'][filetype] = [1, int(filesize)]
                     else:
-                        payloaddict['types'][filetype][0] += 1
-                        payloaddict['types'][filetype][1] += int(filesize)
-        payloaddict['files'] = sorted(payloaddict['files'],
-            key=lambda filetup: filetup[0])
-        self.payloaddict = payloaddict
-        return self.payloaddict
+                        payload_dict['types'][filetype][0] += 1
+                        payload_dict['types'][filetype][1] += int(filesize)
+            payload_dict['files'] = sorted(payload_dict['files'],
+                key=lambda filetup: filetup[0])
+            self.payload_dict = payload_dict
+            return self.payload_dict
 
 
 class BagAction(models.Model):
