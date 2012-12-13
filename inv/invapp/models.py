@@ -42,7 +42,7 @@ class Item(models.Model):
     ocrfiles_loc = models.URLField(blank=True)
     notes = models.TextField(blank=True)
 
-    def pidurl(self):
+    def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.pid)
 
 
@@ -53,7 +53,7 @@ class Bag(models.Model):
     machine = models.ForeignKey(Machine, related_name='bag_machine')
     path = models.URLField()
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
-    payload = models.TextField(blank=True)
+    payload_raw = models.TextField(blank=True)
     '''
     lines in payload should be formatted as such:
     relative_filepath_from_bag_directory file_size(MB)\n
@@ -62,7 +62,8 @@ class Bag(models.Model):
     def urlpath(self):
         return '%s/%s' % (self.machine.url.rstrip('/'), self.path.lstrip('/'))
 
-    def parse_payload(self):
+    @property
+    def payload(self):
         payloaddict = {
             'files': [],
             'total_files': 0,
