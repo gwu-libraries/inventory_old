@@ -77,7 +77,7 @@ class Bag(models.Model):
             for line in self.payload_raw.split('\n'):
                 if line:
                     filepath, filesize = line.split()
-                    filetype = filepath[-3:]
+                    filetype = filepath.split('.')[-1]
                     payload_dict['files'].append((filepath, filesize))
                     payload_dict['size'] += int(filesize)
                     if filetype not in payload_dict['types'].keys():
