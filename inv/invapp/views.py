@@ -25,13 +25,12 @@ def project(request, pid):
 
 def item(request, pid):
     item = get_object_or_404(Item, pid=pid)
-    bags = Bag.objects.defer('created', 'bag_type', 'payload').filter(item=item)
+    bags = Bag.objects.defer('created', 'bag_type', 'payload_raw').filter(item=item)
     return render_to_response('item.html', {'item': item, 'bags': bags})
 
 
 def bag(request, bagname):
     bag = get_object_or_404(Bag, bagname=bagname)
-    bag.parse_payload()
     actions = BagAction.objects.filter(bag=bag)
     return render_to_response('bag.html', {'bag': bag, 'actions': actions})
 

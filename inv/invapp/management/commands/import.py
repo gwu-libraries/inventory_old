@@ -156,7 +156,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 machine=Machine.objects.get(url=row[4]),
                 path=row[5],
                 bag_type=bag_type,
-                payload=payload_file.read()
+                payload_parsed=payload_file.read()
                 )
             bag.save()
         except Exception, e:

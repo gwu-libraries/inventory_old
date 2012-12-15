@@ -67,28 +67,50 @@ class Bag(models.Model):
         # create a static data dict if one doesn't exist and use that
         # to avoid recalculating data every time the property is needed
         try:
-            return self.payload_dict
-        except:
-            payload_dict = {
-                'files': [],
-                'size': 0,
-                'types': {},
-            }
-            for line in self.payload_raw.split('\n'):
-                if line:
-                    filepath, filesize = line.split()
-                    filetype = filepath.split('.')[-1]
-                    payload_dict['files'].append((filepath, filesize))
-                    payload_dict['size'] += int(filesize)
-                    if filetype not in payload_dict['types'].keys():
-                        payload_dict['types'][filetype] = [1, int(filesize)]
-                    else:
-                        payload_dict['types'][filetype][0] += 1
-                        payload_dict['types'][filetype][1] += int(filesize)
-            payload_dict['files'] = sorted(payload_dict['files'],
-                key=lambda filetup: filetup[0])
-            self.payload_dict = payload_dict
-            return self.payload_dict
+            return self.payload_parsed
+        except AttributeError:
+            return self.parse_payload()
+
+    @payload.setter
+    def payload(self, data):
+        assert isinstance(data, dict), 'payload must be a dictionary'
+        assert isinstance(data['files'], list), \
+            'payload must contain a list of file data'
+        assert all(isinstance(f, tuple) for f in data['files']), \
+            'files must contain tuples of format (filepath, filesize)'
+        assert isinstance(data['size'], int), \
+            'payload must contain aggregate size information'
+        assert isinstance(data['type'], dict), \
+            'payload must have a subdictionary "types"'
+        assert all(isinstance(d, dict) for d in data['types']), \
+            'payload["types"] must be a dict with lists [count, size]'
+        self.payload_parsed = data
+
+    @payload.deleter
+    def payload(self):
+        self.__dict__.pop('payload_parsed')
+
+    def parse_payload(self):
+        payload_parsed = {
+            'files': [],
+            'size': 0,
+            'types': {},
+        }
+        for line in self.payload_raw.split('\n'):
+            if line:
+                filepath, filesize = line.split()
+                filetype = filepath.split('.')[-1]
+                payload_parsed['files'].append((filepath, filesize))
+                payload_parsed['size'] += int(filesize)
+                if filetype not in payload_parsed['types'].keys():
+                    payload_parsed['types'][filetype] = [1, int(filesize)]
+                else:
+                    payload_parsed['types'][filetype][0] += 1
+                    payload_parsed['types'][filetype][1] += int(filesize)
+        payload_parsed['files'] = sorted(payload_parsed['files'],
+            key=lambda filetup: filetup[0])
+        self.payload_parsed = payload_parsed
+        return self.payload_parsed
 
 
 class BagAction(models.Model):
