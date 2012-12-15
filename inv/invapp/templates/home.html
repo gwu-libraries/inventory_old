@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}
     GWU Libraries Digital Inventory
@@ -16,7 +17,7 @@
         </tr>
         {% for collection in collections %}
             <tr class="collection">
-                <td><a href="/collection/{{ collection.pid }}">{{ collection.pid }}</a></td>
+                <td><a href="{% url 'collection' collection.pid %}">{{ collection.pid }}</a></td>
                 <td>{{ collection.name }}</td>
                 <td>{{ collection.manager }}</td>
                 <td>{{ collection.description }}</td>
@@ -36,7 +37,7 @@
         </tr>
         {% for project in projects %}
             <tr class="project">
-                <td><a href="/project/{{ project.pid }}">{{ project.pid }}</a></td>
+                <td><a href="{% url 'project' project.pid %}">{{ project.pid }}</a></td>
                 <td>{{ project.name }}</td>
                 <td>{{ project.manager }}</td>
                 <td>{{ project.start_date }}</td>
@@ -59,7 +60,7 @@
         </tr>
         {% for item in items %}
             <tr class="item">
-                <td><a href="/item/{{ item.pid }}">{{ item.pid }}</a></td>
+                <td><a href="{% url 'item' item.pid %}">{{ item.pid }}</a></td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.local_id }}</td>
                 <td>{{ item.project.name }}</td>

@@ -50,6 +50,7 @@ class ModelTestCase(TestCase):
         # test ability to wipe out parsed data
         del bag.payload
         self.assertRaises(AttributeError, getattr, bag, 'payload_parsed')
+        self.assertTrue(bag.payload)
         
         # test ability to overwrite
         bag.parse_payload()

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}
     {{ bag.bagname }}
@@ -9,7 +10,7 @@
     <header class="container-fluid">
         <h1>{{ bag.bagname }}</h1>
         <dl>
-            <dt>Item</dt><dd><a href="/item/{{ bag.item.pid }}">{% if bag.item.title %}{{ bag.item.title }}{% else %}{{ bag.item.pid }}{% endif %}</a></dd>
+            <dt>Item</dt><dd><a href="{% url 'item' bag.item.pid %}">{% if bag.item.title %}{{ bag.item.title }}{% else %}{{ bag.item.pid }}{% endif %}</a></dd>
             <dt>Machine</dt><dd>{{ bag.machine.name }}</dd>
             <dt>URL path</dt><dd><a href="http://{{ bag.urlpath }}">{{ bag.urlpath }}</a></dd>
         </dl>

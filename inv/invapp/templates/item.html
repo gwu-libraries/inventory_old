@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}
 	{{ item.title }}
@@ -21,8 +22,8 @@
         	<dl>
         	    <dt>Persistent ID</dt><dd>{{ item.pid }}</dd>
         	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
-        	    <dt>Collection</dt><dd><a href="/collection/{{ item.collection.pid }}">{{ item.collection.name }}</a></dd>
-        	    <dt>Project</dt><dd><a href="/project/{{ item.project.pid }}">{{ item.project.name }}</a></dd>        	
+        	    <dt>Collection</dt><dd><a href="{% url 'collection' item.collection.pid %}">{{ item.collection.name }}</a></dd>
+        	    <dt>Project</dt><dd><a href="{% url 'project' item.project.pid %}">{{ item.project.name }}</a></dd>        	
         	</dl>
         </div>
         <div class="span3">
@@ -52,7 +53,7 @@
             </tr>
             {% for bag in bags %}
                 <tr class="bag">
-                    <td><a href="/bag/{{ bag.bagname }}">{{ bag.bagname }}</a></td>
+                    <td><a href="{% url 'bag' bag.bagname %}">{{ bag.bagname }}</a></td>
                     <td>{{ bag.machine.name }}</td>
                     <td>{{ bag.urlpath }}</td>
                 </tr>
