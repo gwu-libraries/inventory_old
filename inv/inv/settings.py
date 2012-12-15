@@ -159,6 +159,8 @@ LOGGING = {
 # Inventory Specific Settings #
 # *************************** #
 
+ID_MAX_LENGTH = 18
+
 ITEM_TYPES = (
     ('1', 'book'),
     ('2', 'microfilm'),

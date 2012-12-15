@@ -8,7 +8,7 @@ class Machine(models.Model):
 
 
 class Collection(models.Model):
-    pid = models.CharField(max_length=18, unique=True)
+    pid = models.CharField(max_length=settings.ID_MAX_LENGTH, unique=True)
     name = models.CharField(max_length=256)
     created = models.DateTimeField()
     description = models.TextField(blank=True)
@@ -16,7 +16,7 @@ class Collection(models.Model):
 
 
 class Project(models.Model):
-    pid = models.CharField(max_length=18, unique=True)
+    pid = models.CharField(max_length=settings.ID_MAX_LENGTH, unique=True)
     created = models.DateTimeField()
     name = models.CharField(max_length=256)
     manager = models.CharField(max_length=256)
@@ -27,7 +27,7 @@ class Project(models.Model):
 
 
 class Item(models.Model):
-    pid = models.CharField(max_length=18, unique=True)
+    pid = models.CharField(max_length=settings.ID_MAX_LENGTH, unique=True)
     title = models.TextField(blank=True)
     local_id = models.CharField(max_length=256, blank=True)
     collection = models.ForeignKey(Collection, related_name='item_collection',
@@ -47,7 +47,7 @@ class Item(models.Model):
 
 
 class Bag(models.Model):
-    bagname = models.CharField(max_length=36, unique=True)
+    bagname = models.TextField(unique=True)
     created = models.DateTimeField()
     item = models.ForeignKey(Item, related_name='bag_item')
     machine = models.ForeignKey(Machine, related_name='bag_machine')
