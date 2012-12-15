@@ -80,9 +80,10 @@ class Bag(models.Model):
             'files must contain tuples of format (filepath, filesize)'
         assert isinstance(data['size'], int), \
             'payload must contain aggregate size information'
-        assert isinstance(data['type'], dict), \
+        assert isinstance(data['types'], dict), \
             'payload must have a subdictionary "types"'
-        assert all(isinstance(d, dict) for d in data['types']), \
+        assert all(isinstance(data['types'][d],
+            list) for d in data['types'].keys()), \
             'payload["types"] must be a dict with lists [count, size]'
         self.payload_parsed = data
 
