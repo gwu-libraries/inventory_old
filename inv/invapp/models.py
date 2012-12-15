@@ -64,7 +64,7 @@ class Bag(models.Model):
 
     @property
     def payload(self):
-        # create a static data dict if one doesn't exist and use that
+        # create a data dict if one doesn't exist and use that
         # to avoid recalculating data every time the property is needed
         try:
             return self.payload_parsed
