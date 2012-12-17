@@ -14,6 +14,9 @@ class Collection(models.Model):
     description = models.TextField(blank=True)
     manager = models.CharField(max_length=256, blank=True)
 
+    def purl(self):
+        return '%s/%s' % (settings.ID_SERVICE_URL, self.pid)
+
 
 class Project(models.Model):
     pid = models.CharField(max_length=settings.ID_MAX_LENGTH, unique=True)

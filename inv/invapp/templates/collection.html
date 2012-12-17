@@ -10,6 +10,7 @@
     <header class="container-fluid">
         <h1>{{ collection.name }}</h1>
         <p id="description">{{ collection.description }}</p>
+        <p><a class="btn btn-primary" href="{{ collection.purl }}">View In Access System</a></p>
         <dl>
             <dt>Persistent ID</dt><dd>{{ collection.pid }}</dd>
             <dt>Created</dt><dd>{{ collection.created }}</dd>
