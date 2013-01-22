@@ -1,3 +1,4 @@
 django
 south
 psycopg2
+django-tastypie
