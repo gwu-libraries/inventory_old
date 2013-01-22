@@ -1,21 +1,19 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+
+from invapp.api import *
+
+
 admin.autodiscover()
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
-
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'inv.views.home', name='home'),
-    # url(r'^inv/', include('inv.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include(MachineResource().urls)),
+    url(r'^api/', include(CollectionResource().urls)),
+    url(r'^api/', include(ProjectResource().urls)),
+    url(r'^api/', include(ItemResource().urls)),
+    url(r'^api/', include(BagResource().urls)),
+    url(r'^api/', include(BagActionResource().urls)),
 )
 
 urlpatterns += patterns('invapp.views',
