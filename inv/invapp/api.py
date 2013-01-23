@@ -13,6 +13,8 @@ class MachineResource(ModelResource):
             'name': ALL_WITH_RELATIONS,
             'url': ALL_WITH_RELATIONS
         }
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
 
 
 class CollectionResource(ModelResource):
@@ -24,6 +26,8 @@ class CollectionResource(ModelResource):
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'manager': ALL_WITH_RELATIONS
         }
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
 
 
 class ProjectResource(ModelResource):
@@ -38,6 +42,8 @@ class ProjectResource(ModelResource):
             'start_date': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'end_date': ['exact', 'gt', 'lt', 'gte', 'lte'],
         }
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
 
 
 class ItemResource(ModelResource):
@@ -75,6 +81,8 @@ class BagResource(ModelResource):
             'bag_type': ALL,
             'urlpath': ALL_WITH_RELATIONS,
         }
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
 
 
 
@@ -87,3 +95,5 @@ class BagActionResource(ModelResource):
             'timestamp': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'action': ALL,
         }
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
