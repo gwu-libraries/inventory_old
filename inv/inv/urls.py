@@ -1,19 +1,23 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-
+from tastypie.api import Api
 from invapp.api import *
 
 
 admin.autodiscover()
 
+v1_api = Api(api_name='v1')
+v1_api.register(MachineResource())
+v1_api.register(CollectionResource())
+v1_api.register(ProjectResource())
+v1_api.register(ItemResource())
+v1_api.register(BagResource())
+v1_api.register(BagActionResource())
+
+
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include(MachineResource().urls)),
-    url(r'^api/', include(CollectionResource().urls)),
-    url(r'^api/', include(ProjectResource().urls)),
-    url(r'^api/', include(ItemResource().urls)),
-    url(r'^api/', include(BagResource().urls)),
-    url(r'^api/', include(BagActionResource().urls)),
+    url(r'^api/', include(v1_api.urls))
 )
 
 urlpatterns += patterns('invapp.views',
