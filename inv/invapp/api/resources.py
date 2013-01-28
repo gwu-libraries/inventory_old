@@ -21,7 +21,7 @@ class CollectionResource(ModelResource):
     class Meta:
         queryset = Collection.objects.all()
         filtering = {
-            'pid': 'exact',
+            'id': 'exact',
             'name': ALL_WITH_RELATIONS,
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'manager': ALL_WITH_RELATIONS
@@ -36,7 +36,7 @@ class ProjectResource(ModelResource):
     class Meta:
         queryset = Project.objects.all()
         filtering = {
-            'pid': 'exact',
+            'id': 'exact',
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'manager': ALL_WITH_RELATIONS,
             'start_date': ['exact', 'gt', 'lt', 'gte', 'lte'],
@@ -53,7 +53,7 @@ class ItemResource(ModelResource):
     class Meta:
         queryset = Item.objects.all()
         filtering = {
-            'pid': 'exact',
+            'id': 'exact',
             'title': ALL_WITH_RELATIONS,
             'local_id': ALL,
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],

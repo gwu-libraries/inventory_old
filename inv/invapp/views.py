@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404, render_to_response
 from invapp.models import Collection, Project, Item, Bag, BagAction
 
 
-def collection(request, pid):
-    collection = get_object_or_404(Collection, pid=pid)
+def collection(request, id):
+    collection = get_object_or_404(Collection, id=id)
     projects = Project.objects.filter(collection=collection).defer('collection',
         'created')
     items = Item.objects.defer('created', 'original_item_type', 'rawfiles_loc',
@@ -14,8 +14,8 @@ def collection(request, pid):
         {'collection': collection, 'projects': projects, 'items': items})
 
 
-def project(request, pid):
-    project = get_object_or_404(Project, pid=pid)
+def project(request, id):
+    project = get_object_or_404(Project, id=id)
     items = Item.objects.defer('collection', 'created', 'original_item_type',
         'rawfiles_loc', 'qcfiles_loc', 'qafiles_loc', 'finfiles_loc',
         'ocrfiles_loc', 'notes').filter(project=project)
@@ -23,8 +23,8 @@ def project(request, pid):
         {'project': project, 'items': items})
 
 
-def item(request, pid):
-    item = get_object_or_404(Item, pid=pid)
+def item(request, id):
+    item = get_object_or_404(Item, id=id)
     bags = Bag.objects.defer('created', 'bag_type', 'payload_raw').filter(item=item)
     return render_to_response('item.html', {'item': item, 'bags': bags})
 

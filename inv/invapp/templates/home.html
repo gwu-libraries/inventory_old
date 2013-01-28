@@ -10,14 +10,14 @@
     <h3>Our Collections</h3>
     <table class="table table-striped">
         <tr>
-            <th>PID</th>
+            <th>ID</th>
             <th>Collection</th>
             <th>Manager</th>
             <th>Description</th>
         </tr>
         {% for collection in collections %}
             <tr class="collection">
-                <td><a href="{% url 'collection' collection.pid %}">{{ collection.pid }}</a></td>
+                <td><a href="{% url 'collection' collection.id %}">{{ collection.id }}</a></td>
                 <td>{{ collection.name }}</td>
                 <td>{{ collection.manager }}</td>
                 <td>{{ collection.description }}</td>
@@ -29,7 +29,7 @@
     <h3>Current Projects</h3>
     <table class="table table-striped">
         <tr>
-            <th>PID</th>
+            <th>ID</th>
             <th>Project</th>
             <th>Manager</th>
             <th>Start Date</th>
@@ -37,7 +37,7 @@
         </tr>
         {% for project in projects %}
             <tr class="project">
-                <td><a href="{% url 'project' project.pid %}">{{ project.pid }}</a></td>
+                <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
                 <td>{{ project.name }}</td>
                 <td>{{ project.manager }}</td>
                 <td>{{ project.start_date }}</td>
@@ -50,7 +50,7 @@
     <h3>Recently Added Items</h3>
     <table class="table table-striped">
         <tr>
-            <th>PID</th>
+            <th>ID</th>
             <th>Title</th>
             <th>Local ID</th>
             <th>Project</th>
@@ -60,7 +60,7 @@
         </tr>
         {% for item in items %}
             <tr class="item">
-                <td><a href="{% url 'item' item.pid %}">{{ item.pid }}</a></td>
+                <td><a href="{% url 'item' item.id %}">{{ item.id }}</a></td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.local_id }}</td>
                 <td>{{ item.project.name }}</td>

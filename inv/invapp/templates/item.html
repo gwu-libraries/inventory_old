@@ -12,7 +12,7 @@
             <h1>{{ item.title }}</h1>
         {% else %}
             <p>
-                <h1>{{ item.pid }}</h1>
+                <h1>{{ item.id }}</h1>
                 (title not available)
             </p>
         {% endif %}
@@ -20,10 +20,10 @@
         <div class="span3">
 
         	<dl>
-        	    <dt>Persistent ID</dt><dd>{{ item.pid }}</dd>
+        	    <dt>Persistent ID</dt><dd>{{ item.id }}</dd>
         	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
-        	    <dt>Collection</dt><dd><a href="{% url 'collection' item.collection.pid %}">{{ item.collection.name }}</a></dd>
-        	    <dt>Project</dt><dd><a href="{% url 'project' item.project.pid %}">{{ item.project.name }}</a></dd>        	
+        	    <dt>Collection</dt><dd><a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a></dd>
+        	    <dt>Project</dt><dd><a href="{% url 'project' item.project.id %}">{{ item.project.name }}</a></dd>        	
         	</dl>
         </div>
         <div class="span3">
