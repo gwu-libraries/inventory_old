@@ -91,7 +91,7 @@ PART III - Configure your installation
 
     Edit the host port number
     Edit your server name (base url)
-    Edit the many instances of &lt;path to INV_HOME&gt;. Beware: the line for the WSGI Daemon has to references to that path.
+    Edit the many instances of &lt;path to INV_HOME&gt;. Beware: the line for the WSGI Daemon has two references to that path.
 
         $ sudo vim /etc/apache2/sites-available/inv
 
