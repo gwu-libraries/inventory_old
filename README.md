@@ -43,7 +43,7 @@ PART II - Set up project environment
         $ sudo apt-get install python-setuptools
         $ sudo easy_install virtualenv
 
-2. Create a directory for your projects (replace <INV_HOME> with your desired directory path and name: for instance /inventory or /home/<username>/inventory)
+2. Create a directory for your projects (replace "<INV_HOME>" with your desired directory path and name: for instance /inventory or /home/<username>/inventory)
 
         $ mkdir /<INV_HOME>
         $ cd /<INV_HOME>
@@ -91,7 +91,7 @@ PART III - Configure your installation
 
     Edit the host port number
     Edit your server name (base url)
-    Edit the many instance of <path to INV_HOME>. Beware: the line for the WSGI Daemon has to references to that path.
+    Edit the many instances of "<path to INV_HOME>". Beware: the line for the WSGI Daemon has to references to that path.
 
         $ sudo vim /etc/apache2/sites-available/inv
 
