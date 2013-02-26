@@ -68,7 +68,7 @@ PART II - Set up project environment
 PART III - Configure your installation
 --------------------------------------
 
-1. Copy local settings template to active file
+1. Copy the local settings template to an active file
 
         $ cd /inv/inv
         $ cp local_settings.py.template local_settings.py
@@ -77,17 +77,25 @@ PART III - Configure your installation
 
         $ vim local_settings.py
 
-3. Initialize database tables. (Be sure you are still using your virtualenv)
+3. Copy the WSGI file template to an active file
+
+        $ cp wsgi.py.template wsgi.py
+
+4. Update the wsgi.py file. (Change the value of ENV to your environment path)
+
+        $ vim wsgi.py
+
+5. Initialize database tables. (Be sure you are still using your virtualenv)
 
         (ENV)$ cd /<INV_HOME>/inv
         (ENV)$ python manage.py syncdb
 
-4. Copy the Apache virtual host file to the Apache2 directory
+6. Copy the Apache virtual host file to the Apache2 directory
 
         $ cd /<INV_HOME>/inventory
         $ sudo cp apache/inventory /etc/apache2/sites-available/inventory
 
-5. Update the values in the Apache virtual host file.
+7. Update the values in the Apache virtual host file.
 
     Edit the host port number
     Edit your server name (base url)
@@ -99,9 +107,10 @@ PART III - Configure your installation
 
         :%s/old_value/new_value/g
 
-6. Enable the new virtualhost
+8. Enable the new virtualhost. If you are using port 80 also disable the default host
 
         $ sudo a2ensite inventory
+        $ sudo a2dissite default
         $ sudo /etc/init.d/apache2 restart
 
-7. Test your installation by pasting your base url and port in your web browser
+9. Test your installation by pasting your base url and port in your web browser
