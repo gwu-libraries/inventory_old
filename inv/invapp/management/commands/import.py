@@ -16,12 +16,12 @@ All types can be imported, but to avoid bad references, import them in the
 following order: Collections, Projects, Items, Bags.  The first value for
 each line should be the item type. Below are the column orders for each type:
 
-Collection, pid, name, created (date), description, manager
+Collection, id, name, created (date), description, manager
 
-Project, pid, created (date), name, manager, collection (pid), start_date,
+Project, id, created (date), name, manager, collection (id), start_date,
 end_date
 
-Item, pid, title, local_id, collection (pid), project (pid), created (date),
+Item, id, title, local_id, collection (id), project (id), created (date),
 original_item_type, rawfiles_loc, qcfiles_loc, qafiles_loc, finfiles_loc,
 ocrfiles_loc, notes
 
@@ -85,7 +85,7 @@ BagAction, bag (bagname), timestamp, action, note'''
     def _import_collection(self, row):
         try:
             coll = Collection.objects.create(
-                pid=row[1],
+                id=row[1],
                 name=row[2],
                 created=self._convert_date(row[3]),
                 description=row[4],
@@ -98,11 +98,11 @@ BagAction, bag (bagname), timestamp, action, note'''
     def _import_project(self, row):
         try:
             proj = Project.objects.create(
-                pid=row[1],
+                id=row[1],
                 created=self._convert_date(row[2]),
                 name=row[3],
                 manager=row[4],
-                collection=Collection.objects.get(pid=row[5]),
+                collection=Collection.objects.get(id=row[5]),
                 start_date=self._convert_date(row[6], null=True),
                 end_date=self._convert_date(row[7], null=True)
                 )
@@ -112,12 +112,12 @@ BagAction, bag (bagname), timestamp, action, note'''
 
     def _import_item(self, row):
         try:
-            c = Collection.objects.filter(pid=row[4])
-            p = Project.objects.filter(pid=row[5])
+            c = Collection.objects.filter(id=row[4])
+            p = Project.objects.filter(id=row[5])
             collection = c[0] if c else None
             project = p[0] if p else None
             item = Item.objects.create(
-                pid=row[1],
+                id=row[1],
                 title=row[2],
                 local_id=row[3],
                 collection=collection,
@@ -137,12 +137,12 @@ BagAction, bag (bagname), timestamp, action, note'''
 
     def _import_bag(self, row, payload_dir):
         try:
-            # handle preservation bags from bagdb that don't have pid of item
+            # handle preservation bags from bagdb that don't have id of item
             if row[3] == '' or row[3] == 'None':
                 barcode = row[1][:14]
                 item = Item.objects.get(local_id=barcode)
             else:
-                item = Item.objects.get(pid=row[3])
+                item = Item.objects.get(id=row[3])
             bag_type = None
             for tup in settings.BAG_TYPES:
                 if tup[1].lower() == row[6].lower():
@@ -156,7 +156,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 machine=Machine.objects.get(url=row[4]),
                 path=row[5],
                 bag_type=bag_type,
-                payload_parsed=payload_file.read()
+                payload_raw=payload_file.read()
                 )
             bag.save()
         except Exception, e:

@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from tastypie.api import Api
-from invapp.api import *
+from invapp.api.resources import *
 
 
 admin.autodiscover()
@@ -22,9 +22,9 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('invapp.views',
     url(r'^$', 'home', name='home'),
-    url(r'^collection/(?P<pid>\w{5}/\w{10,12})$', 'collection',
+    url(r'^collection/(?P<id>\w{5}/\w{10,12})$', 'collection',
         name='collection'),
-    url(r'^project/(?P<pid>\w{5}/\w{10,12})$', 'project', name='project'),
-    url(r'^item/(?P<pid>\w{5}/\w{9,12})$', 'item', name='item'),
+    url(r'^project/(?P<id>\w{5}/\w{10,12})$', 'project', name='project'),
+    url(r'^item/(?P<id>\w{5}/\w{9,12})$', 'item', name='item'),
     url(r'^bag/(?P<bagname>.*)$', 'bag', name='bag'),
 )

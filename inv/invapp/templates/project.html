@@ -11,9 +11,9 @@
 	<h1>{{ project.name }}</h1>
     <div class="span4">
     	<dl>
-    	    <dt>Persistent ID</dt><dd>{{ project.pid }}</dd>
+    	    <dt>Persistent ID</dt><dd>{{ project.id }}</dd>
     	    <dt>Manager</dt><dd>{{ project.manager }}</dd>
-    	    <dt>Collection</dt><dd><a href="{% url 'collection' project.collection.pid %}">{{ project.collection.name }}</a></dd>
+    	    <dt>Collection</dt><dd><a href="{% url 'collection' project.collection.id %}">{{ project.collection.name }}</a></dd>
         </dl>
     </div>
     <div class="span4">
@@ -27,13 +27,13 @@
 	<h3>Items in this project</h3>
 	<table class="table table-striped">
             <tr>
-                <th>PID</th>
+                <th>ID</th>
                 <th>Title</th>
                 <th>Local ID</th>
             </tr>
             {% for item in items %}
                 <tr class="item">
-                    <td><a href="{% url 'item' item.pid %}">{{ item.pid }}</a></td>
+                    <td><a href="{% url 'item' item.id %}">{{ item.id }}</a></td>
                     <td>{{ item.title }}</td>
                     <td>{{ item.local_id }}</td>
                 </tr>

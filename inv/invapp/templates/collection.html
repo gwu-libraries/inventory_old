@@ -12,7 +12,7 @@
         <p id="description">{{ collection.description }}</p>
         <p><a class="btn btn-primary" href="{{ collection.purl }}">View In Access System</a></p>
         <dl>
-            <dt>Persistent ID</dt><dd>{{ collection.pid }}</dd>
+            <dt>Persistent ID</dt><dd>{{ collection.id }}</dd>
             <dt>Created</dt><dd>{{ collection.created }}</dd>
             <dt>Manager</dt><dd>{{ collection.manager }}</dd>
 
@@ -22,7 +22,7 @@
         <h3>Projects contributing to this collection</h3>
         <table class="table table-striped">
             <tr>
-                <th>PID</th>
+                <th>ID</th>
                 <th>Project</th>
                 <th>Manager</th>
                 <th>Start Date</th>
@@ -30,7 +30,7 @@
             </tr>
             {% for project in projects %}
                 <tr class="project">
-                    <td><a href="{% url 'project' project.pid %}">{{ project.pid }}</a></td>
+                    <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
                     <td>{{ project.name }}</td>
                     <td>{{ project.manager }}</td>
                     <td>{{ project.start_date }}</td>
@@ -43,14 +43,14 @@
         <h3>Items in this Collection</h3>
         <table class="table table-striped">
             <tr>
-                <th>PID</th>
+                <th>ID</th>
                 <th>Title</th>
                 <th>Local ID</th>
                 <th>Project</th>
             </tr>
             {% for item in items %}
                 <tr class="item">
-                    <td><a href="{% url 'item' item.pid %}">{{ item.pid }}</a></td>
+                    <td><a href="{% url 'item' item.id %}">{{ item.id }}</a></td>
                     <td>{{ item.title }}</td>
                     <td>{{ item.local_id }}</td>
                     <td>{{ item.project.name }}</td>
