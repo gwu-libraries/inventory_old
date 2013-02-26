@@ -21,15 +21,15 @@ PART I - Basic server requirements
 
         $ sudo -u postgres psql postgres
 
-Follow instructions to create password for postgres superuser
+    Follow instructions to create password for postgres superuser
 
-Create a user for django
+    Create a user for django
 
-    $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt django
+        $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt django
 
-Create a database for the inventory application
+    Create a database for the inventory application
 
-    $ sudo -u postgres createdb -O django inventory
+        $ sudo -u postgres createdb -O django inventory
 
 4. Install Git
 
@@ -89,15 +89,15 @@ PART III - Configure your installation
 
 5. Update the values in the Apache virtual host file.
 
-Edit the host port number
-Edit your server name (base url)
-Edit the many instance of <path to INV_HOME>. Beware: the line for the WSGI Daemon has to references to that path.
+    Edit the host port number
+    Edit your server name (base url)
+    Edit the many instance of <path to INV_HOME>. Beware: the line for the WSGI Daemon has to references to that path.
 
-    $ sudo vim /etc/apache2/sites-available/inv
+        $ sudo vim /etc/apache2/sites-available/inv
 
-To change all of the path values at once use the global replace command in vim
+    To change all of the path values at once use the global replace command in vim
 
-    :%s/old_value/new_value/g
+        :%s/old_value/new_value/g
 
 6. Enable the new virtualhost
 
