@@ -43,7 +43,7 @@ PART II - Set up project environment
         $ sudo apt-get install python-setuptools
         $ sudo easy_install virtualenv
 
-2. Create a directory for your projects (replace &lt;INV_HOME$gt; with your desired directory path and name: for instance /inventory or /home/&lt;username&gt;/inventory)
+2. Create a directory for your projects (replace &lt;INV_HOME&gt; with your desired directory path and name: for instance /inventory or /home/&lt;username&gt;/inventory)
 
         $ mkdir /<INV_HOME>
         $ cd /<INV_HOME>
