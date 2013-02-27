@@ -85,17 +85,38 @@ PART III - Configure your installation
 
         $ vim wsgi.py
 
-5. Initialize database tables. (Be sure you are still using your virtualenv)
+5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
 
         (ENV)$ cd /<INV_HOME>/inv
-        (ENV)$ python manage.py syncdb
+        (ENV)$ python manage.py syncdb --migrate
+    
+    If you encounter an error during the above command that ends with:
 
-6. Copy the Apache virtual host file to the Apache2 directory
+        TypeError: decode() argument 1 must be string, not None
+
+    Then you need to add location values to your profile. Open your .bashrc file in an editor:
+
+        $ vim ~/.bashrc
+
+    Enter the following values at the end of the file and save.
+
+        export LC_ALL=en_US.UTF-8
+        export LANG=en_US.UTF-8
+
+    Now, rerun the syncdb command
+
+6. Create the database super user
+
+        $ python manage createsuperuser
+
+    Enter your information when prompted
+
+7. Copy the Apache virtual host file to the Apache2 directory
 
         $ cd /<INV_HOME>/inventory
         $ sudo cp apache/inventory /etc/apache2/sites-available/inventory
 
-7. Update the values in the Apache virtual host file.
+8. Update the values in the Apache virtual host file.
 
     Edit the host port number
     Edit your server name (base url)
@@ -107,10 +128,10 @@ PART III - Configure your installation
 
         :%s/old_value/new_value/g
 
-8. Enable the new virtualhost. If you are using port 80 also disable the default host
+9. Enable the new virtualhost. If you are using port 80 also disable the default host
 
         $ sudo a2ensite inventory
         $ sudo a2dissite default
         $ sudo /etc/init.d/apache2 restart
 
-9. Test your installation by pasting your base url and port in your web browser
+10. Test your installation by pasting your base url and port in your web browser
