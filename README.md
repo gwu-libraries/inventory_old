@@ -107,7 +107,7 @@ PART III - Configure your installation
 
 6. Create the database super user
 
-        $ python manage createsuperuser
+        (ENV)$ python manage createsuperuser
 
     Enter your information when prompted
 
