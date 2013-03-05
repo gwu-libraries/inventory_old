@@ -147,13 +147,13 @@ GET
 
 To fetch data from the system via http, use a GET request with the following url pattern:
 
-    http://**your.sites.base.url**:**port**/api/**version**/**model**/**id**?format=json&username=**username**&api_key=**api_key**
+http://**your.sites.base.url**:**port**/api/**version**/**model**/**id**?format=json&username=**username**&api_key=**api_key**
 
 The version by default is v1. The api_key for a user can be found in the admin interface, which can be found by appending /admin to your base url.
 
 Here is an example url with the api key removed:
 
-    http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wdbsmv/?format=json&username=gomez&api_key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wdbsmv/?format=json&username=gomez&api_key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 POST
 ----
