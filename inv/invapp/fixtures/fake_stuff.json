@@ -1,0 +1,642 @@
+[
+  {
+    "model": "invapp.machine",
+    "pk": 1,
+    "fields": {
+      "name": "fake server A",
+      "url": "http://www.serverA.com"
+    }
+  },
+  {
+    "model": "invapp.machine",
+    "pk": 2,
+    "fields": {
+      "name": "fake server B",
+      "url": "http://www.serverB.com"
+    }
+  },
+  {
+    "model": "invapp.collection",
+    "pk": "12345/c00000000001",
+    "fields": {
+      "name": "Fake Collection 1",
+      "created": "2013-01-01",
+      "description": "A Fake Collection of Scanned Books",
+      "manager": "Joshua Gomez"
+    }
+  },
+  {
+    "model": "invapp.collection",
+    "pk": "12345/c00000000002",
+    "fields": {
+      "name": "Fake Collection 2",
+      "created": "2013-02-01",
+      "description": "A Fake Collection of Scanned Microfilm",
+      "manager": "Joshua Gomez"
+    }
+  },
+  {
+    "model": "invapp.collection",
+    "pk": "12345/c00000000003",
+    "fields": {
+      "name": "Fake Collection 3",
+      "created": "2013-03-01",
+      "description": "A Fake Collection of Research Data",
+      "manager": "Joshua Gomez"
+    }
+  },
+  {
+    "model": "invapp.project",
+    "pk": "12345/p000000001",
+    "fields": {
+      "created": "2013-01-01",
+      "name": "Fake Project 1",
+      "manager": "Joshua Gomez",
+      "collection": "12345/c00000000001",
+      "start_date": "2013-01-01",
+      "end_date": "2013-06-30"
+    }
+  },
+  {
+    "model": "invapp.project",
+    "pk": "12345/p000000002",
+    "fields": {
+      "created": "2013-02-01",
+      "name": "Fake Project 2",
+      "manager": "Joshua Gomez",
+      "collection": "12345/c00000000002",
+      "start_date": "2013-02-01",
+      "end_date": "2013-05-30"
+    }
+  },
+  {
+    "model": "invapp.project",
+    "pk": "12345/p000000003",
+    "fields": {
+      "created": "2013-03-01",
+      "name": "Fake Project 3",
+      "manager": "Joshua Gomez",
+      "collection": "12345/c00000000003",
+      "start_date": "2013-03-01",
+      "end_date": "2013-08-30"
+    }
+  },
+  {
+    "model": "invapp.project",
+    "pk": "12345/p000000004",
+    "fields": {
+      "created": "2013-03-01",
+      "name": "Fake Project 4",
+      "manager": "Joshua Gomez",
+      "collection": "12345/c00000000003",
+      "start_date": "2013-03-01",
+      "end_date": "2013-08-30"
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000001",
+    "fields": {
+      "title" : "Fake Book 1",
+      "local_id": "3228564793126",
+      "collection": "12345/c00000000001",
+      "project": "12345/p000000001",
+      "created": "2013-03-12",
+      "original_item_type": "1",
+      "rawfiles_loc": "bookscanner.library.gwu.edu/raw",
+      "qcfiles_loc": "bookscanner.library.gwu.edu/qc",
+      "qafiles_loc": "bookscanner.library.gwu.edu/qa",
+      "finfiles_loc": "bookscanner.library.gwu.edu/fin",
+      "ocrfiles_loc": "bookscanner.library.gwu.edu/ocr",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i000000001_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000001",
+      "machine": 1,
+      "path": "s1/12345/i000000001_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/IMAGES/page1.jpg 2232354\ndata/IMAGES/page2.jpg 2113065\ndata/METADATA/3228564793126_MRC.xml 6154"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000001_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000001_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i000000001_PRESERV_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000001",
+      "machine": 1,
+      "path": "s1/12345/i000000001_PRESERV_BAG",
+      "bag_type": "2",
+      "payload_raw": "data/IMAGES/page1.tif 59876543\ndata/IMAGES/page2.tif 57312468\ndata/METADATA/3228564793126_MRC.xml 6222"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000001_PRESERV_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000001_PRESERV_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000002",
+    "fields": {
+      "title" : "Fake Book 2",
+      "local_id": "3228564793122",
+      "collection": "12345/c00000000001",
+      "project": "12345/p000000001",
+      "created": "2013-03-12",
+      "original_item_type": "1",
+      "rawfiles_loc": "bookscanner.library.gwu.edu/raw",
+      "qcfiles_loc": "bookscanner.library.gwu.edu/qc",
+      "qafiles_loc": "bookscanner.library.gwu.edu/qa",
+      "finfiles_loc": "bookscanner.library.gwu.edu/fin",
+      "ocrfiles_loc": "bookscanner.library.gwu.edu/ocr",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i000000002_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000002",
+      "machine": 1,
+      "path": "s1/12345/i000000002_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/IMAGES/page1.jpg 1717950\ndata/IMAGES/page2.jpg 1825859\ndata/METADATA/3228564793122_MRC.xml 5156"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000002_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000002_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i000000002_PRESERV_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000002",
+      "machine": 1,
+      "path": "s1/12345/i000000002_PRESERV_BAG",
+      "bag_type": "2",
+      "payload_raw": "data/IMAGES/page1.tif 59862314\ndata/IMAGES/page2.tif 57865794\ndata/METADATA/3228564793122_MRC.xml 3216"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000002_PRESERV_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000002_PRESERV_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000003",
+    "fields": {
+      "title" : "Fake Book 3",
+      "local_id": "3228564793123",
+      "collection": "12345/c00000000001",
+      "project": "12345/p000000001",
+      "created": "2013-03-12",
+      "original_item_type": "1",
+      "rawfiles_loc": "bookscanner.library.gwu.edu/raw",
+      "qcfiles_loc": "bookscanner.library.gwu.edu/qc",
+      "qafiles_loc": "bookscanner.library.gwu.edu/qa",
+      "finfiles_loc": "bookscanner.library.gwu.edu/fin",
+      "ocrfiles_loc": "bookscanner.library.gwu.edu/ocr",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i000000003_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000003",
+      "machine": 1,
+      "path": "s1/12345/i000000003_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/IMAGES/page1.jpg 2309398\ndata/IMAGES/page2.jpg 404\ndata/METADATA/3228564793123_MRC.xml 5986"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000003_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000003_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i000000003_PRESERV_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000003",
+      "machine": 1,
+      "path": "s1/12345/i000000003_PRESERV_BAG",
+      "bag_type": "2",
+      "payload_raw": "data/IMAGES/page1.tif 17929640\ndata/IMAGES/page2.tif 17929642\ndata/METADATA/3228564793123_MRC.xml 6532"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000003_PRESERV_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000003_PRESERV_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000011",
+    "fields": {
+      "title" : "Fake Microfilm 1",
+      "local_id": "3228564793126",
+      "collection": "12345/c00000000002",
+      "project": "12345/p000000002",
+      "created": "2013-02-24",
+      "original_item_type": "2",
+      "rawfiles_loc": "microscanner.library.gwu.edu/raw",
+      "qcfiles_loc": "microscanner.library.gwu.edu/qc",
+      "qafiles_loc": "microscanner.library.gwu.edu/qa",
+      "finfiles_loc": "microscanner.library.gwu.edu/fin",
+      "ocrfiles_loc": "microscanner.library.gwu.edu/ocr",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i0000000011_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000011",
+      "machine": 1,
+      "path": "s1/12345/i000000011_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/IMAGES/1.jpg 1877771\ndata/IMAGES/2.jpg 2020263 \ndata/METADATA/3228564793126-DC.xml 7951"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000011_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000011_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000012",
+    "fields": {
+      "title" : "Fake Microfilm 2",
+      "local_id": "3228564793126",
+      "collection": "12345/c00000000002",
+      "project": "12345/p000000002",
+      "created": "2013-02-24",
+      "original_item_type": "2",
+      "rawfiles_loc": "microscanner.library.gwu.edu/raw",
+      "qcfiles_loc": "microscanner.library.gwu.edu/qc",
+      "qafiles_loc": "microscanner.library.gwu.edu/qa",
+      "finfiles_loc": "microscanner.library.gwu.edu/fin",
+      "ocrfiles_loc": "microscanner.library.gwu.edu/ocr",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i0000000012_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000012",
+      "machine": 1,
+      "path": "s1/12345/i000000012_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/IMAGES/1.jpg 192329\ndata/IMAGES/2.jpg 1877771\ndata/METADATA/3228564793126-DC.xml 4598"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000012_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000012_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000021",
+    "fields": {
+      "title" : "Fake Document 1",
+      "local_id": "doc1",
+      "collection": "12345/c00000000003",
+      "project": "12345/p000000003",
+      "created": "2013-03-13",
+      "original_item_type": "6",
+      "rawfiles_loc": "docscanner.library.gwu.edu/raw",
+      "qcfiles_loc": "docscanner.library.gwu.edu/qc",
+      "qafiles_loc": "docscanner.library.gwu.edu/qa",
+      "finfiles_loc": "docscanner.library.gwu.edu/fin",
+      "ocrfiles_loc": "docscanner.library.gwu.edu/ocr",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i0000000021_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000021",
+      "machine": 1,
+      "path": "s1/12345/i000000021_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/PDF/doc1.pdf 26608986\ndata/METADATA/doc1-DC.xml 5486"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000021_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000021_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000022",
+    "fields": {
+      "title" : "Fake Document 2",
+      "local_id": "doc2",
+      "collection": "12345/c00000000003",
+      "project": "12345/p000000003",
+      "created": "2013-03-13",
+      "original_item_type": "6",
+      "rawfiles_loc": "docscanner.library.gwu.edu/raw",
+      "qcfiles_loc": "docscanner.library.gwu.edu/qc",
+      "qafiles_loc": "docscanner.library.gwu.edu/qa",
+      "finfiles_loc": "docscanner.library.gwu.edu/fin",
+      "ocrfiles_loc": "docscanner.library.gwu.edu/ocr",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i0000000022_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000022",
+      "machine": 1,
+      "path": "s1/12345/i000000022_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/PDF/doc2.pdf 26608986\ndata/METADATA/doc2-DC.xml 7211"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000022_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000022_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000031",
+    "fields": {
+      "title" : "Fake Audio 1",
+      "local_id": "audio1",
+      "collection": "12345/c00000000003",
+      "project": "12345/p000000004",
+      "created": "2013-03-13",
+      "original_item_type": "3",
+      "rawfiles_loc": "",
+      "qcfiles_loc": "",
+      "qafiles_loc": "",
+      "finfiles_loc": "",
+      "ocrfiles_loc": "",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i0000000031_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000031",
+      "machine": 1,
+      "path": "s1/12345/i000000031_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/AUDIO/audio1.mp3 11111111\ndata/METADATA/audio1-DC.xml 6154"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000031_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i000000031_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.item",
+    "pk": "12345/i000000041",
+    "fields": {
+      "title" : "Fake Video 1",
+      "local_id": "video1",
+      "collection": "12345/c00000000003",
+      "project": "12345/p000000004",
+      "created": "2013-03-13",
+      "original_item_type": "4",
+      "rawfiles_loc": "",
+      "qcfiles_loc": "",
+      "qafiles_loc": "",
+      "finfiles_loc": "",
+      "ocrfiles_loc": "",
+      "notes": ""
+    }
+  },
+  {
+    "model": "invapp.bag",
+    "pk": "12345/i0000000041_ACCESS_BAG",
+    "fields": {
+      "created": "2013-03-12",
+      "item": "12345/i000000041",
+      "machine": 1,
+      "path": "s1/12345/i0000000041_ACCESS_BAG",
+      "bag_type": "1",
+      "payload_raw": "data/AUDIO/video1.mp3 11111111111\ndata/METADATA/video1-DC.xml 6000"
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i0000000041_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "3",
+      "note": ""
+    }
+  },
+  {
+    "model": "invapp.bagaction",
+    "pk": 1,
+    "fields": {
+      "bag": "12345/i0000000041_ACCESS_BAG",
+      "timestamp": "2013-04-01",
+      "action": "4",
+      "note": ""
+    }
+  }
+]
