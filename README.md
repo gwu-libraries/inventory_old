@@ -135,3 +135,66 @@ PART III - Configure your installation
         $ sudo /etc/init.d/apache2 restart
 
 10. Test your installation by pasting your base url and port in your web browser
+
+
+Usage Instructions
+==================
+
+Inventory makes use of the tastypie library for automatic creation of API urls. See the [documentation](http://django-tastypie.readthedocs.org/en/v0.9.12/interacting.html) for detailed instructions.
+
+GET
+---
+
+To fetch data from the system via http, use a GET reques with the following url pattern:
+
+    http://**your.sites.base.url**:**port**/api/**version**/**model**/**id**?format=json&username=**username**&api_key=**api_key**
+
+The version by default is v1. The api_key for a user can be found in the admin interface, which can be found by appending /admin to your base url.
+
+Here is an example url with the api key removed:
+
+    http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wdbsmv/?format=json&username=gomez&api_key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+POST
+----
+
+To create a new item, use the POST method with a url pointing to the model type and the item attributes in the body.
+
+URL
+
+    http://gwdev-gomez.wrlc.org:8081/api/v1/item/
+
+Body Data
+
+    {"collection": "38989/c010g26gs40w/", "id": "38989/c01wwwwww", "local_id": "39020025220180", "notes": "A test item", "original_item_type": "2", "project": "38989/c0102488q518", "title": "Our Test Item!"}
+
+PUT
+---
+
+To edit the data of an existing item, use the PUT method. Point the url to the specific item and put **ALL** of the items attributes in the body data.
+
+URL
+
+    http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
+
+Body Data
+
+    {"collection": "38989/c010g26gs40w/", "id": "38989/c01wwwwww", "local_id": "39020025220180", "notes": "A test item", "original_item_type": "2", "project": "38989/c0102488q518", "title": "Our Test Item!"}
+
+PATCH
+-----
+
+To edit just a few attributes for an item, use the PATCH method instead of PUT.
+
+URL
+
+    http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
+
+Body Data
+
+    {"title": "We Changed the Title"}
+
+DELETE
+------
+
+To remove an item from the database, use the DELETE method with the url pointed at the specific item
