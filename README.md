@@ -145,7 +145,7 @@ Inventory makes use of the tastypie library for automatic creation of API urls. 
 GET
 ---
 
-To fetch data from the system via http, use a GET reques with the following url pattern:
+To fetch data from the system via http, use a GET request with the following url pattern:
 
     http://**your.sites.base.url**:**port**/api/**version**/**model**/**id**?format=json&username=**username**&api_key=**api_key**
 
@@ -162,7 +162,7 @@ To create a new item, use the POST method with a url pointing to the model type 
 
 URL
 
-    http://gwdev-gomez.wrlc.org:8081/api/v1/item/
+http://gwdev-gomez.wrlc.org:8081/api/v1/item/
 
 Body Data
 
@@ -175,7 +175,7 @@ To edit the data of an existing item, use the PUT method. Point the url to the s
 
 URL
 
-    http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
+http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
 
 Body Data
 
@@ -188,7 +188,7 @@ To edit just a few attributes for an item, use the PATCH method instead of PUT.
 
 URL
 
-    http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
+http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
 
 Body Data
 
