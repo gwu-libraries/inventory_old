@@ -50,7 +50,11 @@ PART II - Set up project environment
 
 3. Pull down the project from github
 
-        $ git clone git@github.com:gwu-libraries/launchpad.git
+        (GW staff only)
+        $ git clone git@github.com:gwu-libraries/inventory.git
+
+        (everyone else)
+        $ git clone https://github.com/gwu-libraries/inventory.git
 
 4. Create virtual Python environment for the project
 
