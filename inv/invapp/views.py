@@ -41,6 +41,18 @@ def project(request, id):
     items = Item.objects.defer('collection', 'created', 'original_item_type',
         'rawfiles_loc', 'qcfiles_loc', 'qafiles_loc', 'finfiles_loc',
         'ocrfiles_loc', 'notes').filter(project=project)
+
+    if items.count > 10:
+        items_paginator = Paginator(items, 10)
+        items_page = request.GET.get('items_page')
+        try:
+                items = items_paginator.page(items_page)
+        except PageNotAnInteger:
+                items = items_paginator.page(1)
+        except EmptyPage:
+                items = items_paginator.page(items_paginator.num_pages)
+
+
     return render_to_response('project.html',
         {'project': project, 'items': items})
 
