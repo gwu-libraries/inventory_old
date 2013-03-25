@@ -12,8 +12,9 @@ class UserModelAdmin(UserAdmin):
     inlines = UserAdmin.inlines + [ApiKeyInline]
 
 admin.site.unregister(User)
-admin.site.register(User,UserModelAdmin)
+admin.site.register(User, UserModelAdmin)
 
+admin.site.register(Machine)
 admin.site.register(Collection)
 admin.site.register(Project)
 admin.site.register(Item)
