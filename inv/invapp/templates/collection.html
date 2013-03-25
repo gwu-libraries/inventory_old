@@ -39,6 +39,28 @@
             {% endfor %}
         </table>
     </div>
+    <div id="projects_paginator" class="container-fluid">
+	{% if projects.count >= 10 %} 
+       		<span class="step-links">
+			{% if projects.number != 1 %}
+				<a href="?projects_page=1">First</a>
+			{% endif %}
+                        {% if projects.has_previous %}
+                                <a href="?projects_page={{ projects.previous_page_number }}">Previous</a>
+                        {% endif %}
+                        
+                        <span class="current">
+                                Page {{ projects.number }} of {{ projects.paginator.num_pages }}
+                        </span>
+                        {% if projects.has_next %}
+                                <a href="?projects_page={{ projects.next_page_number }}">Next</a>
+                        {% endif %}
+			{% if projects.number < projects.paginator.num_pages %}
+				<a href="?projects_page={{ projects.paginator.num_pages }}">Last</a>
+			{% endif %}
+                </span>
+	{% endif %}
+   </div>
     <div id="items" class="container-fluid">
         <h3>Items in this Collection</h3>
         <table class="table table-striped">
@@ -58,6 +80,28 @@
             {% endfor %}
         </table>
     </div>
+    <div id="items_paginator" class="container-fluid">
+	{% if items.count >= 10 %} 
+       		<span class="step-links">
+			{% if items.number != 1 %}
+				<a href="?items_page=1">First</a>
+			{% endif %}
+                        {% if items.has_previous %}
+                                <a href="?items_page={{ items.previous_page_number }}">Previous</a>
+                        {% endif %}
+                        
+                        <span class="current">
+                                Page {{ items.number }} of {{ items.paginator.num_pages }}
+                        </span>
+                        {% if items.has_next %}
+                                <a href="?items_page={{ items.next_page_number }}">Next</a>
+                        {% endif %}
+			{% if items.number < items.paginator.num_pages %}
+				<a href="?items_page={{ items.paginator.num_pages }}">Last</a>
+			{% endif %}
+                </span>
+	{% endif %}
+   </div>
 </section>
 
 <!-- TODO: build out recent activity section
