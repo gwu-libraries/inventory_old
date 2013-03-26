@@ -49,17 +49,17 @@
                 <th>Count</th>
                 <th>Size</th>
             </tr>
-            {% for filetype, values in bag.payload.types.items %}
+            {% for ftype, values in bag.pstats.types.items %}
             <tr>
-                <td>{{ filetype }}</td>
-                <td>{{ values.0 }}</td>
-                <td>{{ values.1 }} ({{ values.1|filesizeformat }})</td>
+                <td>{{ ftype }}</td>
+                <td>{{ values.count }}</td>
+                <td>{{ values.size }} ({{ values.size|filesizeformat }})</td>
             </tr>
             {% endfor %}
             <tr>
                 <td><b>Total</b></td>
-                <td>{{ bag.payload.files|length }}</td>
-                <td>{{ bag.payload.size }} ({{ bag.payload.size|filesizeformat }})</td>
+                <td>{{ bag.filecount }}</td>
+                <td>{{ bag.size }} ({{ bag.size|filesizeformat }})</td>
             </tr>
         </table>
         <h5>Individual Files</h5>
@@ -68,7 +68,7 @@
                 <th>File</th>
                 <th>Size</th>
             </tr>
-        {% for file in bag.payload.files %}
+        {% for file in bag.payload %}
             <tr>
                 <td><a href="http://{{ bag.urlpath }}/{{ file.0 }}">{{ file.0 }}</a></td>
                 <td>{{ file.1 }} ({{ file.1|filesizeformat }})</td>

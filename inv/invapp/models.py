@@ -1,7 +1,9 @@
-from django.contrib.auth.models import User 
+import json
+
+from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
-from tastypie.models import create_api_key 
+from tastypie.models import create_api_key
 
 
 models.signals.post_save.connect(create_api_key, sender=User)
@@ -62,6 +64,7 @@ class Bag(models.Model):
     path = models.URLField()
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
     payload_raw = models.TextField(blank=True)
+    payload_stats = models.TextField(blank=True)
     '''
     lines in payload should be formatted as such:
     relative_filepath_from_bag_directory file_size(MB)\n
@@ -70,56 +73,39 @@ class Bag(models.Model):
     def urlpath(self):
         return '%s/%s' % (self.machine.url.rstrip('/'), self.path.lstrip('/'))
 
-    @property
     def payload(self):
-        # create a data dict if one doesn't exist and use that
-        # to avoid recalculating data every time the property is needed
-        try:
-            return self.payload_parsed
-        except AttributeError:
-            return self.parse_payload()
+        return [line.split() for line in self.payload_raw.split('\n') if line]
 
-    @payload.setter
-    def payload(self, data):
-        assert isinstance(data, dict), 'payload must be a dictionary'
-        assert isinstance(data['files'], list), \
-            'payload must contain a list of file data'
-        assert all(isinstance(f, tuple) for f in data['files']), \
-            'files must contain tuples of format (filepath, filesize)'
-        assert isinstance(data['size'], int), \
-            'payload must contain aggregate size information'
-        assert isinstance(data['types'], dict), \
-            'payload must have a subdictionary "types"'
-        assert all(isinstance(data['types'][d],
-            list) for d in data['types'].keys()), \
-            'payload["types"] must be a dict with lists [count, size]'
-        self.payload_parsed = data
+    def pstats(self):
+        return json.loads(self.payload_stats)
 
-    @payload.deleter
-    def payload(self):
-        self.__dict__.pop('payload_parsed')
+    def filecount(self):
+        return self.pstats()['total_count']
 
-    def parse_payload(self):
-        payload_parsed = {
-            'files': [],
-            'size': 0,
+    def size(self):
+        return self.pstats()['total_size']
+
+    def calc_pstats(self):
+        json = {
+            'total_count': 0,
+            'total_size': 0,
             'types': {},
         }
-        for line in self.payload_raw.split('\n'):
-            if line:
-                filepath, filesize = line.split()
-                filetype = filepath.split('.')[-1]
-                payload_parsed['files'].append((filepath, filesize))
-                payload_parsed['size'] += int(filesize)
-                if filetype not in payload_parsed['types'].keys():
-                    payload_parsed['types'][filetype] = [1, int(filesize)]
-                else:
-                    payload_parsed['types'][filetype][0] += 1
-                    payload_parsed['types'][filetype][1] += int(filesize)
-        payload_parsed['files'] = sorted(payload_parsed['files'],
-            key=lambda filetup: filetup[0])
-        self.payload_parsed = payload_parsed
-        return self.payload_parsed
+        for f in self.payload():
+            fpath, fsize = f[0], f[1]
+            ftype = fpath.split('.')[-1].lower()
+            json['total_count'] += 1
+            json['total_size'] += int(fsize)
+            if ftype not in json['types'].keys():
+                json['types'][ftype] = {'count': 1, 'size': int(fsize)}
+            else:
+                json['types'][ftype]['count'] += 1
+                json['types'][ftype]['size'] += int(fsize)
+        return json
+
+    def save(self, *args, **kwargs):
+        self.payload_stats = json.dumps(self.calc_pstats())
+        super(Bag, self).save(*args, **kwargs)
 
 
 class BagAction(models.Model):
