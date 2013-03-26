@@ -25,6 +25,15 @@
     </header>
     <div id="items" class="container-fluid">
 	<h3>Items in this project</h3>
+    {% if items.count >= 10 %}
+    <div class="pagination">
+        <ul>
+            <li {% if not items.has_previous %}class="disabled"{% endif %}><a href="?items_page={{ items.previous_page_number }}">&laquo;</a></li>
+            <li {% if items.number == 1 %}class="disabled"{% endif %}><a href="?items_page=1">First</a></li>
+            <li {% if items.number == items.paginator.num_pages %}class="disabled"{% endif %}><a href="?items_page={{ items.paginator.num_pages }}">Last</a></li>
+            <li {% if not items.has_next %}class="disabled"{% endif %}><a href="?items_page={{ items.next_page_number }}">&raquo;</a></li>
+    </div>
+    {% endif %}
 	<table class="table table-striped">
             <tr>
                 <th>ID</th>
@@ -39,29 +48,10 @@
                 </tr>
             {% endfor %}
         </table>
+        {% if items.count >= 10 %}
+        <div class="label label-inverse">Page {{ items.number }} of {{ items.paginator.num_pages }}</div><br />
+        {% endif %}
     </div>
-    <div id="items_paginator" class="container-fluid">
-	{% if items.count >= 10 %} 
-       		<span class="step-links">
-			{% if items.number != 1 %}
-				<a href="?items_page=1">First</a>
-			{% endif %}
-                        {% if items.has_previous %}
-                                <a href="?items_page={{ items.previous_page_number }}">Previous</a>
-                        {% endif %}
-                        
-                        <span class="current">
-                                Page {{ items.number }} of {{ items.paginator.num_pages }}
-                        </span>
-                        {% if items.has_next %}
-                                <a href="?items_page={{ items.next_page_number }}">Next</a>
-                        {% endif %}
-			{% if items.number < items.paginator.num_pages %}
-				<a href="?items_page={{ items.paginator.num_pages }}">Last</a>
-			{% endif %}
-                </span>
-	{% endif %}
-   </div>
 </section>
 
 {% endblock content %}
