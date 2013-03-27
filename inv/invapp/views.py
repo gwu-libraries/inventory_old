@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 
 from invapp.models import Collection, Project, Item, Bag, BagAction
 
@@ -20,7 +20,7 @@ def collection(request, id):
             items = items_paginator.page(1)
         except EmptyPage:
             items = items_paginator.page(items_paginator.num_pages)
-    return render_to_response('collection.html',
+    return render(request, 'collection.html',
         {'collection': collection, 'projects': projects, 'items': items})
 
 
@@ -38,24 +38,24 @@ def project(request, id):
             items = items_paginator.page(1)
         except EmptyPage:
             items = items_paginator.page(items_paginator.num_pages)
-    return render_to_response('project.html',
+    return render(request, 'project.html',
         {'project': project, 'items': items})
 
 
 def item(request, id):
     item = get_object_or_404(Item, id=id)
     bags = Bag.objects.defer('created', 'bag_type', 'payload_raw').filter(item=item)
-    return render_to_response('item.html', {'item': item, 'bags': bags})
+    return render(request, 'item.html', {'item': item, 'bags': bags})
 
 
 def bag(request, bagname):
     bag = get_object_or_404(Bag, bagname=bagname)
     actions = BagAction.objects.filter(bag=bag)
-    return render_to_response('bag.html', {'bag': bag, 'actions': actions})
+    return render(request, 'bag.html', {'bag': bag, 'actions': actions})
 
 def home(request):
     collections = Collection.objects.all()
     projects = Project.objects.all()
     items = Item.objects.order_by('created').reverse()[:20]
-    return render_to_response('home.html', {'collections': collections,
+    return render(request, 'home.html', {'collections': collections,
         'projects': projects, 'items': items})

@@ -1,18 +1,21 @@
+{% load url from future %}
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{% block title %}{% endblock title %} - GWUL Digital Inventory</title>
+        <title>{% block title %}GWU Libraries Digital Inventory{% endblock title %}</title>
+        
         <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
-
-        <script src="http://code.jquery.com/jquery-latest.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 
         <!-- 'viewport' helps mobile devices scale appropriately -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
 
-
         {% block styles %}
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}css/libheader7_lite.css" rel="stylesheet" type='text/css' media='screen' />
+        <link href="{{ STATIC_URL }}css/libheader7_lite_bootswatch.css" rel="stylesheet" type='text/css' media='screen' />
+        <!--[if lt IE 9]>
+            <link href="{{ STATIC_URL }}css/libheader7_lite_ie.css" rel="stylesheet">
+        <![endif]--> 
         <style type="text/css">
             body {
                 padding-top: 40px;
@@ -24,6 +27,8 @@
         {% endblock styles_extra %}
 
         {% block javascript %}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
         {% endblock javascript %}
 
         {% block javascript_extra %}
@@ -38,20 +43,51 @@
     <body>
 
         {% block header %}
-            <header class="navbar navbar-fixed-top">
-                <div class="navbar-inner">
-                    <div class="container">
-                        <a class="brand" href="http://library.gwu.edu">GWU Libraries</a>
-                        <a class="brand" href="/">Digital Inventory</a>
+        <!-- this is the Libsite7 Lite Header -->
+        <header class="navbar-fixed-top">
+            <div id="libheader-container" style="">
+                <div id="libheader" class="container" style="">
+                    <div class="libheader-logo hide-lo" style="">
+                        <a href="http://www.gwu.edu" target="_blank" title="GWU website"><img src="{{ STATIC_URL }}img/gwheaderlogo.png" alt="logo: The George Washington University" /></a>
                     </div>
+                    <div class="libheader-liblink" style="">
+                        <a href="http://library.gwu.edu" target="_blank" title="GW Libraries website">GW Libraries</a>
+                    </div>
+                    <div class="libheader-link" style="">
+                        <a href="{% url 'home' %}" title="inventory home">Inventory</a>
+                    </div>
+                    <!-- don't need these yet
+                    <div class="bullet" style="">&bull;</div>
+                    <div class="libheader-link" style=""><a href="#" target="_blank" title="">Placeholder Link 2</a></div>
+                    -->
                 </div>
-            </header>
+            </div>
+        </header>
+        <!-- end Libsite7 Lite Header -->
         {% endblock header %}
 
         {% block content %}
         {% endblock content %}
 
         {% block footer %}
+        <!-- the Libsite7 Lite Footer -->
+        <footer class="navbar navbar-static-bottom">
+            <div id="libfooter-container" style="">
+                <div id="libfooter" class="container" style="">
+                    <div class="libfooter-text" style="">
+                        <span class="address">
+                            <a href="http://library.gwu.edu" target="_blank" title="GW Libraries Website">GW Libraries</a>
+                            &#8226; 2130 H Street NW &#8226; Washington DC 20052
+                        </span>
+                        &#8226;
+                        <span class="tel">202.994.6558</span>
+                        &#8226;
+                        <a href="mailto:refdesk@gwu.edu" target="_blank" title="">refdesk@gwu.edu</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end Libsite7 Lite Footer -->
         {% endblock footer %}
     </body>
 </html>
