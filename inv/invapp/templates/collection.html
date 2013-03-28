@@ -42,7 +42,7 @@
     <div id="items" class="container-fluid">
         <h3>Items in this Collection</h3>
 
-        {% if items.count >= 10 %}
+        {% if items.paginator.count >= 10 %}
         <div class="pagination">
             <ul>
                 {% for box in items.boxes %}
