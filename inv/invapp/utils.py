@@ -4,10 +4,14 @@ def build_digg_style_boxes(items):
     boxes = list(range(13))
 
     # Add the backward and forward arrows
-    boxes[0] = {'disp': '<<', 'link': str(items.previous_page_number())}
-    boxes[0]['disabled'] = not items.has_previous
-    boxes[12] = {'disp': '>>', 'link': str(items.next_page_number())}
-    boxes[12]['disabled'] = not items.has_next
+    boxes[0] = {'disp': '<<', 'link': None, 'disabled': True}
+    if items.has_previous():
+        boxes[0]['disabled'] = False
+        boxes[0]['link'] = str(items.previous_page_number())
+    boxes[12] = {'disp': '>>', 'link': None, 'disabled': True}
+    if items.has_next():
+        boxes[12]['disabled'] = False
+        boxes[12]['link'] = str(items.next_page_number())
 
     # Add the first and last numbers
     boxes[1] = {'disp': '1', 'link': '1'}
