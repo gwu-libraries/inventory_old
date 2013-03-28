@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load invapp_extras %}
 
 {% block title %}
     {{ collection.name }}
@@ -43,17 +44,7 @@
         <h3>Items in this Collection</h3>
 
         {% if items.count >= 10 %}
-        <div class="pagination">
-            <ul>
-                {% for box in items.boxes %}
-                    {% if box.disabled %}
-                <li class="disabled"><a>{{box.disp}}</a></li>
-                    {% else %}
-                <li><a href="?items_page={{box.link}}">{{box.disp}}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
+            {% bootstrap_paginator_bar items 'items_page' %}
         {% endif %}
 
         <table class="table table-striped">

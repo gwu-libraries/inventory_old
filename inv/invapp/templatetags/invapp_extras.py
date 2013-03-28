@@ -1,4 +1,39 @@
-def build_digg_style_boxes(objects, url_key):
+from django import template
+
+register = template.Library()
+
+@register.inclusion_tag('paginator_bar.html')
+def bootstrap_paginator_bar(objects, url_key):
+    boxes = pagination_boxes(objects, url_key)
+    return {'boxes': boxes}
+
+
+def pagination_boxes(objects, url_key):
+    '''Construct a list of dictionaries that represent pagination bar buttons.
+
+    You can then easily loop through the list as you create your html
+
+    Each "button" dictionary contains the following keys:
+        'disp' -- the value to display to the user
+        'link' -- the value that should be passed to the button's href
+        'disabled' -- Boolean to disable current page buttons or next buttons
+
+    url_key is the string value of the key in the url that specifies the page.
+        For example, if the url is:
+            http://foo.com/collection/bar?items_page=5
+        then the url_key is 'items_page'
+
+    objects must be a django Paginator.Page object
+        -- or objects must have the follwing attributes:
+            paginator.num_pages
+            number
+        -- and implement the following functions:
+            has_previous()
+            has_next()
+            previous_page_number()
+            next_page_number()
+    '''
+
     tp = objects.paginator.num_pages
     # build list of boxes (11 inner boxes + 2 arrows)
     boxes = list(range(13))
@@ -10,7 +45,7 @@ def build_digg_style_boxes(objects, url_key):
     boxes[0] = {'disp': '<<', 'link': None, 'disabled': True}
     if objects.has_previous():
         boxes[0]['disabled'] = False
-        boxes[0]['link'] = str(objects.previous_page_number())
+        boxes[0]['link'] = link(objects.previous_page_number())
     boxes[12] = {'disp': '>>', 'link': None, 'disabled': True}
     if objects.has_next():
         boxes[12]['disabled'] = False
