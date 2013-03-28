@@ -4,6 +4,9 @@ from invapp.models import Collection, Project, Item, Bag, BagAction
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from utils import build_digg_style_boxes
+
+
 def collection(request, id):
     collection = get_object_or_404(Collection, id=id)
     projects = Project.objects.filter(collection=collection).defer('collection',
@@ -20,6 +23,7 @@ def collection(request, id):
             items = items_paginator.page(1)
         except EmptyPage:
             items = items_paginator.page(items_paginator.num_pages)
+        items.boxes = build_digg_style_boxes(items)
     return render(request, 'collection.html',
         {'collection': collection, 'projects': projects, 'items': items})
 
