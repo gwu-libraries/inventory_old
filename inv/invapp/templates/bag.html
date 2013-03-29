@@ -63,12 +63,25 @@
             </tr>
         </table>
         <h5>Individual Files</h5>
+        {% if bag_list.count >= 10 %}
+        <div class="pagination">
+            <ul>
+                {% for box in bag_list.boxes %}
+                    {% if box.disabled %}
+                <li class="disabled"><a>{{box.disp}}</a></li>
+                    {% else %}
+                <li><a href="?bag_page={{box.link}}">{{box.disp}}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         <table class="table table-striped">
             <tr>
                 <th>File</th>
                 <th>Size</th>
             </tr>
-        {% for file in bag.payload %}
+        {% for file in bag_list %}
             <tr>
                 <td><a href="http://{{ bag.urlpath }}/{{ file.0 }}">{{ file.0 }}</a></td>
                 <td>{{ file.1 }} ({{ file.1|filesizeformat }})</td>
