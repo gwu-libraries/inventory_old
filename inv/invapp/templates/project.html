@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load invapp_extras %}
 
 {% block title %}
 	{{ project.name }}
@@ -26,13 +27,7 @@
     <div id="items" class="container-fluid">
 	<h3>Items in this project</h3>
     {% if items.count >= 10 %}
-    <div class="pagination">
-        <ul>
-            <li {% if not items.has_previous %}class="disabled"{% endif %}><a href="?items_page={{ items.previous_page_number }}">&laquo;</a></li>
-            <li {% if items.number == 1 %}class="disabled"{% endif %}><a href="?items_page=1">First</a></li>
-            <li {% if items.number == items.paginator.num_pages %}class="disabled"{% endif %}><a href="?items_page={{ items.paginator.num_pages }}">Last</a></li>
-            <li {% if not items.has_next %}class="disabled"{% endif %}><a href="?items_page={{ items.next_page_number }}">&raquo;</a></li>
-    </div>
+       {% bootstrap_paginator_bar items 'items_page' %}
     {% endif %}
 	<table class="table table-striped">
             <tr>
@@ -48,9 +43,6 @@
                 </tr>
             {% endfor %}
         </table>
-        {% if items.count >= 10 %}
-        <div class="label label-inverse">Page {{ items.number }} of {{ items.paginator.num_pages }}</div><br />
-        {% endif %}
     </div>
 </section>
 
