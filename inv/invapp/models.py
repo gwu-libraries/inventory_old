@@ -5,6 +5,8 @@ from django.db import models
 from django.conf import settings
 from tastypie.models import create_api_key
 
+from invapp.utils import merge_dicts
+
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
@@ -20,6 +22,7 @@ class Collection(models.Model):
     created = models.DateTimeField()
     description = models.TextField(blank=True)
     manager = models.CharField(max_length=256, blank=True)
+    stats = models.TextField(blank=True)
 
     def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
@@ -30,27 +33,57 @@ class Project(models.Model):
     created = models.DateTimeField()
     name = models.CharField(max_length=256)
     manager = models.CharField(max_length=256)
-    collection = models.ForeignKey(Collection,
-        related_name='project_collection')
+    collection = models.ForeignKey(Collection, related_name='projects')
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
+    stats = models.TextField(blank=True)
+
+    def collect_stats(self):
+        return reduce(merge_dicts,
+            map(lambda item: item.stats, self.items.all()))
 
 
 class Item(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
     title = models.TextField(blank=True)
     local_id = models.CharField(max_length=256, blank=True)
-    collection = models.ForeignKey(Collection, related_name='item_collection',
+    collection = models.ForeignKey(Collection, related_name='items',
         null=True)
-    project = models.ForeignKey(Project, related_name='item_project', null=True)
+    project = models.ForeignKey(Project, related_name='items', null=True)
     created = models.DateTimeField()
-    original_item_type = models.CharField(max_length=1, choices=settings.ITEM_TYPES)
+    original_item_type = models.CharField(max_length=1,
+        choices=settings.ITEM_TYPES)
     rawfiles_loc = models.URLField(blank=True)
     qcfiles_loc = models.URLField(blank=True)
     qafiles_loc = models.URLField(blank=True)
     finfiles_loc = models.URLField(blank=True)
     ocrfiles_loc = models.URLField(blank=True)
     notes = models.TextField(blank=True)
+    _stats = models.TextField(blank=True)
+
+    @property
+    def stats(self):
+        return json.loads(self._stats)
+
+    @stats.setter
+    def stats(self, newstats):
+        if isinstance(newstats, dict):
+            self._stats = json.dumps(newstats)
+        else:
+            try:
+                # make sure it is valid JSON before storing it
+                json.loads(newstats)
+                self._stats = newstats
+            except:
+                raise
+
+    @stats.deleter
+    def stats(self):
+        self._stats = ''
+
+    def collect_stats(self):
+        return reduce(merge_dicts,
+            map(lambda bag: bag.pstats(), self.bags.all()))
 
     def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
@@ -59,8 +92,8 @@ class Item(models.Model):
 class Bag(models.Model):
     bagname = models.TextField(primary_key=True)
     created = models.DateTimeField()
-    item = models.ForeignKey(Item, related_name='bag_item')
-    machine = models.ForeignKey(Machine, related_name='bag_machine')
+    item = models.ForeignKey(Item, related_name='bags')
+    machine = models.ForeignKey(Machine, related_name='bags')
     path = models.URLField()
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
     payload_raw = models.TextField(blank=True)
