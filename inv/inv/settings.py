@@ -124,7 +124,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'invapp',
     'south',
-    'tastypie'
+    'tastypie',
+    'json_field'
 )
 
 # A sample logging configuration. The only tangible logging

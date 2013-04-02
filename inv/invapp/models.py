@@ -22,7 +22,11 @@ class Collection(models.Model):
     created = models.DateTimeField()
     description = models.TextField(blank=True)
     manager = models.CharField(max_length=256, blank=True)
-    stats = models.TextField(blank=True)
+    stats = models.JSONField()
+
+    def collect_stats(self):
+        return reduce(merge_dicts,
+            map(lambda item: item.stats, self.items.all()))
 
     def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
@@ -36,7 +40,7 @@ class Project(models.Model):
     collection = models.ForeignKey(Collection, related_name='projects')
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    stats = models.TextField(blank=True)
+    stats = models.JSONField()
 
     def collect_stats(self):
         return reduce(merge_dicts,
@@ -59,27 +63,7 @@ class Item(models.Model):
     finfiles_loc = models.URLField(blank=True)
     ocrfiles_loc = models.URLField(blank=True)
     notes = models.TextField(blank=True)
-    _stats = models.TextField(blank=True)
-
-    @property
-    def stats(self):
-        return json.loads(self._stats)
-
-    @stats.setter
-    def stats(self, newstats):
-        if isinstance(newstats, dict):
-            self._stats = json.dumps(newstats)
-        else:
-            try:
-                # make sure it is valid JSON before storing it
-                json.loads(newstats)
-                self._stats = newstats
-            except:
-                raise
-
-    @stats.deleter
-    def stats(self):
-        self._stats = ''
+    stats = models.JSONField()
 
     def collect_stats(self):
         return reduce(merge_dicts,
