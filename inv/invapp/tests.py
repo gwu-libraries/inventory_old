@@ -182,7 +182,7 @@ class AggregateStatsTestCase(TestCase):
 
     def test_item_aggregation(self):
         i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
-        self.assertEqual(i1.stats, '')
+        self.assertEqual(i1.stats, None)
         i1_expected = {
             'total_count': 16,
             'total_size': 31735345,
@@ -197,7 +197,7 @@ class AggregateStatsTestCase(TestCase):
         self.assertTrue(compare_dicts(i1.stats, i1_expected))
 
         i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
-        self.assertEqual(i2.stats, '')
+        self.assertEqual(i2.stats, None)
         i2_expected = {
             'total_count': 16,
             'total_size': 22795699,
@@ -212,7 +212,7 @@ class AggregateStatsTestCase(TestCase):
         self.assertTrue(compare_dicts(i2.stats, i2_expected))
 
         i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
-        self.assertEqual(i3.stats, '')
+        self.assertEqual(i3.stats, None)
         i3_expected = {
             'total_count': 16,
             'total_size': 49789809,

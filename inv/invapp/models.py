@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
+from json_field import JSONField
 from tastypie.models import create_api_key
 
 from invapp.utils import merge_dicts
@@ -22,7 +23,7 @@ class Collection(models.Model):
     created = models.DateTimeField()
     description = models.TextField(blank=True)
     manager = models.CharField(max_length=256, blank=True)
-    stats = models.JSONField()
+    stats = JSONField()
 
     def collect_stats(self):
         return reduce(merge_dicts,
@@ -40,7 +41,7 @@ class Project(models.Model):
     collection = models.ForeignKey(Collection, related_name='projects')
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    stats = models.JSONField()
+    stats = JSONField()
 
     def collect_stats(self):
         return reduce(merge_dicts,
@@ -63,7 +64,7 @@ class Item(models.Model):
     finfiles_loc = models.URLField(blank=True)
     ocrfiles_loc = models.URLField(blank=True)
     notes = models.TextField(blank=True)
-    stats = models.JSONField()
+    stats = JSONField()
 
     def collect_stats(self):
         return reduce(merge_dicts,
