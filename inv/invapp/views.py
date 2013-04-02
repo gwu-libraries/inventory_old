@@ -52,7 +52,17 @@ def item(request, id):
 def bag(request, bagname):
     bag = get_object_or_404(Bag, bagname=bagname)
     actions = BagAction.objects.filter(bag=bag)
-    return render(request, 'bag.html', {'bag': bag, 'actions': actions})
+    files = bag.payload()
+    if files.count > 10:
+        bag_paginator = Paginator(files, 10)
+        files_page = request.GET.get('files_page')
+        try:
+            files = bag_paginator.page(files_page)
+        except PageNotAnInteger:
+            files = bag_paginator.page(1)
+        except EmptyPage:
+            files = bag_paginator.page(bag_paginator.num_pages)
+    return render(request, 'bag.html', {'bag': bag, 'actions': actions, 'files': files})
 
 def home(request):
     collections = Collection.objects.all()

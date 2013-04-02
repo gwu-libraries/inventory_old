@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load invapp_extras %}
 
 {% block title %}
     {{ bag.bagname }}
@@ -63,12 +64,15 @@
             </tr>
         </table>
         <h5>Individual Files</h5>
+        {% if files.count >= 10 %}
+            {% bootstrap_paginator_bar files 'files_page' %}
+        {% endif %}
         <table class="table table-striped">
             <tr>
                 <th>File</th>
                 <th>Size</th>
             </tr>
-        {% for file in bag.payload %}
+        {% for file in files %}
             <tr>
                 <td><a href="http://{{ bag.urlpath }}/{{ file.0 }}">{{ file.0 }}</a></td>
                 <td>{{ file.1 }} ({{ file.1|filesizeformat }})</td>
