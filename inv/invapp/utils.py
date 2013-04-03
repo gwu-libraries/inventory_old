@@ -26,3 +26,24 @@ def compare_dicts(d1, d2):
         elif d1[k] != d2[k]:
             return False
     return True
+
+
+def update_object_stats(model=None, id=None, obj=None):
+    # pass model AND id, OR just pass object itself
+    if not obj:
+        obj = model.objects.get(id=id)
+    obj.stats = obj.collect_stats()
+    obj.save()
+
+
+def update_model_stats(model):
+    errors = reduce(lambda x,y: x + y,
+        map(update_object_stats, model.objects.all()))
+    return errors
+
+
+def update_all_stats():
+    from invapp.models import Item, Project, Collection
+    errors = reduce(lambda x,y: x + y,
+        map(update_model_stats, [Item, Project, Collection]))
+    return errors

@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from invapp.models import Machine, Collection, Project, Item, Bag
-from invapp.utils import compare_dicts
+from invapp import utils
 
 def now():
     return timezone.make_aware(datetime.now(), timezone.utc)
@@ -93,13 +93,13 @@ class AggregateStatsTestCase(TestCase):
             manager='nobody', collection=c1, created=now())
         p1.save()
         i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
-            created=now(), original_item_type='1')
+            collection=c1, created=now(), original_item_type='1')
         i1.save()
         i2 = Item(id='iiiiiiiiiiiiiiiii2', title='test-item-2', project=p1,
-            created=now(), original_item_type='1')
+            collection=c1, created=now(), original_item_type='1')
         i2.save()
         i3 = Item(id='iiiiiiiiiiiiiiiii3', title='test-item-3', project=p1,
-            created=now(), original_item_type='1')
+            collection=c1, created=now(), original_item_type='1')
         i3.save()
         m1 = Machine(name='test-machine-1', url='test-url-1')
         m1.save()
@@ -180,68 +180,144 @@ class AggregateStatsTestCase(TestCase):
 """
         b6.save()
 
-    def test_item_aggregation(self):
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
-        self.assertEqual(i1.stats, None)
-        i1_expected = {
-            'total_count': 16,
-            'total_size': 31735345,
-            'types': {
-                'xml': {'count': 4, 'size': 68686},
-                'jp2': {'count': 6, 'size': 26969694}, 
-                'tiff': {'count': 6, 'size': 4696965}
+        self.expected = {
+            'items': {
+                'i1': {
+                    'total_count': 16,
+                    'total_size': 31735345,
+                    'types': {
+                        'xml': {'count': 4, 'size': 68686},
+                        'jp2': {'count': 6, 'size': 26969694}, 
+                        'tiff': {'count': 6, 'size': 4696965}
+                    }
+                },
+                'i2': {
+                    'total_count': 16,
+                    'total_size': 22795699,
+                    'types': {
+                        'xml': {'count': 4, 'size': 82276},
+                        'jp2': {'count': 6, 'size': 18493372}, 
+                        'tiff': {'count': 6, 'size': 4220051}
+                    }
+                },
+                'i3': {
+                    'total_count': 16,
+                    'total_size': 49789809,
+                    'types': {
+                        'xml': {'count': 4, 'size': 135966},
+                        'jp2': {'count': 6, 'size': 30679626}, 
+                        'tiff': {'count': 6, 'size': 18974217}
+                    }
+                }
+            },
+            'projects': {
+                'p1': {
+                    'total_count': 48,
+                    'total_size': 104320853,
+                    'types': {
+                        'xml': {'count': 12, 'size': 286928},
+                        'jp2': {'count': 18, 'size': 76142692}, 
+                        'tiff': {'count': 18, 'size': 27891233}
+                    }
+                }
+            },
+            'collections': {
+                'c1': {
+                    'total_count': 48,
+                    'total_size': 104320853,
+                    'types': {
+                        'xml': {'count': 12, 'size': 286928},
+                        'jp2': {'count': 18, 'size': 76142692}, 
+                        'tiff': {'count': 18, 'size': 27891233}
+                    }
+                }
             }
         }
+
+
+    def test_collect_stats_functions(self):
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertEqual(i1.stats, None)
         i1.stats = i1.collect_stats()
         i1.save()
-        self.assertTrue(compare_dicts(i1.stats, i1_expected))
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
 
         i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
         self.assertEqual(i2.stats, None)
-        i2_expected = {
-            'total_count': 16,
-            'total_size': 22795699,
-            'types': {
-                'xml': {'count': 4, 'size': 82276},
-                'jp2': {'count': 6, 'size': 18493372}, 
-                'tiff': {'count': 6, 'size': 4220051}
-            }
-        }
         i2.stats = i2.collect_stats()
         i2.save()
-        self.assertTrue(compare_dicts(i2.stats, i2_expected))
+        self.assertTrue(utils.compare_dicts(i2.stats,
+            self.expected['items']['i2']))
 
         i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
         self.assertEqual(i3.stats, None)
-        i3_expected = {
-            'total_count': 16,
-            'total_size': 49789809,
-            'types': {
-                'xml': {'count': 4, 'size': 135966},
-                'jp2': {'count': 6, 'size': 30679626}, 
-                'tiff': {'count': 6, 'size': 18974217}
-            }
-        }
         i3.stats = i3.collect_stats()
         i3.save()
-        self.assertTrue(compare_dicts(i3.stats, i3_expected))
+        self.assertTrue(utils.compare_dicts(i3.stats,
+            self.expected['items']['i3']))
 
-        p1_expected = {
-            'total_count': 48,
-            'total_size': 104320853,
-            'types': {
-                'xml': {'count': 12, 'size': 286928},
-                'jp2': {'count': 18, 'size': 76142692}, 
-                'tiff': {'count': 18, 'size': 27891233}
-            }
-        }
         p1 = Project.objects.get(id='pppppppppppppppppp')
         p1.stats = p1.collect_stats()
         p1.save()
-        try:
-            self.assertTrue(compare_dicts(p1.stats, p1_expected))
-        except:
-            from pprint import pprint
-            pprint(p1.stats)
-            pprint(p1_expected)
-            raise
+        self.assertTrue(utils.compare_dicts(p1.stats,
+            self.expected['projects']['p1']))
+
+        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        c1.stats = c1.collect_stats()
+        c1.save()
+        self.assertTrue(utils.compare_dicts(c1.stats,
+            self.expected['collections']['c1']))
+
+
+    def test_update_object_stats(self):
+        # test by passing object directly
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertEqual(i1.stats, None)
+        utils.update_object_stats(obj=i1)
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
+
+        # test by passing model and id
+        utils.update_object_stats(model=Item, id='iiiiiiiiiiiiiiiii2')
+        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        self.assertTrue(utils.compare_dicts(i2.stats,
+            self.expected['items']['i2']))
+
+    def test_update_model_stats(self):
+        utils.update_model_stats(Item)
+
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
+
+        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        self.assertTrue(utils.compare_dicts(i2.stats,
+            self.expected['items']['i2']))
+
+        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        self.assertTrue(utils.compare_dicts(i3.stats,
+            self.expected['items']['i3']))
+
+    def test_update_all_stats(self):
+        utils.update_all_stats()
+
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
+
+        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        self.assertTrue(utils.compare_dicts(i2.stats,
+            self.expected['items']['i2']))
+
+        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        self.assertTrue(utils.compare_dicts(i3.stats,
+            self.expected['items']['i3']))
+
+        p1 = Project.objects.get(id='pppppppppppppppppp')
+        self.assertTrue(utils.compare_dicts(p1.stats,
+            self.expected['projects']['p1']))
+
+        c1 = Project.objects.get(id='cccccccccccccccccc')
+        self.assertTrue(utils.compare_dicts(c1.stats,
+            self.expected['collections']['c1']))
