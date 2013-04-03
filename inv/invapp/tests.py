@@ -1,7 +1,7 @@
 from datetime import datetime
-
 import json
 
+from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
 
@@ -305,6 +305,86 @@ class AggregateStatsTestCase(TestCase):
         errors = utils.update_all_stats()
         self.assertEqual(errors, [])
         self.assertTrue(not errors)
+
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
+
+        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        self.assertTrue(utils.compare_dicts(i2.stats,
+            self.expected['items']['i2']))
+
+        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        self.assertTrue(utils.compare_dicts(i3.stats,
+            self.expected['items']['i3']))
+
+        p1 = Project.objects.get(id='pppppppppppppppppp')
+        self.assertTrue(utils.compare_dicts(p1.stats,
+            self.expected['projects']['p1']))
+
+        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        self.assertTrue(utils.compare_dicts(c1.stats,
+            self.expected['collections']['c1']))
+    
+    def test_mgmt_cmd_all(self):
+        call_command('update_stats', All=True)
+
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
+
+        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        self.assertTrue(utils.compare_dicts(i2.stats,
+            self.expected['items']['i2']))
+
+        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        self.assertTrue(utils.compare_dicts(i3.stats,
+            self.expected['items']['i3']))
+
+        p1 = Project.objects.get(id='pppppppppppppppppp')
+        self.assertTrue(utils.compare_dicts(p1.stats,
+            self.expected['projects']['p1']))
+
+        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        self.assertTrue(utils.compare_dicts(c1.stats,
+            self.expected['collections']['c1']))
+    
+    def test_mgmt_cmd_single_item(self):
+        call_command('update_stats', item='iiiiiiiiiiiiiiiii1')
+
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
+    
+    def test_mgmt_cmd_many_item_single_proj_single_coll(self):
+        call_command('update_stats', Items=True)
+        call_command('update_stats', project='pppppppppppppppppp')
+        call_command('update_stats', collection='cccccccccccccccccc')
+
+        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        self.assertTrue(utils.compare_dicts(i1.stats,
+            self.expected['items']['i1']))
+
+        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        self.assertTrue(utils.compare_dicts(i2.stats,
+            self.expected['items']['i2']))
+
+        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        self.assertTrue(utils.compare_dicts(i3.stats,
+            self.expected['items']['i3']))
+
+        p1 = Project.objects.get(id='pppppppppppppppppp')
+        self.assertTrue(utils.compare_dicts(p1.stats,
+            self.expected['projects']['p1']))
+
+        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        self.assertTrue(utils.compare_dicts(c1.stats,
+            self.expected['collections']['c1']))
+
+    def test_mgmt_cmd_many_models(self):
+        call_command('update_stats', Items=True)
+        call_command('update_stats', Projects=True)
+        call_command('update_stats', Collections=True)
 
         i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
         self.assertTrue(utils.compare_dicts(i1.stats,
