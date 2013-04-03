@@ -64,7 +64,7 @@
             </tr>
         </table>
         <h5>Individual Files</h5>
-        {% if files.count >= 10 %}
+        {% if files.paginator.count >= 10 %}
             {% bootstrap_paginator_bar files 'files_page' %}
         {% endif %}
         <table class="table table-striped">
