@@ -37,8 +37,15 @@ If an Item and Proj or Coll are specified, Item will always be updated first
 '''
 
     def handle(self, *args, **options):
+        # check for syntax errors
         if args:
-            raise CommandError('No args used with this command, use options')
+            raise CommandError('Use options, not args with this command')
+        # make sure at least one option passed
+        stdopts = ['settings', 'pythonpath', 'verbosity', 'traceback']
+        ovals = [options[o] for o in options if o not in stdopts]
+        if not any(ovals):
+            raise CommandError('No options passed')
+        # begin processing
         errors = []
         if options['item']:
             print 'Updating Item with id=%s' % options['item']
