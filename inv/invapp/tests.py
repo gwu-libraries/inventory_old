@@ -274,7 +274,7 @@ class AggregateStatsTestCase(TestCase):
         # test by passing object directly
         i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
         self.assertEqual(i1.stats, None)
-        utils.update_object_stats(obj=i1)
+        utils.update_object_stats(i1)
         self.assertTrue(utils.compare_dicts(i1.stats,
             self.expected['items']['i1']))
 
@@ -285,7 +285,9 @@ class AggregateStatsTestCase(TestCase):
             self.expected['items']['i2']))
 
     def test_update_model_stats(self):
-        utils.update_model_stats(Item)
+        errors = utils.update_model_stats(Item)
+        self.assertEqual(errors, [])
+        self.assertTrue(not errors)
 
         i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
         self.assertTrue(utils.compare_dicts(i1.stats,
@@ -300,7 +302,9 @@ class AggregateStatsTestCase(TestCase):
             self.expected['items']['i3']))
 
     def test_update_all_stats(self):
-        utils.update_all_stats()
+        errors = utils.update_all_stats()
+        self.assertEqual(errors, [])
+        self.assertTrue(not errors)
 
         i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
         self.assertTrue(utils.compare_dicts(i1.stats,
@@ -318,6 +322,6 @@ class AggregateStatsTestCase(TestCase):
         self.assertTrue(utils.compare_dicts(p1.stats,
             self.expected['projects']['p1']))
 
-        c1 = Project.objects.get(id='cccccccccccccccccc')
+        c1 = Collection.objects.get(id='cccccccccccccccccc')
         self.assertTrue(utils.compare_dicts(c1.stats,
             self.expected['collections']['c1']))
