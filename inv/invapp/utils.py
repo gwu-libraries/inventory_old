@@ -1,10 +1,16 @@
 def merge_dicts(d1, d2):
     '''
-    Combines values within two dictionaries.
-    Primarily for use with multi-level dictionaries containing int values.
+    Combines integer values within two multi-level dictionaries.
     Designed for use with file count and size data stored in JSON.
     '''
-    for key in d1.keys():
+    # check for keys in d1 not in d2
+    for key in set(d1.keys()) - set(d2.keys()):
+        d2[key] = {} if isinstance(d1[key], dict) else 0
+    # check for keys in d2 not in d1
+    for key in set(d2.keys()) - set(d1.keys()):
+        d1[key] = {} if isinstance(d2[key], dict) else 0
+    # now use recursion to merge subdicts, otherwise add values
+    for key in d1:
         if isinstance(d1[key], dict):
             merge_dicts(d1[key], d2[key])
         else:
@@ -41,7 +47,10 @@ def update_object_stats_quietly(obj=None, model=None, id=None):
     try:
         update_object_stats(obj=obj, model=model, id=id)
     except Exception, e:
-        return e
+        if obj:
+            id = obj.id
+            model = obj.__class__.__name__
+        return 'Error updating %s %s: %s' % (model, id, e)
 
 
 def update_model_stats(model):

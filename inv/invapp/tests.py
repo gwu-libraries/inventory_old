@@ -159,9 +159,6 @@ class AggregateStatsTestCase(TestCase):
             machine=m1, path='test-path5', bag_type='1')
         b5.payload_raw = """/data/METADATA/0123456789-dc.xml 12121
 /data/METADATA/0123456789-MRC.xml 23232
-/data/IMAGES/0123456789_pg1.jp2 3434343
-/data/IMAGES/0123456789_pg2.jp2 4545454
-/data/IMAGES/0123456789_pg3.jp2 5656565
 /data/IMAGES/0123456789_pg1.tiff 676767
 /data/IMAGES/0123456789_pg2.tiff 787878
 /data/IMAGES/0123456789_pg3.tiff 898989
@@ -174,9 +171,6 @@ class AggregateStatsTestCase(TestCase):
 /data/IMAGES/0123456789_pg1.jp2 6489723
 /data/IMAGES/0123456789_pg2.jp2 8984567
 /data/IMAGES/0123456789_pg3.jp2 1568974
-/data/IMAGES/0123456789_pg1.tiff 1856789
-/data/IMAGES/0123456789_pg2.tiff 9875481
-/data/IMAGES/0123456789_pg3.tiff 4878313
 """
         b6.save()
 
@@ -201,34 +195,34 @@ class AggregateStatsTestCase(TestCase):
                     }
                 },
                 'i3': {
-                    'total_count': 16,
-                    'total_size': 49789809,
+                    'total_count': 10,
+                    'total_size': 19542864,
                     'types': {
                         'xml': {'count': 4, 'size': 135966},
-                        'jp2': {'count': 6, 'size': 30679626}, 
-                        'tiff': {'count': 6, 'size': 18974217}
+                        'jp2': {'count': 3, 'size': 17043264}, 
+                        'tiff': {'count': 3, 'size': 2363634}
                     }
                 }
             },
             'projects': {
                 'p1': {
-                    'total_count': 48,
-                    'total_size': 104320853,
+                    'total_count': 42,
+                    'total_size': 74073908,
                     'types': {
                         'xml': {'count': 12, 'size': 286928},
-                        'jp2': {'count': 18, 'size': 76142692}, 
-                        'tiff': {'count': 18, 'size': 27891233}
+                        'jp2': {'count': 15, 'size': 62506330}, 
+                        'tiff': {'count': 15, 'size': 11280650}
                     }
                 }
             },
             'collections': {
                 'c1': {
-                    'total_count': 48,
-                    'total_size': 104320853,
+                    'total_count': 42,
+                    'total_size': 74073908,
                     'types': {
                         'xml': {'count': 12, 'size': 286928},
-                        'jp2': {'count': 18, 'size': 76142692}, 
-                        'tiff': {'count': 18, 'size': 27891233}
+                        'jp2': {'count': 15, 'size': 62506330}, 
+                        'tiff': {'count': 15, 'size': 11280650}
                     }
                 }
             }
