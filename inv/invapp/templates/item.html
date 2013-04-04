@@ -42,6 +42,17 @@
                 <dt>OCR files location</dt><dd>{{ item.ocrfiles_loc }}</dd>
             </dl>
         </div>
+        <div class="span3">
+            <dl>
+                <dt>Total Files</dt><dd>{{ item.stats.total_count }}</dd>
+                <dt>Total Size</dt><dd>{{ item.stats.total_size|filesizeformat }}</dd>
+                <dt>File types</dt>
+                <dd>{% for key, value in item.stats.types.items %}
+                    {{key}} | {{value.count}} | {{value.size|filesizeformat}}<br />
+                    {% endfor %}
+                </dd>
+            </dl>
+        </div>
     </header>
     <div id="bags" class="container-fluid">
 	<h3>Bags for this item</h3>
