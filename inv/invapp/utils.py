@@ -3,6 +3,8 @@ def merge_dicts(d1, d2):
     Combines integer values within two multi-level dictionaries.
     Designed for use with file count and size data stored in JSON.
     '''
+    # check for empty d2 (when a collection has only one item!)
+    if not d2: return d1
     # check for keys in d1 not in d2
     for key in set(d1.keys()) - set(d2.keys()):
         d2[key] = {} if isinstance(d1[key], dict) else 0

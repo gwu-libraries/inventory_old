@@ -174,6 +174,8 @@ class AggregateStatsTestCase(TestCase):
 """
         b6.save()
 
+        self.empty_stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+
         self.expected = {
             'items': {
                 'i1': {
@@ -231,21 +233,21 @@ class AggregateStatsTestCase(TestCase):
 
     def test_collect_stats_functions(self):
         i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
-        self.assertEqual(i1.stats, None)
+        self.assertTrue(utils.compare_dicts(i1.stats, self.empty_stats))
         i1.stats = i1.collect_stats()
         i1.save()
         self.assertTrue(utils.compare_dicts(i1.stats,
             self.expected['items']['i1']))
 
         i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
-        self.assertEqual(i2.stats, None)
+        self.assertTrue(utils.compare_dicts(i2.stats, self.empty_stats))
         i2.stats = i2.collect_stats()
         i2.save()
         self.assertTrue(utils.compare_dicts(i2.stats,
             self.expected['items']['i2']))
 
         i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
-        self.assertEqual(i3.stats, None)
+        self.assertTrue(utils.compare_dicts(i3.stats, self.empty_stats))
         i3.stats = i3.collect_stats()
         i3.save()
         self.assertTrue(utils.compare_dicts(i3.stats,
@@ -263,11 +265,10 @@ class AggregateStatsTestCase(TestCase):
         self.assertTrue(utils.compare_dicts(c1.stats,
             self.expected['collections']['c1']))
 
-
     def test_update_object_stats(self):
         # test by passing object directly
         i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
-        self.assertEqual(i1.stats, None)
+        self.assertTrue(utils.compare_dicts(i1.stats, self.empty_stats))
         utils.update_object_stats(i1)
         self.assertTrue(utils.compare_dicts(i1.stats,
             self.expected['items']['i1']))
@@ -319,6 +320,26 @@ class AggregateStatsTestCase(TestCase):
         c1 = Collection.objects.get(id='cccccccccccccccccc')
         self.assertTrue(utils.compare_dicts(c1.stats,
             self.expected['collections']['c1']))
+
+    def test_stats_on_empty_objects(self):
+        expected = self.empty_stats
+        c1 = Collection(id='nobagscollection', name='test-collection-2',
+            created=now())
+        c1.save()
+        self.assertTrue(utils.compare_dicts(c1.stats, expected))
+        p1 = Project(id='nobagsproject', name='test-project-2',
+            manager='nobody', collection=c1, created=now())
+        p1.save()
+        self.assertTrue(utils.compare_dicts(p1.stats, expected))
+        i1 = Item(id='nobagsitem', title='test-item-1', project=p1,
+            collection=c1, created=now(), original_item_type='1')
+        i1.stats = i1.collect_stats()
+        i1.save()
+        p1.stats = p1.collect_stats()
+        c1.stats = c1.collect_stats()
+        self.assertTrue(utils.compare_dicts(i1.stats, expected))
+        self.assertTrue(utils.compare_dicts(p1.stats, expected))
+        self.assertTrue(utils.compare_dicts(c1.stats, expected))
     
     def test_mgmt_cmd_all(self):
         call_command('update_stats', All=True)

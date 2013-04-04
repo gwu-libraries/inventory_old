@@ -12,6 +12,9 @@ from invapp.utils import merge_dicts
 models.signals.post_save.connect(create_api_key, sender=User)
 
 
+empty_stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+
+
 class Machine(models.Model):
     name = models.CharField(max_length=64, unique=True)
     url = models.URLField(unique=True)
@@ -25,9 +28,16 @@ class Collection(models.Model):
     manager = models.CharField(max_length=256, blank=True)
     stats = JSONField()
 
+    def save(self, *args, **kwargs):
+        if not self.stats:
+            self.stats = empty_stats
+        super(Collection, self).save(*args, **kwargs)
+
     def collect_stats(self):
-        return reduce(merge_dicts,
-            map(lambda item: item.stats, self.items.all()))
+        if self.items.count():
+            return reduce(merge_dicts,
+                map(lambda item: item.stats, self.items.all()))
+        return empty_stats
 
     def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
@@ -43,9 +53,17 @@ class Project(models.Model):
     end_date = models.DateField(null=True, blank=True)
     stats = JSONField()
 
+    def save(self, *args, **kwargs):
+        if not self.stats:
+            self.stats = empty_stats
+        super(Project, self).save(*args, **kwargs)
+
     def collect_stats(self):
-        return reduce(merge_dicts,
-            map(lambda item: item.stats, self.items.all()))
+        if self.items.count():
+            return reduce(merge_dicts,
+                map(lambda item: item.stats, self.items.all()))
+        return empty_stats
+
 
 
 class Item(models.Model):
@@ -66,9 +84,16 @@ class Item(models.Model):
     notes = models.TextField(blank=True)
     stats = JSONField()
 
+    def save(self, *args, **kwargs):
+        if not self.stats:
+            self.stats = empty_stats
+        super(Item, self).save(*args, **kwargs)
+
     def collect_stats(self):
-        return reduce(merge_dicts,
-            map(lambda bag: bag.pstats(), self.bags.all()))
+        if self.bags.count():
+            return reduce(merge_dicts,
+                map(lambda bag: bag.pstats(), self.bags.all()))
+        return empty_stats
 
     def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
