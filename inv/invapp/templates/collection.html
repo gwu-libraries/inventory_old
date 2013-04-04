@@ -12,12 +12,28 @@
         <h1>{{ collection.name }}</h1>
         <p id="description">{{ collection.description }}</p>
         <p><a class="btn btn-primary" href="{{ collection.purl }}">View In Access System</a></p>
-        <dl>
-            <dt>Persistent ID</dt><dd>{{ collection.id }}</dd>
-            <dt>Created</dt><dd>{{ collection.created }}</dd>
-            <dt>Manager</dt><dd>{{ collection.manager }}</dd>
+        <div class="row">
+            <div class="span3">
+                <dl>
+                    <dt>Persistent ID</dt><dd>{{ collection.id }}</dd>
+                    <dt>Created</dt><dd>{{ collection.created }}</dd>
+                    <dt>Manager</dt><dd>{{ collection.manager }}</dd>
 
-        </dl>
+                </dl>
+            </div>
+            <div class="span3">
+                <dl>
+                    <dt>Total Items</dt><dd>{{ items.paginator.count }}</dd>
+                    <dt>Total Files</dt><dd>{{ collection.stats.total_count }}</dd>
+                    <dt>Total Size</dt><dd>{{ collection.stats.total_size|filesizeformat}}</dd>
+                    <dt>File Types</dt><dd>
+                    {% for key, value in collection.stats.types.items %}
+                    {{ key }} | {{ value.count }} | {{value.size|filesizeformat }}<br />
+                    {% endfor %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
     </header>
     <div id="projects" class="container-fluid">
         <h3>Projects contributing to this collection</h3>
@@ -43,7 +59,7 @@
     <div id="items" class="container-fluid">
         <h3>Items in this Collection</h3>
 
-        {% if items.count >= 10 %}
+        {% if items.paginator.count >= 10 %}
             {% bootstrap_paginator_bar items 'items_page' %}
         {% endif %}
 
