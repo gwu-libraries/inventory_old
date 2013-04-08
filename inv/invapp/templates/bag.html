@@ -64,9 +64,23 @@
             </tr>
         </table>
         <h5>Individual Files</h5>
-        {% if files.count >= 10 %}
-            {% bootstrap_paginator_bar files 'files_page' %}
-        {% endif %}
+        <div style="width:100%">
+            <div class="dropdown all-camera-dropdown" style="float:left;width:5%">
+                <a class="dropwdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="" href="">
+                    File Type
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <li><a href="?file_type=all">All</a></li>
+                    {% for ftype in bag.pstats.types %}
+                    <li><a href="?file_type={{ ftype }}">{{ ftype }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% if files.paginator.count >= 10 %}
+                {% bootstrap_paginator_bar files 'files_page' %}
+            {% endif %}
+        </div>
         <table class="table table-striped">
             <tr>
                 <th>File</th>
