@@ -10,23 +10,35 @@
 <section id="project">
     <header class="container-fluid">
 	<h1>{{ project.name }}</h1>
-    <div class="span4">
+    <div class="span3">
     	<dl>
     	    <dt>Persistent ID</dt><dd>{{ project.id }}</dd>
     	    <dt>Manager</dt><dd>{{ project.manager }}</dd>
     	    <dt>Collection</dt><dd><a href="{% url 'collection' project.collection.id %}">{{ project.collection.name }}</a></dd>
         </dl>
     </div>
-    <div class="span4">
+    <div class="span3">
         <dl>
             <dt>Start Date</dt><dd>{{ project.start_date }}</dd>
             <dt>End Date</dt><dd>{{ project.end_date }}</dd>
         </dl>
     </div>
+    <div class="span3">
+        <dl>
+            <dt>Total Items</dt><dd>{{ items.paginator.count }}</dd>
+            <dt>Total Files</dt><dd>{{ project.stats.total_count }}</dd>
+            <dt>Total Size</dt><dd>{{ project.stats.total_size|filesizeformat }}</dd>
+            <dt>File Types</dt><dd>
+            {% for key, value in project.stats.types.items %}
+            {{ key }} | {{ value.count }} | {{value.size|filesizeformat }}<br />
+            {% endfor %}
+            </dd>
+        </dl>
+    </div>
     </header>
     <div id="items" class="container-fluid">
 	<h3>Items in this project</h3>
-    {% if items.count >= 10 %}
+    {% if items.paginator.count >= 10 %}
        {% bootstrap_paginator_bar items 'items_page' %}
     {% endif %}
 	<table class="table table-striped">

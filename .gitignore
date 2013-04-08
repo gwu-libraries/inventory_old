@@ -43,4 +43,4 @@ distribute-0.6.10.tar.gz
 
 # development files
 *bag2inv_export.py
-*sample_data/bagdb_export
+*sample_data
