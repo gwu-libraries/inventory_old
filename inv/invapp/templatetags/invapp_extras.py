@@ -1,14 +1,16 @@
 from django import template
+import urllib
 
 register = template.Library()
 
-@register.inclusion_tag('paginator_bar.html')
-def bootstrap_paginator_bar(objects, url_key):
-    boxes = pagination_boxes(objects, url_key)
+
+@register.inclusion_tag('paginator_bar.html', takes_context=True)
+def bootstrap_paginator_bar(context, objects, url_key):
+    boxes = pagination_boxes(context, objects, url_key)
     return {'boxes': boxes}
 
 
-def pagination_boxes(objects, url_key):
+def pagination_boxes(context, objects, url_key):
     '''Construct a list of dictionaries that represent pagination bar buttons.
 
     You can then easily loop through the list as you create your html
@@ -39,7 +41,11 @@ def pagination_boxes(objects, url_key):
     boxes = list(range(13))
 
     def link(val):
-        return '?%s=%s' % (url_key, val)
+        request = template.resolve_variable('request', context)
+        params = request.GET.copy()
+        params[url_key] = val
+        query_string = urllib.urlencode(params)
+        return '?%s' % query_string
 
     # Add the backward and forward arrows
     boxes[0] = {'disp': '<<', 'link': None, 'disabled': True}

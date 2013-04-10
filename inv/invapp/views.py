@@ -53,6 +53,15 @@ def bag(request, bagname):
     bag = get_object_or_404(Bag, bagname=bagname)
     actions = BagAction.objects.filter(bag=bag)
     files = bag.payload()
+    file_type = request.GET.get('file_type')
+    if file_type and file_type != 'all':
+        temp_files = list()
+        for f in files:
+            ftype = f[0].split('.')[-1].lower()
+            if ftype == file_type:
+                temp_files.append(f)
+        files = temp_files
+
     if files.count > 10:
         bag_paginator = Paginator(files, 10)
         files_page = request.GET.get('files_page')
@@ -63,6 +72,7 @@ def bag(request, bagname):
         except EmptyPage:
             files = bag_paginator.page(bag_paginator.num_pages)
     return render(request, 'bag.html', {'bag': bag, 'actions': actions, 'files': files})
+
 
 def home(request):
     collections = Collection.objects.all()
