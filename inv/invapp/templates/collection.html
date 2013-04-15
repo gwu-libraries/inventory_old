@@ -59,7 +59,7 @@
     <div id="items" class="container-fluid">
         <h3>Items in this Collection</h3>
 
-        {% if items.paginator.count >= 10 %}
+        {% if items.paginator.count > 10 %}
             {% bootstrap_paginator_bar items 'items_page' %}
         {% endif %}
 
