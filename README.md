@@ -19,10 +19,6 @@ PART I - Basic server requirements
 
 3. Set up Postgresql
 
-        $ sudo -u postgres psql postgres
-
-    Follow instructions to create password for postgres superuser
-
     Create a user for django
 
         $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt django
@@ -72,6 +68,10 @@ PART II - Set up project environment
 PART III - Configure your installation
 --------------------------------------
 
+0. Create a logs directory
+
+        $ mkdir logs
+
 1. Copy the local settings template to an active file
 
         $ cd /inv/inv
@@ -92,8 +92,10 @@ PART III - Configure your installation
 5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
 
         (ENV)$ cd /<INV_HOME>/inv
-        (ENV)$ python manage.py syncdb --migrate
-    
+        (ENV)$ python manage.py syncdb
+
+    If you encounter an authentication error with postgresql edit your local_settings.py file and set HOST = 'localhost'
+
     If you encounter an error during the above command that ends with:
 
         TypeError: decode() argument 1 must be string, not None
@@ -107,7 +109,16 @@ PART III - Configure your installation
         export LC_ALL=en_US.UTF-8
         export LANG=en_US.UTF-8
 
+    Now, reload your bashrc changes
+
+        source ~/.bashrc
+
     Now, rerun the syncdb command
+
+6. Migrate the database to the latest updates
+
+        $ python manage.py migrate
+
 
 6. Create the database super user
 
