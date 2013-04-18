@@ -3,10 +3,9 @@ python:
   - "2.6"
 #Command to install dependencies
 install: "pip install -r requirements.txt --use-mirrors"
-before_script:
-  - sed 's/'"SECRET_KEY = ''"'/'"SECRET_KEY = $SECRET_KEY"'/g' local_settings.py.template > local_settings.py
 #Command to run tests
 script:
+  - sed 's/'"SECRET_KEY = ''"'/'"SECRET_KEY = $SECRET_KEY"'/g' local_settings.py.template > local_settings.py
   - python inv/manage.py test
 env:
   - DJANGO_VERSION=1.4
