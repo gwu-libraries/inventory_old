@@ -45,14 +45,14 @@ def project(request, id):
 
 def item(request, id):
     item = get_object_or_404(Item, id=id)
-    bags = Bag.objects.defer('created', 'bag_type', 'payload_raw').filter(item=item)
+    bags = Bag.objects.defer('created', 'bag_type', 'payload').filter(item=item)
     return render(request, 'item.html', {'item': item, 'bags': bags})
 
 
 def bag(request, bagname):
     bag = get_object_or_404(Bag, bagname=bagname)
     actions = BagAction.objects.filter(bag=bag)
-    files = bag.payload()
+    files = bag.list_payload()
     file_type = request.GET.get('file_type')
     if file_type and file_type != 'all':
         temp_files = list()
