@@ -1,12 +1,18 @@
 from datetime import datetime
 import json
+import random
 
 from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
+from django.core.paginator import Paginator
+from django.http import HttpRequest
+from django.template.context import RequestContext
 
 from invapp.models import Machine, Collection, Project, Item, Bag
+from invapp.templatetags import invapp_extras
 from invapp import utils
+
 
 def now():
     return timezone.make_aware(datetime.now(), timezone.utc)
@@ -183,7 +189,7 @@ class AggregateStatsTestCase(TestCase):
                     'total_size': 31735345,
                     'types': {
                         'xml': {'count': 4, 'size': 68686},
-                        'jp2': {'count': 6, 'size': 26969694}, 
+                        'jp2': {'count': 6, 'size': 26969694},
                         'tiff': {'count': 6, 'size': 4696965}
                     }
                 },
@@ -192,7 +198,7 @@ class AggregateStatsTestCase(TestCase):
                     'total_size': 22795699,
                     'types': {
                         'xml': {'count': 4, 'size': 82276},
-                        'jp2': {'count': 6, 'size': 18493372}, 
+                        'jp2': {'count': 6, 'size': 18493372},
                         'tiff': {'count': 6, 'size': 4220051}
                     }
                 },
@@ -201,7 +207,7 @@ class AggregateStatsTestCase(TestCase):
                     'total_size': 19542864,
                     'types': {
                         'xml': {'count': 4, 'size': 135966},
-                        'jp2': {'count': 3, 'size': 17043264}, 
+                        'jp2': {'count': 3, 'size': 17043264},
                         'tiff': {'count': 3, 'size': 2363634}
                     }
                 }
@@ -212,7 +218,7 @@ class AggregateStatsTestCase(TestCase):
                     'total_size': 74073908,
                     'types': {
                         'xml': {'count': 12, 'size': 286928},
-                        'jp2': {'count': 15, 'size': 62506330}, 
+                        'jp2': {'count': 15, 'size': 62506330},
                         'tiff': {'count': 15, 'size': 11280650}
                     }
                 }
@@ -223,7 +229,7 @@ class AggregateStatsTestCase(TestCase):
                     'total_size': 74073908,
                     'types': {
                         'xml': {'count': 12, 'size': 286928},
-                        'jp2': {'count': 15, 'size': 62506330}, 
+                        'jp2': {'count': 15, 'size': 62506330},
                         'tiff': {'count': 15, 'size': 11280650}
                     }
                 }
@@ -420,3 +426,71 @@ class AggregateStatsTestCase(TestCase):
         c1 = Collection.objects.get(id='cccccccccccccccccc')
         self.assertTrue(utils.compare_dicts(c1.stats,
             self.expected['collections']['c1']))
+
+
+class PaginationTestCase(TestCase):
+
+    def test_pagination(self):
+        c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
+                        created=now())
+        c1.save()
+        p1 = Project(id='pppppppppppppppppp', name='test-project-1',
+                        manager='nobody', collection=c1, created=now())
+        p1.save()
+        i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
+                  collection=c1, created=now(), original_item_type='1')
+        i1.save()
+        m1 = Machine(name='test-machine-1', url='test-url-1')
+        m1.save()
+        b1 = Bag(bagname='test-bag-1', created=now(), item=i1,
+                 machine=m1, path='test-path1', bag_type='1')
+        b2 = Bag(bagname='test-bag-4', created=now(), item=i1,
+                 machine=m1, path='test-path4', bag_type='1')
+        b1.payload_raw = ''
+        b2.payload_raw = ''
+        for i in range(150):
+            b1.payload_raw += '/data/IMAGES/' + str(i) + '.jp2 ' + str(random.randrange(10000, 99999)) + '\n'
+            if i < 70:
+                b2.payload_raw += '/data/IMAGES/' + str(i) + '.jp2' + str(random.randrange(10000, 99999)) + '\n'
+
+        b1_files = b1.payload()
+        b2_files = b2.payload()
+
+        b1_paginator = Paginator(b1_files, 10)
+        b2_paginator = Paginator(b2_files, 10)
+
+        b1_files = b1_paginator.page(1)
+        b2_files = b2_paginator.page(1)
+
+
+        expected_b1 = list(range(13))
+        expected_b1[0] = {'disp': '<<', 'link': None, 'disabled': True}
+        expected_b1[1] = {'disp': '1', 'link': '?files_page=1', 'disabled': True}
+        expected_b1[2] = {'disp': '2', 'link': '?files_page=2', 'disabled': False}
+        expected_b1[3] = {'disp': '3', 'link': '?files_page=3', 'disabled': False}
+        expected_b1[4] = {'disp': '4', 'link': '?files_page=4', 'disabled': False}
+        expected_b1[5] = {'disp': '5', 'link': '?files_page=5', 'disabled': False}
+        expected_b1[6] = {'disp': '6', 'link': '?files_page=6', 'disabled': False}
+        expected_b1[7] = {'disp': '7', 'link': '?files_page=7', 'disabled': False}
+        expected_b1[8] = {'disp': '8', 'link': '?files_page=8', 'disabled': False}
+        expected_b1[9] = {'disp': '9', 'link': '?files_page=9', 'disabled': False}
+        expected_b1[10] = {'disp': '...', 'link': None, 'disabled': True}
+        expected_b1[11] = {'disp': '15', 'link': '?files_page=15', 'disabled': False}
+        expected_b1[12] = {'disp': '>>', 'link': '?files_page=2', 'disabled': False}
+
+        expected_b2 = list(range(9))
+        expected_b2[0] = {'disp': '<<', 'link': None, 'disabled': True}
+        expected_b2[1] = {'disp': '1', 'link': '?files_page=1', 'disabled': True}
+        expected_b2[2] = {'disp': '2', 'link': '?files_page=2', 'disabled': False}
+        expected_b2[3] = {'disp': '3', 'link': '?files_page=3', 'disabled': False}
+        expected_b2[4] = {'disp': '4', 'link': '?files_page=4', 'disabled': False}
+        expected_b2[5] = {'disp': '5', 'link': '?files_page=5', 'disabled': False}
+        expected_b2[6] = {'disp': '6', 'link': '?files_page=6', 'disabled': False}
+        expected_b2[7] = {'disp': '7', 'link': '?files_page=7', 'disabled': False}
+        expected_b2[8] = {'disp': '>>', 'link': '?files_page=2', 'disabled': False}
+
+        context = RequestContext(HttpRequest())
+        # Test for bag with more than 100 files
+        self.assertEqual(expected_b1, invapp_extras.pagination_boxes(context, b1_files, 'files_page'))
+        # Test for bag with less than 100 files
+        self.assertEqual(expected_b2, invapp_extras.pagination_boxes(context, b2_files, 'files_page'))
