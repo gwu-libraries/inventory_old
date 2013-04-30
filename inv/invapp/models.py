@@ -16,6 +16,9 @@ class Machine(models.Model):
     name = models.CharField(max_length=64, unique=True)
     url = models.URLField(unique=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Collection(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
@@ -39,6 +42,9 @@ class Collection(models.Model):
     def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Project(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
@@ -61,6 +67,8 @@ class Project(models.Model):
                 map(lambda item: item.stats, self.items.all()))
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
+    def __unicode__(self):
+        return self.name
 
 
 class Item(models.Model):
@@ -94,6 +102,9 @@ class Item(models.Model):
 
     def purl(self):
         return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
+
+    def __unicode__(self):
+        return self.title
 
 
 class Bag(models.Model):
@@ -141,6 +152,9 @@ class Bag(models.Model):
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Bag, self).save(*args, **kwargs)
 
+    def __unicode__(self):
+        return self.bagname
+
 
 class BagAction(models.Model):
     bag = models.ForeignKey(Bag, related_name='bag_action')
@@ -150,3 +164,6 @@ class BagAction(models.Model):
 
     class Meta:
         unique_together = ("bag", "action", "timestamp")
+
+    def __unicode__(self):
+        return '%s : %s' % (self.bag.bagname, self.action)
