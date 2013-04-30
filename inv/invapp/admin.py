@@ -1,5 +1,5 @@
 from django.contrib import admin
-from invapp.models import *
+from invapp.models import Machine, Collection, Project, Item, Bag, BagAction
 from tastypie.admin import ApiKeyInline
 from tastypie.models import ApiAccess, ApiKey
 from django.contrib.auth.admin import UserAdmin
@@ -20,14 +20,18 @@ class MachineAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    fields = ['id', 'name', 'collection', 'manager', 'start_date', 'end_date', 'created']
-    list_display = ('id', 'name', 'collection', 'manager', 'start_date', 'end_date', 'created')
+    fields = ['id', 'name', 'collection', 'manager', 'start_date', 'end_date',
+        'created']
+    list_display = ('id', 'name', 'collection', 'manager', 'start_date',
+        'end_date', 'created')
     search_fields = ['name']
 
 
 class BagAdmin(admin.ModelAdmin):
-    fields = ('bagname', 'item', 'machine', 'path', 'bag_type', 'created', 'payload_raw')
-    list_display = ('bagname', 'item', 'machine', 'path', 'bag_type', 'created')
+    fields = ('bagname', 'item', 'machine', 'path', 'bag_type', 'created',
+        'payload')
+    list_display = ('bagname', 'item', 'machine', 'path', 'bag_type',
+        'created')
 
 
 class CollectionAdmin(admin.ModelAdmin):
@@ -38,8 +42,11 @@ class CollectionAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    fields = ['id', 'title', 'collection', 'project', 'original_item_type', 'rawfiles_loc', 'qcfiles_loc', 'qafiles_loc', 'finfiles_loc', 'ocrfiles_loc', 'notes', 'created']
-    list_display = ('id', 'title', 'collection', 'project', 'original_item_type', 'created')
+    fields = ['id', 'title', 'collection', 'project', 'original_item_type',
+        'rawfiles_loc', 'qcfiles_loc', 'qafiles_loc', 'finfiles_loc',
+        'ocrfiles_loc', 'notes', 'created']
+    list_display = ('id', 'title', 'collection', 'project',
+        'original_item_type', 'created')
     search_fields = ['title']
     date_hierarchy = 'created'
 
