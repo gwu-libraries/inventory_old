@@ -36,9 +36,12 @@ def pagination_boxes(context, objects, url_key):
             next_page_number()
     '''
 
+    # get total page count
     tp = objects.paginator.num_pages
-    # build list of boxes (11 inner boxes + 2 arrows)
-    boxes = list(range(13))
+    # build list of boxes (11 inner boxes + 2 arrows for most)
+    # adjust for lists with less than 11 pages
+    size = tp if tp < 11 else 11
+    boxes = list(range(size + 2))
 
     def link(val):
         request = template.resolve_variable('request', context)
@@ -52,28 +55,34 @@ def pagination_boxes(context, objects, url_key):
     if objects.has_previous():
         boxes[0]['disabled'] = False
         boxes[0]['link'] = link(objects.previous_page_number())
-    boxes[12] = {'disp': '>>', 'link': None, 'disabled': True}
+    boxes[-1] = {'disp': '>>', 'link': None, 'disabled': True}
     if objects.has_next():
-        boxes[12]['disabled'] = False
-        boxes[12]['link'] = link(objects.next_page_number())
+        boxes[-1]['disabled'] = False
+        boxes[-1]['link'] = link(objects.next_page_number())
 
     # Add the first and last numbers
     boxes[1] = {'disp': '1', 'link': link(1)}
     boxes[1]['disabled'] = objects.number == 1
-    boxes[11] = {'disp': tp, 'link': link(tp)}
-    boxes[11]['disabled'] = objects.number == tp
+    boxes[-2] = {'disp': str(tp), 'link': link(tp)}
+    boxes[-2]['disabled'] = objects.number == tp
 
     # Add rest of numbers
-    # Always keep at least 3 boxes on either side of the current number
-    # -- Unless the current number is less than three away from an edge
+    
+    # For small lists, just fill out remaining boxes
+    if tp <= 11:
+        for x in range(2, tp):
+            boxes[x] = {'disp': str(x), 'link': link(x)}
+            boxes[x]['disabled'] = objects.number == x
 
-    # if small, don't bother with left ellipsis
-    if objects.number < 7:
-        for x in range(2, 11):
+    # For rest: add ellipses to show breaks
+
+    # if near beginning, don't bother with left ellipsis
+    elif objects.number < 7:
+        for x in range(2, 10):
             boxes[x] = {'disp': str(x), 'link': link(x)}
             boxes[x]['disabled'] = objects.number == x
         boxes[10] = {'disp': '...', 'link': None, 'disabled': True}
-    # if large, don't bother with right ellipsis
+    # if near end, don't bother with right ellipsis
     elif objects.number > tp - 6:
         boxes[2] = {'disp': '...', 'link': None, 'disabled': True}
         num = tp - 9
@@ -81,6 +90,7 @@ def pagination_boxes(context, objects, url_key):
             num += 1
             boxes[x] = {'disp': str(num), 'link': link(num)}
             boxes[x]['disabled'] = objects.number == num
+    # otherwise put three pages and ellipsis on both sides of current page
     else:
         boxes[2] = {'disp': '...', 'link': None, 'disabled': True}
         for x in range(-3, 4):

@@ -423,6 +423,8 @@ class AggregateStatsTestCase(TestCase):
 class PaginationTestCase(TestCase):
 
     def test_pagination(self):
+        self.maxDiff = None
+
         c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
                         created=now())
         c1.save()
@@ -438,21 +440,29 @@ class PaginationTestCase(TestCase):
                  machine=m1, path='test-path1', bag_type='1')
         b2 = Bag(bagname='test-bag-4', created=now(), item=i1,
                  machine=m1, path='test-path4', bag_type='1')
-        b1.payload_raw = ''
-        b2.payload_raw = ''
+        b3 = Bag(bagname='test-bag-5', created=now(), item=i1,
+                 machine=m1, path='test-path5', bag_type='1')
+        b1.payload = ''
+        b2.payload = ''
+        b3.payload = ''
         for i in range(150):
-            b1.payload_raw += '/data/IMAGES/' + str(i) + '.jp2 ' + str(random.randrange(10000, 99999)) + '\n'
+            b1.payload += '/data/IMAGES/' + str(i) + '.jp2 ' + str(random.randrange(10000, 99999)) + '\n'
             if i < 70:
-                b2.payload_raw += '/data/IMAGES/' + str(i) + '.jp2' + str(random.randrange(10000, 99999)) + '\n'
+                b2.payload += '/data/IMAGES/' + str(i) + '.jp2' + str(random.randrange(10000, 99999)) + '\n'
+            if i < 20:
+                b3.payload += '/data/IMAGES/' + str(i) + '.jp2' + str(random.randrange(10000, 99999)) + '\n'
 
-        b1_files = b1.payload()
-        b2_files = b2.payload()
+        b1_files = b1.list_payload()
+        b2_files = b2.list_payload()
+        b3_files = b3.list_payload()
 
         b1_paginator = Paginator(b1_files, 10)
         b2_paginator = Paginator(b2_files, 10)
+        b3_paginator = Paginator(b3_files, 10)
 
         b1_files = b1_paginator.page(1)
         b2_files = b2_paginator.page(1)
+        b3_files = b3_paginator.page(1)
 
 
         expected_b1 = list(range(13))
@@ -481,8 +491,16 @@ class PaginationTestCase(TestCase):
         expected_b2[7] = {'disp': '7', 'link': '?files_page=7', 'disabled': False}
         expected_b2[8] = {'disp': '>>', 'link': '?files_page=2', 'disabled': False}
 
+        expected_b3 = list(range(4))
+        expected_b3[0] = {'disp': '<<', 'link': None, 'disabled': True}
+        expected_b3[1] = {'disp': '1', 'link': '?files_page=1', 'disabled': True}
+        expected_b3[2] = {'disp': '2', 'link': '?files_page=2', 'disabled': False}
+        expected_b3[3] = {'disp': '>>', 'link': '?files_page=2', 'disabled': False}
+
         context = RequestContext(HttpRequest())
         # Test for bag with more than 100 files
         self.assertEqual(expected_b1, invapp_extras.pagination_boxes(context, b1_files, 'files_page'))
         # Test for bag with less than 100 files
         self.assertEqual(expected_b2, invapp_extras.pagination_boxes(context, b2_files, 'files_page'))
+        # Test for bag with less than 20 files
+        self.assertEqual(expected_b3, invapp_extras.pagination_boxes(context, b3_files, 'files_page'))
