@@ -37,15 +37,14 @@ class ModelTestCase(TestCase):
         # load bag with raw data
         bag = Bag(bagname='test-bag-1', created=now(), item=i1,
             machine=m1, path='test-path1', bag_type='1')
-        self.assertEqual(bag.payload_stats, '')
+        bag.stats = bag.collect_stats()
         bag.save()
-        result0 = json.loads(bag.payload_stats)
-        self.assertEqual(result0['total_size'], 0)
-        self.assertEqual(result0['total_count'], 0)
-        self.assertEqual(len(result0['types'].keys()), 0)
+        self.assertEqual(bag.stats['total_size'], 0)
+        self.assertEqual(bag.stats['total_count'], 0)
+        self.assertEqual(len(bag.stats['types'].keys()), 0)
 
         # now add payload data
-        bag.payload_raw = """/data/METADATA/0123456789-dc.xml 2655
+        bag.payload = """/data/METADATA/0123456789-dc.xml 2655
 /data/METADATA/0123456789-MRC.xml 3256
 /data/IMAGES/0123456789_pg1.jp2 1778740
 /data/IMAGES/0123456789_pg2.jp2 1878756
@@ -64,28 +63,15 @@ class ModelTestCase(TestCase):
                 'tiff': {'count':3, 'size':5573375}
                 }
             }
-        result1 = bag.calc_pstats()
-        self.assertEqual(expect['total_size'], result1['total_size'])
-        self.assertEqual(expect['total_count'], result1['total_count'])
-        for t in expect['types'].keys():
-            self.assertEqual(expect['types'][t]['count'],
-                result1['types'][t]['count'])
-            self.assertEqual(expect['types'][t]['size'],
-                result1['types'][t]['size'])
-
-        # now save the bag and test the save() override
+        bag.stats = bag.collect_stats()
         bag.save()
-
-        # test that data was saved correctly
-        bag2 = Bag.objects.get(bagname='test-bag-1')
-        result2 = json.loads(bag2.payload_stats)
-        self.assertEqual(expect['total_size'], result2['total_size'])
-        self.assertEqual(expect['total_count'], result2['total_count'])
+        self.assertEqual(expect['total_size'], bag.stats['total_size'])
+        self.assertEqual(expect['total_count'], bag.stats['total_count'])
         for t in expect['types'].keys():
             self.assertEqual(expect['types'][t]['count'],
-                result2['types'][t]['count'])
+                bag.stats['types'][t]['count'])
             self.assertEqual(expect['types'][t]['size'],
-                result2['types'][t]['size'])
+                bag.stats['types'][t]['size'])
 
 
 class AggregateStatsTestCase(TestCase):
@@ -111,7 +97,7 @@ class AggregateStatsTestCase(TestCase):
         m1.save()
         b1 = Bag(bagname='test-bag-1', created=now(), item=i1,
             machine=m1, path='test-path1', bag_type='1')
-        b1.payload_raw = """/data/METADATA/0123456789-dc.xml 11111
+        b1.payload = """/data/METADATA/0123456789-dc.xml 11111
 /data/METADATA/0123456789-MRC.xml 22222
 /data/IMAGES/0123456789_pg1.jp2 3333333
 /data/IMAGES/0123456789_pg2.jp2 4444444
@@ -120,10 +106,11 @@ class AggregateStatsTestCase(TestCase):
 /data/IMAGES/0123456789_pg2.tiff 777777
 /data/IMAGES/0123456789_pg3.tiff 888888
 """
+        b1.stats = b1.collect_stats()
         b1.save()
         b2 = Bag(bagname='test-bag-2', created=now(), item=i1,
             machine=m1, path='test-path2', bag_type='1')
-        b2.payload_raw = """/data/METADATA/0123456789-dc.xml 12121
+        b2.payload = """/data/METADATA/0123456789-dc.xml 12121
 /data/METADATA/0123456789-MRC.xml 23232
 /data/IMAGES/0123456789_pg1.jp2 3434343
 /data/IMAGES/0123456789_pg2.jp2 4545454
@@ -132,12 +119,13 @@ class AggregateStatsTestCase(TestCase):
 /data/IMAGES/0123456789_pg2.tiff 787878
 /data/IMAGES/0123456789_pg3.tiff 898989
 """
+        b2.stats = b2.collect_stats()
         b2.save()
 
 
         b3 = Bag(bagname='test-bag-3', created=now(), item=i2,
             machine=m1, path='test-path3', bag_type='1')
-        b3.payload_raw = """/data/METADATA/0123456789-dc.xml 12121
+        b3.payload = """/data/METADATA/0123456789-dc.xml 12121
 /data/METADATA/0123456789-MRC.xml 23232
 /data/IMAGES/0123456789_pg1.jp2 3434343
 /data/IMAGES/0123456789_pg2.jp2 4545454
@@ -146,10 +134,11 @@ class AggregateStatsTestCase(TestCase):
 /data/IMAGES/0123456789_pg2.tiff 787878
 /data/IMAGES/0123456789_pg3.tiff 898989
 """
+        b3.stats = b3.collect_stats()
         b3.save()
         b4 = Bag(bagname='test-bag-4', created=now(), item=i2,
             machine=m1, path='test-path4', bag_type='1')
-        b4.payload_raw = """/data/METADATA/0123456789-dc.xml 12345
+        b4.payload = """/data/METADATA/0123456789-dc.xml 12345
 /data/METADATA/0123456789-MRC.xml 34578
 /data/IMAGES/0123456789_pg1.jp2 987654
 /data/IMAGES/0123456789_pg2.jp2 3214567
@@ -158,26 +147,29 @@ class AggregateStatsTestCase(TestCase):
 /data/IMAGES/0123456789_pg2.tiff 584321
 /data/IMAGES/0123456789_pg3.tiff 782345
 """
+        b4.stats = b4.collect_stats()
         b4.save()
 
 
         b5 = Bag(bagname='test-bag-5', created=now(), item=i3,
             machine=m1, path='test-path5', bag_type='1')
-        b5.payload_raw = """/data/METADATA/0123456789-dc.xml 12121
+        b5.payload = """/data/METADATA/0123456789-dc.xml 12121
 /data/METADATA/0123456789-MRC.xml 23232
 /data/IMAGES/0123456789_pg1.tiff 676767
 /data/IMAGES/0123456789_pg2.tiff 787878
 /data/IMAGES/0123456789_pg3.tiff 898989
 """
+        b5.stats = b5.collect_stats()
         b5.save()
         b6 = Bag(bagname='test-bag-6', created=now(), item=i3,
             machine=m1, path='test-path6', bag_type='1')
-        b6.payload_raw = """/data/METADATA/0123456789-dc.xml 38479
+        b6.payload = """/data/METADATA/0123456789-dc.xml 38479
 /data/METADATA/0123456789-MRC.xml 62134
 /data/IMAGES/0123456789_pg1.jp2 6489723
 /data/IMAGES/0123456789_pg2.jp2 8984567
 /data/IMAGES/0123456789_pg3.jp2 1568974
 """
+        b6.stats = b6.collect_stats()
         b6.save()
 
         self.empty_stats = {'total_count': 0, 'total_size': 0, 'types': {}}

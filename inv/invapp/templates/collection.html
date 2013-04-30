@@ -26,6 +26,10 @@
                     <dt>Total Items</dt><dd>{{ items.paginator.count }}</dd>
                     <dt>Total Files</dt><dd>{{ collection.stats.total_count }}</dd>
                     <dt>Total Size</dt><dd>{{ collection.stats.total_size|filesizeformat}}</dd>
+                </dl>
+            </div>
+            <div class="span3">
+                <dl>
                     <dt>File Types</dt><dd>
                     {% for key, value in collection.stats.types.items %}
                     {{ key }} | {{ value.count }} | {{value.size|filesizeformat }}<br />
