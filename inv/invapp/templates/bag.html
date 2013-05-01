@@ -13,7 +13,17 @@
 <script type="text/javascript">
     $(function() {
         $("#search_bag_files").autocomplete({
-            source: '/ajaxapi/get_bag_file/?bag_name={{bag.bagname}}',
+            //source: '/ajaxapi/get_bag_file/?bag_name={{bag.bagname}}',
+            source: function(request, response) {
+                var files = {{bag.list_payload_str|safe}};
+                var result = [];
+                for(var i=0; i<files.length; i++) {
+                    var keyword = request.term;
+                    if(files[i][0].toLowerCase().indexOf(request.term.toLowerCase()) != -1)
+                        result.push(files[i][0]);
+                }
+                response(result);
+            }
         });
     });
 
@@ -99,7 +109,7 @@
                 </a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                     <li><a href="?file_type=all">All</a></li>
-                    {% for ftype in bag.pstats.types %}
+                    {% for ftype in bag.stats.types %}
                     <li><a href="?file_type={{ ftype }}">{{ ftype }}</a></li>
                     {% endfor %}
                 </ul>
@@ -108,11 +118,10 @@
                 {% bootstrap_paginator_bar files 'files_page' %}
             {% endif %}
         </div>
-        <div class="ui-widget">
+        <div style="width:100%;float:left;">
             <form id="search_form" action="{% url 'bag' bag.bagname %}" method="GET">
                 <label for="search_bag_files"><h5>Search: </h5></label>
                 <input id="search_bag_files" name="search_bag_files" type="text" />
-                <input type="submit" name="filter" value="Filter"/>
             </form>
         </div>
         <table class="table table-striped">
