@@ -127,6 +127,9 @@ class Bag(models.Model):
     def list_payload(self):
         return [line.split() for line in self.payload.split('\n') if line]
 
+    def list_payload_str(self):
+        return json.dumps(self.list_payload())
+
     def filecount(self):
         return self.stats['total_count']
 
