@@ -27,5 +27,4 @@ urlpatterns += patterns('invapp.views',
     url(r'^project/(?P<id>\w{5}/\w{10,12})$', 'project', name='project'),
     url(r'^item/(?P<id>\w{5}/\w{9,12})$', 'item', name='item'),
     url(r'^bag/(?P<bagname>.*)$', 'bag', name='bag'),
-    url(r'^ajaxapi/get_bag_file/', 'get_bag_file', name='get_bag_file'),
 )
