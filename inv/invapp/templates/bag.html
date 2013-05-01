@@ -13,7 +13,6 @@
 <script type="text/javascript">
     $(function() {
         $("#search_bag_files").autocomplete({
-            //source: '/ajaxapi/get_bag_file/?bag_name={{bag.bagname}}',
             source: function(request, response) {
                 var files = {{bag.list_payload_str|safe}};
                 var result = [];
