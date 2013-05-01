@@ -6,6 +6,42 @@
     {{ bag.bagname }}
 {% endblock title %}
 
+{% block javascript_extra %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function() {
+        $("#search_bag_files").autocomplete({
+            source: function(request, response) {
+                var files = {{bag.list_payload_str|safe}};
+                var result = [];
+                for(var i=0; i<files.length; i++) {
+                    var keyword = request.term;
+                    if(files[i][0].toLowerCase().indexOf(request.term.toLowerCase()) != -1)
+                        result.push(files[i][0]);
+                }
+                response(result);
+            }
+        });
+    });
+
+    $("#search_bag_files").keypress(function() {
+        if(event.which == 13) {
+            event.preventDefault();
+            $("#search_form").submit();
+        }
+    });
+</script>
+<style>
+    .ui-autocomplete {
+        max-height: 100px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+</style>
+{% endblock javascript_extra %}
+
 {% block content %}
 <section id="bag">
     <header class="container-fluid">
@@ -65,14 +101,14 @@
         </table>
         <h5>Individual Files</h5>
         <div style="width:100%">
-            <div class="dropdown all-camera-dropdown" style="float:left;width:5%">
-                <a class="dropwdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="" href="">
+            <div class="dropdown" style="float:left;width:5%">
+                <a class="dropwdown-toggle ui-button" id="dLabel" role="button" data-toggle="dropdown" data-target="" href="">
                     File Type
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                     <li><a href="?file_type=all">All</a></li>
-                    {% for ftype in bag.pstats.types %}
+                    {% for ftype in bag.stats.types %}
                     <li><a href="?file_type={{ ftype }}">{{ ftype }}</a></li>
                     {% endfor %}
                 </ul>
@@ -80,6 +116,12 @@
             {% if files.paginator.count >= 10 %}
                 {% bootstrap_paginator_bar files 'files_page' %}
             {% endif %}
+        </div>
+        <div style="width:100%;float:left;">
+            <form id="search_form" action="{% url 'bag' bag.bagname %}" method="GET">
+                <label for="search_bag_files"><h5>Search: </h5></label>
+                <input id="search_bag_files" name="search_bag_files" type="text" />
+            </form>
         </div>
         <table class="table table-striped">
             <tr>

@@ -4,6 +4,10 @@ from invapp.models import Collection, Project, Item, Bag, BagAction
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+import json
+
+from django.http import HttpResponse
+
 
 def collection(request, id):
     collection = get_object_or_404(Collection, id=id)
@@ -54,6 +58,10 @@ def bag(request, bagname):
     actions = BagAction.objects.filter(bag=bag)
     files = bag.list_payload()
     file_type = request.GET.get('file_type')
+    file_name = request.GET.get('search_bag_files')
+    if file_name:
+        files = [f for f in files if file_name.lower() in f[0].lower()]
+
     if file_type and file_type != 'all':
         temp_files = list()
         for f in files:
