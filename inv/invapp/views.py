@@ -81,19 +81,6 @@ def bag(request, bagname):
             files = bag_paginator.page(bag_paginator.num_pages)
     return render(request, 'bag.html', {'bag': bag, 'actions': actions, 'files': files})
 
-# Handles AJAX request for search autocomplete funtionality of Bag file listings
-def get_bag_file(request):
-    result = []
-    file_name = request.GET.get('term', '')
-    bag = get_object_or_404(Bag, bagname=request.GET.get('bag_name', ''))
-    for file in bag.payload():
-        if file_name.lower() in file[0].lower():
-            result.append(file[0])
-
-        data = json.dumps(result)
-
-    return HttpResponse(data, 'application/json')
-
 
 def home(request):
     collections = Collection.objects.all()
