@@ -1,7 +1,7 @@
 from tastypie import fields
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.resources import ModelResource
-from tastypie.authentication import ApiKeyAuthentication
+from tastypie.authentication import ApiKeyAuthentication, MultiAuthentication, Authentication
 from tastypie.authorization import DjangoAuthorization
 from invapp.models import *
 
@@ -13,7 +13,8 @@ class MachineResource(ModelResource):
             'name': ALL_WITH_RELATIONS,
             'url': ALL_WITH_RELATIONS
         }
-        authentication = ApiKeyAuthentication()
+        authentication = MultiAuthentication(ApiKeyAuthentication(),
+            Authentication())
         authorization = DjangoAuthorization()
 
 
@@ -26,7 +27,8 @@ class CollectionResource(ModelResource):
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'manager': ALL_WITH_RELATIONS
         }
-        authentication = ApiKeyAuthentication()
+        authentication = MultiAuthentication(ApiKeyAuthentication(),
+            Authentication())
         authorization = DjangoAuthorization()
 
 
@@ -42,7 +44,8 @@ class ProjectResource(ModelResource):
             'start_date': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'end_date': ['exact', 'gt', 'lt', 'gte', 'lte'],
         }
-        authentication = ApiKeyAuthentication()
+        authentication = MultiAuthentication(ApiKeyAuthentication(),
+            Authentication())
         authorization = DjangoAuthorization()
 
 
@@ -64,7 +67,8 @@ class ItemResource(ModelResource):
             'finfiles_loc': ALL_WITH_RELATIONS,
             'ocrfiles_loc': ALL_WITH_RELATIONS,
         }
-        authentication = ApiKeyAuthentication()
+        authentication = MultiAuthentication(ApiKeyAuthentication(),
+            Authentication())
         authorization = DjangoAuthorization()
 
 
@@ -81,8 +85,12 @@ class BagResource(ModelResource):
             'bag_type': ALL,
             'urlpath': ALL_WITH_RELATIONS,
         }
-        authentication = ApiKeyAuthentication()
+        authentication = MultiAuthentication(ApiKeyAuthentication(),
+            Authentication())
         authorization = DjangoAuthorization()
+
+    def dehydrate_payload(self, bundle):
+        return bundle.obj.list_payload()
 
 
 
@@ -95,5 +103,6 @@ class BagActionResource(ModelResource):
             'timestamp': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'action': ALL,
         }
-        authentication = ApiKeyAuthentication()
+        authentication = MultiAuthentication(ApiKeyAuthentication(),
+            Authentication())
         authorization = DjangoAuthorization()
