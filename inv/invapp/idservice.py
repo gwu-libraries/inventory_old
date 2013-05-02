@@ -7,10 +7,10 @@ import requests
 
 
 def get_idservice(test=False):
-    if not test:
-        kwargs = copy(settings.IDSERVICE)
+    if test or settings.DEBUG:
+        kwargs = copy(settings.TEST_IDSERVICE)        
     else:
-        kwargs = copy(settings.TEST_IDSERVICE)
+        kwargs = copy(settings.IDSERVICE)
     clas = kwargs.pop('class')
     return globals()[clas](**kwargs)
 

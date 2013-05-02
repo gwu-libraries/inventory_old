@@ -76,6 +76,28 @@ class ModelTestCase(TestCase):
             self.assertEqual(expect['types'][t]['size'],
                 bag.stats['types'][t]['size'])
 
+    @skipIf(not settings.TEST_IDSERVICE.get('url') or 
+        not settings.TEST_IDSERVICE.get('requester') or
+        not settings.TEST_IDSERVICE.get('minter'),
+        'Test IDService not set')
+    def test_auto_id_creation(self):
+        # test collection
+        c1 = Collection(name='Test Collection autoID')
+        c1.save()
+        self.assertTrue(c1.id)
+        self.assertTrue(c1.created)
+        # test project
+        p1 = Project(name='Test Project autoID', manager='Joshua Gomez',
+            collection=c1)
+        p1.save()
+        self.assertTrue(p1.id)
+        self.assertTrue(p1.created)
+        i1 = Item(title='Test Item autoID', collection=c1, project=p1,
+            original_item_type='1')
+        i1.save()
+        self.assertTrue(i1.id)
+        self.assertTrue(i1.created)
+
 
 class AggregateStatsTestCase(TestCase):
 
@@ -516,7 +538,6 @@ class IDServiceTestCase(TestCase):
             self.ids = get_idservice(test=True)
         except:
             self.ids = None
-            raise
 
     def mint(self):
         # try minting one
