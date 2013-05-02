@@ -38,8 +38,6 @@ class Collection(models.Model):
             self.id = data['identifier']
             ids.bind(id=self.id, objurl=self.access_loc, objtype='c',
                 desc=self.description)
-        if not self.created:
-            self.created = now()
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Collection, self).save(*args, **kwargs)
