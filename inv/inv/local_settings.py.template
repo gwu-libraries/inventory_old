@@ -33,3 +33,19 @@ TIME_ZONE = 'America/New_York'
 SECRET_KEY = '_$mfn4it@819%gjc$c*uo$_##_(kc9m0pjk==-^z4y(1alef8r'
 
 ID_SERVICE_URL = "http://id.library.gwu.edu"
+
+IDSERVICE = {
+    'requester': '',
+    'minter': '',
+    'url': '',
+    'port': ''
+}
+
+# TESTING SETTINGS
+
+TEST_IDSERVICE = {
+    'requester': '',
+    'minter': '',
+    'url': '',
+    'port': ''
+}

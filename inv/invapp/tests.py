@@ -2,15 +2,18 @@ from datetime import datetime
 import json
 import random
 
+from django.conf import settings
 from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
+from django.utils.unittest import skipIf
 from django.core.paginator import Paginator
 from django.http import HttpRequest
 from django.template.context import RequestContext
 
 from invapp.models import Machine, Collection, Project, Item, Bag
 from invapp.templatetags import invapp_extras
+from invapp.idservice import get_idservice
 from invapp import utils
 
 
@@ -504,3 +507,64 @@ class PaginationTestCase(TestCase):
         self.assertEqual(expected_b2, invapp_extras.pagination_boxes(context, b2_files, 'files_page'))
         # Test for bag with less than 20 files
         self.assertEqual(expected_b3, invapp_extras.pagination_boxes(context, b3_files, 'files_page'))
+
+
+class IDServiceTestCase(TestCase):
+
+    def setUp(self):
+        try:
+            self.ids = get_idservice(test=True)
+        except:
+            self.ids = None
+            raise
+
+    def mint(self):
+        # try minting one
+        data = self.ids.mint(1)
+        self.assertTrue(isinstance(data, dict))
+        self.assertTrue(data['identifier'])
+        self.id = data['identifier']
+        # now try multiple
+        datafor3 = self.ids.mint(3)
+        self.assertTrue(isinstance(datafor3, list))
+        self.assertTrue(all([id['identifier'] for id in datafor3]))
+
+    def bind(self):
+        self.url = 'myurl.com/foo'
+        self.objtype = 'i'
+        self.desc = 'Test id from inventory'
+        newdata = self.ids.bind(self.id, self.url, self.objtype, self.desc)
+        self.assertTrue(isinstance(newdata, dict))
+        self.assertEqual(newdata['identifier'], self.id)
+        self.assertEqual(newdata['object_url'], self.url)
+        self.assertEqual(newdata['object_type'], self.objtype)
+        self.assertEqual(newdata['description'], self.desc)
+
+    def lookup(self):
+        storeddata = self.ids.lookup(self.id)
+        self.assertTrue(isinstance(storeddata, dict))
+        self.assertEqual(storeddata['identifier'], self.id)
+        self.assertEqual(storeddata['object_url'], self.url)
+        self.assertEqual(storeddata['object_type'], self.objtype)
+        self.assertEqual(storeddata['description'], self.desc)
+
+    @skipIf(not settings.TEST_IDSERVICE.get('url') or 
+        not settings.TEST_IDSERVICE.get('requester') or
+        not settings.TEST_IDSERVICE.get('minter'),
+        'Test IDService not set')
+    def test_all_methods(self):
+        self.mint()
+        self.bind()
+        self.lookup()
+
+    @skipIf(not settings.TEST_IDSERVICE.get('url') or 
+        not settings.TEST_IDSERVICE.get('requester') or
+        not settings.TEST_IDSERVICE.get('minter'),
+        'Test IDService not set')
+    def test_exceptions(self):
+        # inject incrorrect url
+        self.ids.baseurl = '%s/wrong' % self.ids.baseurl
+        self.assertRaises(self.ids.IDServiceError, self.ids.mint)
+        self.assertRaises(self.ids.IDServiceError, self.ids.bind, '', '')
+        self.assertRaises(self.ids.IDServiceError, self.ids.lookup, '')
+

@@ -40,7 +40,7 @@ class Collection(models.Model):
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
     def purl(self):
-        return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
+        return '%s/%s' % (settings.IDSERVICE['url'], self.id)
 
     def __unicode__(self):
         return self.name
@@ -101,7 +101,7 @@ class Item(models.Model):
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
     def purl(self):
-        return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
+        return '%s/%s' % (settings.IDSERVICE['url'], self.id)
 
     def __unicode__(self):
         return self.title
