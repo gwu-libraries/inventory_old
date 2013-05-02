@@ -1,4 +1,4 @@
-django==1.4
+django==1.4.5
 south
 psycopg2
 django-tastypie
