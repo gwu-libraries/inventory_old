@@ -14,6 +14,15 @@ from invapp.utils import merge_dicts
 models.signals.post_save.connect(create_api_key, sender=User)
 
 
+def mintandbind(objtype, objurl, description=''):
+    idservice = get_idservice()
+    data = idservice.mint(1)
+    id = data['identifier']
+    idservice.bind(id=id, objurl=objurl, objtype=objtype,
+        desc=description)
+    return id
+
+
 class Machine(models.Model):
     name = models.CharField(max_length=64, unique=True)
     url = models.URLField(unique=True)
@@ -33,11 +42,8 @@ class Collection(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            ids = get_idservice()
-            data = ids.mint(1)
-            self.id = data['identifier']
-            ids.bind(id=self.id, objurl=self.access_loc, objtype='c',
-                desc=self.description)
+            self.id = mintandbind(objtype='c', objurl=self.access_loc,
+                description=self.name)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Collection, self).save(*args, **kwargs)
@@ -68,10 +74,8 @@ class Project(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            ids = get_idservice()
-            data = ids.mint(1)
-            self.id = data['identifier']
-            ids.bind(id=self.id, objurl=self.access_loc, objtype='p')
+            self.id = mintandbind(objtype='p', objurl=self.access_loc,
+                description=self.name)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Project, self).save(*args, **kwargs)
@@ -107,11 +111,9 @@ class Item(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            ids = get_idservice()
-            data = ids.mint(1)
-            self.id = data['identifier']
-            ids.bind(id=self.id, objurl=self.access_loc, objtype='i',
-                desc='local_id: %s; title: %s;' % (self.local_id, self.title))
+            desc = 'local_id: %s; title: %s;' % (self.local_id, self.title)
+            self.id = mintandbind(objtype='i', objurl=self.access_loc,
+                description=desc)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Item, self).save(*args, **kwargs)
