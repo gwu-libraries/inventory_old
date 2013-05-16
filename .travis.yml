@@ -7,6 +7,7 @@ env:
 install: "pip install -r requirements.txt --use-mirrors"
 #Command to run tests
 script:
+  - mkdir logs
   - cp inv/inv/local_settings.py.template inv/inv/local_settings.py
   - python inv/manage.py test invapp
 # Email notifications
