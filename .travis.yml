@@ -9,7 +9,8 @@ install: "pip install -r requirements.txt --use-mirrors"
 script:
   - mkdir logs
   - cp inv/inv/local_settings.py.template inv/inv/local_settings.py
-  - python inv/manage.py test invapp
+  - cd inv
+  - python manage.py test invapp
 # Email notifications
 notifications:
     email:
