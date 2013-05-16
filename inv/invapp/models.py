@@ -3,9 +3,11 @@ import json
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
+from django.utils.timezone import now
 from json_field import JSONField
 from tastypie.models import create_api_key
 
+from invapp.idservice import mintandbind
 from invapp.utils import merge_dicts
 
 
@@ -23,12 +25,16 @@ class Machine(models.Model):
 class Collection(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
     name = models.CharField(max_length=256)
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     description = models.TextField(blank=True)
     manager = models.CharField(max_length=256, blank=True)
+    access_loc = models.URLField(blank=True)
     stats = JSONField()
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.id = mintandbind(objtype='c', objurl=self.access_loc,
+                description=self.name)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Collection, self).save(*args, **kwargs)
@@ -40,7 +46,7 @@ class Collection(models.Model):
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
     def purl(self):
-        return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
+        return '%s/%s' % (settings.IDSERVICE['url'], self.id)
 
     def __unicode__(self):
         return self.name
@@ -48,15 +54,19 @@ class Collection(models.Model):
 
 class Project(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     name = models.CharField(max_length=256)
     manager = models.CharField(max_length=256)
     collection = models.ForeignKey(Collection, related_name='projects')
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
+    access_loc = models.URLField(blank=True)
     stats = JSONField()
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.id = mintandbind(objtype='p', objurl=self.access_loc,
+                description=self.name)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Project, self).save(*args, **kwargs)
@@ -78,7 +88,7 @@ class Item(models.Model):
     collection = models.ForeignKey(Collection, related_name='items',
         null=True)
     project = models.ForeignKey(Project, related_name='items', null=True)
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     original_item_type = models.CharField(max_length=1,
         choices=settings.ITEM_TYPES)
     rawfiles_loc = models.URLField(blank=True)
@@ -87,9 +97,14 @@ class Item(models.Model):
     finfiles_loc = models.URLField(blank=True)
     ocrfiles_loc = models.URLField(blank=True)
     notes = models.TextField(blank=True)
+    access_loc = models.URLField(blank=True)
     stats = JSONField()
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            desc = 'local_id: %s; title: %s;' % (self.local_id, self.title)
+            self.id = mintandbind(objtype='i', objurl=self.access_loc,
+                description=desc)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Item, self).save(*args, **kwargs)
@@ -101,7 +116,7 @@ class Item(models.Model):
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
     def purl(self):
-        return '%s/%s' % (settings.ID_SERVICE_URL, self.id)
+        return '%s/%s' % (settings.IDSERVICE['url'], self.id)
 
     def __unicode__(self):
         return self.title
