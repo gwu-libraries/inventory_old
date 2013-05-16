@@ -1,6 +1,8 @@
 from datetime import datetime
 import json
 import random
+import os
+import shutil
 
 from django.core.management import call_command
 from django.test import TestCase
@@ -8,6 +10,8 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.http import HttpRequest
 from django.template.context import RequestContext
+
+from tempfile import NamedTemporaryFile
 
 from invapp.models import Machine, Collection, Project, Item, Bag
 from invapp.templatetags import invapp_extras
@@ -504,3 +508,69 @@ class PaginationTestCase(TestCase):
         self.assertEqual(expected_b2, invapp_extras.pagination_boxes(context, b2_files, 'files_page'))
         # Test for bag with less than 20 files
         self.assertEqual(expected_b3, invapp_extras.pagination_boxes(context, b3_files, 'files_page'))
+
+
+class ImportCommandTestCase(TestCase):
+
+    def setUp(self):
+        os.makedirs('test_invapp/payloads')
+        with NamedTemporaryFile(dir='test_invapp', delete=True) as f:
+            f.write('Machine,DSpace Server,gwdspace.wrlc.org')
+            f.write('\nCollection,38989/c010g26gs40w,Cultural Imaginings,,,Martha Whitaker')
+            f.write('\nProject,38989/c0102488q518,,IMLS Cost Analysis,Martha Whitaker,38989/c010g26gs40w,2010-03-01,2011-11-01')
+            f.write('\nItem,38989/c01wdbsmv,"",39020025220180,38989/c010g26gs40w,38989/c0102488q518,,2,,,,,,')
+            f.write('\nBag,39020025220180_PRESRV_BAG,,38989/c01wdbsmv,gwdspace.wrlc.org,/archive1/cult-imag-prsrv/39020025220180_PRESRV_BAG,preservation')
+            #f.write('\nBagAction,32882019307506_ACCESS_BAG,2011-06-13 13:51:58,4,')
+            f.seek(0)
+
+            bag_payload_file = open('test_invapp/payloads/39020025220180_PRESRV_BAG', 'w+')
+            bag_payload_file.write('data/JPEG2K/RAW254.jp2 582465')
+            bag_payload_file.write('\ndata/JPEG2K/RAW348.jp2 591732')
+            bag_payload_file.write('\ndata/METADATA/MIX/RAWmix107.xml 4663')
+            bag_payload_file.seek(0)
+
+            call_command('import', f.name)
+            bag_payload_file.close()
+            f.close()
+
+        shutil.rmtree('test_invapp')
+
+    def test_import_command(self):
+        m1 = Machine.objects.get(name='DSpace Server')
+        self.assertEqual(m1.url, 'gwdspace.wrlc.org')
+
+        c1 = Collection.objects.get(id='38989/c010g26gs40w')
+        self.assertEqual(c1.name, 'Cultural Imaginings')
+        #self.assertEqual(c1.created, currentdate)
+        self.assertEqual(c1.description, '')
+        self.assertEqual(c1.manager, 'Martha Whitaker')
+
+        p1 = Project.objects.get(id='38989/c0102488q518')
+        self.assertEqual(p1.name, 'IMLS Cost Analysis')
+        self.assertEqual(p1.manager, 'Martha Whitaker')
+        self.assertEqual(p1.collection.id, '38989/c010g26gs40w')
+        #self.assertEqual(p1.start_date, '2010-03-01')
+        #self.assertEqual(p1.end_date, '2011-11-01')
+
+        i1 = Item.objects.get(id='38989/c01wdbsmv')
+        self.assertEqual(i1.title, '')
+        self.assertEqual(i1.local_id, '39020025220180')
+        self.assertEqual(i1.collection.id, '38989/c010g26gs40w')
+        self.assertEqual(i1.project.id, '38989/c0102488q518')
+        self.assertEqual(i1.original_item_type, '2')
+        self.assertEqual(i1.rawfiles_loc, '')
+        self.assertEqual(i1.qcfiles_loc, '')
+        self.assertEqual(i1.qafiles_loc, '')
+        self.assertEqual(i1.finfiles_loc, '')
+        self.assertEqual(i1.ocrfiles_loc, '')
+        self.assertEqual(i1.notes, '')
+
+        b1 = Bag.objects.get(bagname='39020025220180_PRESRV_BAG')
+        self.assertEqual(b1.item.id, '38989/c01wdbsmv')
+        self.assertEqual(b1.machine.url, 'gwdspace.wrlc.org')
+        self.assertEqual(b1.path, '/archive1/cult-imag-prsrv/39020025220180_PRESRV_BAG')
+        self.assertEqual(b1.bag_type, '2')
+        bag_payload = """data/JPEG2K/RAW254.jp2 582465
+data/JPEG2K/RAW348.jp2 591732
+data/METADATA/MIX/RAWmix107.xml 4663"""
+        self.assertEqual(b1.payload, bag_payload)
