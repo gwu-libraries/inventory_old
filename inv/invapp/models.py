@@ -7,20 +7,11 @@ from django.utils.timezone import now
 from json_field import JSONField
 from tastypie.models import create_api_key
 
-from invapp.idservice import get_idservice
+from invapp.idservice import mintandbind
 from invapp.utils import merge_dicts
 
 
 models.signals.post_save.connect(create_api_key, sender=User)
-
-
-def mintandbind(objtype, objurl, description=''):
-    idservice = get_idservice()
-    data = idservice.mint(1)
-    id = data['identifier']
-    idservice.bind(id=id, objurl=objurl, objtype=objtype,
-        desc=description)
-    return id
 
 
 class Machine(models.Model):
