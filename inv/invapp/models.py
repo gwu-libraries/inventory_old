@@ -1,5 +1,6 @@
 import json
 
+from django import forms
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
@@ -170,3 +171,8 @@ class BagAction(models.Model):
 
     def __unicode__(self):
         return '%s : %s' % (self.bag.bagname, self.action)
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    password = forms.CharField(widget=forms.PasswordInput(render_value=False), max_length=100)
