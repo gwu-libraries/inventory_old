@@ -36,3 +36,19 @@ ID_SERVICE_URL = "http://id.library.gwu.edu"
 
 LOGIN_URL = "/login/"
 LOGOUT_URL = "/logout/"
+
+IDSERVICE = {
+    'requester': '',
+    'minter': '',
+    'url': '',
+    'port': ''
+}
+
+# TESTING SETTINGS
+
+TEST_IDSERVICE = {
+    'requester': '',
+    'minter': '',
+    'url': '',
+    'port': ''
+}
