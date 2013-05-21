@@ -74,6 +74,15 @@ BagAction, bag (bagname), timestamp, action, note'''
 
     def _convert_date(self, date_string, null=False):
         try:
+            format = '%Y-%m-%d'
+            return datetime.datetime.strptime(date_string, format).date()
+        except Exception:
+            if null:
+                return None
+            return now
+
+    def _convert_datetime(self, date_string, null=False):
+        try:
             format = '%Y-%m-%d %H:%M:%S'
             return make_aware(datetime.datetime.strptime(date_string, format),
                 utc)
@@ -87,7 +96,7 @@ BagAction, bag (bagname), timestamp, action, note'''
             coll = Collection.objects.create(
                 id=row[1],
                 name=row[2],
-                created=self._convert_date(row[3]),
+                created=self._convert_datetime(row[3]),
                 description=row[4],
                 manager=row[5]
                 )
@@ -99,7 +108,7 @@ BagAction, bag (bagname), timestamp, action, note'''
         try:
             proj = Project.objects.create(
                 id=row[1],
-                created=self._convert_date(row[2]),
+                created=self._convert_datetime(row[2]),
                 name=row[3],
                 manager=row[4],
                 collection=Collection.objects.get(id=row[5]),
@@ -122,7 +131,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 local_id=row[3],
                 collection=collection,
                 project=project,
-                created=self._convert_date(row[6]),
+                created=self._convert_datetime(row[6]),
                 original_item_type=row[7],
                 rawfiles_loc=row[8],
                 qcfiles_loc=row[9],
@@ -151,12 +160,12 @@ BagAction, bag (bagname), timestamp, action, note'''
             payload_file = open(os.path.join(payload_dir, row[1]))
             bag = Bag.objects.create(
                 bagname=row[1],
-                created=self._convert_date(row[2]),
+                created=self._convert_datetime(row[2]),
                 item=item,
                 machine=Machine.objects.get(url=row[4]),
                 path=row[5],
                 bag_type=bag_type,
-                payload_raw=payload_file.read()
+                payload=payload_file.read()
                 )
             bag.save()
         except Exception, e:
@@ -166,7 +175,7 @@ BagAction, bag (bagname), timestamp, action, note'''
         try:
             action = BagAction.objects.create(
                 bag=Bag.objects.get(bagname=row[1]),
-                timestamp=self._convert_date(row[2]),
+                timestamp=self._convert_datetime(row[2]),
                 action=row[3],
                 note=row[4]
                 )
