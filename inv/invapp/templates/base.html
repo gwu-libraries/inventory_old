@@ -47,6 +47,11 @@
         <header class="navbar-fixed-top">
             <div id="libheader-container" style="">
                 <div id="libheader" class="container" style="">
+                    {% if user.is_authenticated %}
+                    <div class="libheader-link" style="float:right;padding:10">
+                        <a href="{% url 'logout' %}">logout</a>
+                    </div>
+                    {% endif %}
                     <div class="libheader-logo hide-lo" style="">
                         <a href="http://www.gwu.edu" target="_blank" title="GWU website"><img src="{{ STATIC_URL }}img/gwheaderlogo.png" alt="logo: The George Washington University" /></a>
                     </div>
@@ -56,11 +61,6 @@
                     <div class="libheader-link" style="">
                         <a href="{% url 'home' %}" title="inventory home">Inventory</a>
                     </div>
-                    {% if user.is_authenticated %}
-                    <div class="libheader-link">
-                        <a href="{% url 'logout' %}">logout</a>
-                    </div>
-                    {% endif %}
                     <!-- don't need these yet
                     <div class="bullet" style="">&bull;</div>
                     <div class="libheader-link" style=""><a href="#" target="_blank" title="">Placeholder Link 2</a></div>
