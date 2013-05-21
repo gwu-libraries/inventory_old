@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block javascript_extra %}
+<script type="text/javascript">
+    $(function() {
+            $("#id_username").focus();
+    });
+</script>
+{% endblock javascript_extra %}
+
+{% block content %}
+<div id="login" class="container-fluid" style="padding:18% 35%">
+    {{ message }}
+    <form action="{% url 'login' %}" method="post">{% csrf_token %}
+        <table>
+            <tr>
+                <td/>
+                <td><h1>Sign in</h1></td>
+            </tr>
+            <tr>
+                <td>{{ form.username.label_tag }}</td>
+                <td>{{ form.username }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.password.label_tag }}</td>
+                <td>{{ form.password }}</td>
+            </tr>
+            <tr>
+                <td/>
+                <td><input type="submit" value="login"/></td>
+            </tr>
+        </table>
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+</div>
+{% endblock content %}
