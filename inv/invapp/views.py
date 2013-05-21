@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 
-@login_required(login_url='/login/')
+@login_required
 def collection(request, id):
     collection = get_object_or_404(Collection, id=id)
     projects = Project.objects.filter(collection=collection).defer('collection',
@@ -30,7 +30,7 @@ def collection(request, id):
         {'collection': collection, 'projects': projects, 'items': items})
 
 
-@login_required(login_url='/login/')
+@login_required
 def project(request, id):
     project = get_object_or_404(Project, id=id)
     items = Item.objects.defer('collection', 'created', 'original_item_type',
@@ -49,14 +49,14 @@ def project(request, id):
         {'project': project, 'items': items})
 
 
-@login_required(login_url='/login/')
+@login_required
 def item(request, id):
     item = get_object_or_404(Item, id=id)
     bags = Bag.objects.defer('created', 'bag_type', 'payload').filter(item=item)
     return render(request, 'item.html', {'item': item, 'bags': bags})
 
 
-@login_required(login_url='/login/')
+@login_required
 def bag(request, bagname):
     bag = get_object_or_404(Bag, bagname=bagname)
     actions = BagAction.objects.filter(bag=bag)
@@ -86,7 +86,7 @@ def bag(request, bagname):
     return render(request, 'bag.html', {'bag': bag, 'actions': actions, 'files': files})
 
 
-@login_required(login_url='/login/')
+@login_required
 def home(request):
     collections = Collection.objects.all()
     projects = Project.objects.all()

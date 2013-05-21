@@ -167,6 +167,9 @@ LOGGING = {
     }
 }
 
+LOGIN_URL = "/login/"
+LOGOUT_URL = "/logout/"
+
 # *************************** #
 # Inventory Specific Settings #
 # *************************** #
