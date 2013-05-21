@@ -98,7 +98,7 @@ def home(request):
 def login_user(request):
     def error(message):
         form = LoginForm()
-        return render(request, 'login.html', {'message': message, 'form': form})
+        return render(request, 'login.html', {'message': message, 'form': form, 'next': request.POST.get('next')})
 
     message = ''
     username = password = ''
@@ -130,7 +130,6 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    #return render(request, 'logout.html')
     form = LoginForm()
     message = 'You have been logged out successfully!'
     return render(request, 'login.html', {'message': message, 'form': form})
