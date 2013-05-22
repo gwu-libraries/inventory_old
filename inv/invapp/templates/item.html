@@ -35,15 +35,6 @@
         </div>
         <div class="span3">
             <dl>
-                <dt>Raw files location</dt><dd>{{ item.rawfiles_loc }}</dd>
-                <dt>QC files location</dt><dd>{{ item.qcfiles_loc }}</dd>
-                <dt>QA files location</dt><dd>{{ item.qafiles_loc }}</dd>
-                <dt>FIN files location</dt><dd>{{ item.finfiles_loc }}</dd>
-                <dt>OCR files location</dt><dd>{{ item.ocrfiles_loc }}</dd>
-            </dl>
-        </div>
-        <div class="span3">
-            <dl>
                 <dt>Total Files</dt><dd>{{ item.stats.total_count }}</dd>
                 <dt>Total Size</dt><dd>{{ item.stats.total_size|filesizeformat }}</dd>
                 <dt>File types</dt>
