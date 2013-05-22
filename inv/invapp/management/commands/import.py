@@ -133,12 +133,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 project=project,
                 created=self._convert_datetime(row[6]),
                 original_item_type=row[7],
-                rawfiles_loc=row[8],
-                qcfiles_loc=row[9],
-                qafiles_loc=row[10],
-                finfiles_loc=row[11],
-                ocrfiles_loc=row[12],
-                notes=row[13]
+                notes=row[8]
                 )
             item.save()
         except Exception, e:

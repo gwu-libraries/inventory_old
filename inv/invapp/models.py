@@ -92,11 +92,6 @@ class Item(models.Model):
     created = models.DateTimeField(default=now)
     original_item_type = models.CharField(max_length=1,
         choices=settings.ITEM_TYPES)
-    rawfiles_loc = models.URLField(blank=True)
-    qcfiles_loc = models.URLField(blank=True)
-    qafiles_loc = models.URLField(blank=True)
-    finfiles_loc = models.URLField(blank=True)
-    ocrfiles_loc = models.URLField(blank=True)
     notes = models.TextField(blank=True)
     access_loc = models.URLField(blank=True)
     stats = JSONField()
