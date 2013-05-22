@@ -570,7 +570,7 @@ class ImportCommandTestCase(TestCase):
                 '2010-03-01,2011-11-01')
             f.write('\nItem,38989/c01wdbsmv,"",39020025220180,' +
                 '38989/c010g26gs40w,38989/c0102488q518,' +
-                '2011-03-01 1:0:0,2,,,,,,')
+                '2011-03-01 1:0:0,2,')
             f.write('\nBag,39020025220180_PRESRV_BAG,2011-03-01 1:0:0,' +
                 '38989/c01wdbsmv,gwdspace.wrlc.org,' +
                 '/archive1/cult-imag-prsrv/39020025220180_PRESRV_BAG,' +
@@ -626,11 +626,6 @@ class ImportCommandTestCase(TestCase):
             datetime.strptime('2011-03-01 1:0:0', '%Y-%m-%d %H:%M:%S'),
             timezone.utc))
         self.assertEqual(i1.original_item_type, '2')
-        self.assertEqual(i1.rawfiles_loc, '')
-        self.assertEqual(i1.qcfiles_loc, '')
-        self.assertEqual(i1.qafiles_loc, '')
-        self.assertEqual(i1.finfiles_loc, '')
-        self.assertEqual(i1.ocrfiles_loc, '')
         self.assertEqual(i1.notes, '')
 
         b1 = Bag.objects.get(bagname='39020025220180_PRESRV_BAG')
