@@ -43,10 +43,9 @@ class CollectionAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     fields = ['id', 'title', 'collection', 'project', 'original_item_type',
-        'rawfiles_loc', 'qcfiles_loc', 'qafiles_loc', 'finfiles_loc',
-        'ocrfiles_loc', 'notes', 'created']
+              'notes', 'created']
     list_display = ('id', 'title', 'collection', 'project',
-        'original_item_type', 'created')
+                    'original_item_type', 'created')
     search_fields = ['title']
     date_hierarchy = 'created'
 
