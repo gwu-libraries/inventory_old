@@ -13,10 +13,9 @@ from django.contrib.auth import authenticate, login, logout
 def collection(request, id):
     collection = get_object_or_404(Collection, id=id)
     projects = Project.objects.filter(collection=collection).defer('collection',
-        'created')
-    items = Item.objects.defer('created', 'original_item_type', 'rawfiles_loc',
-        'qcfiles_loc', 'qafiles_loc', 'finfiles_loc', 'ocrfiles_loc',
-        'notes').filter(collection=collection)
+                                                                   'created')
+    items = Item.objects.defer('created', 'original_item_type',
+                               'notes').filter(collection=collection)
     if items.count > 10:
         items_paginator = Paginator(items, 10)
         items_page = request.GET.get('items_page')
@@ -27,15 +26,15 @@ def collection(request, id):
         except EmptyPage:
             items = items_paginator.page(items_paginator.num_pages)
     return render(request, 'collection.html',
-        {'collection': collection, 'projects': projects, 'items': items})
+                  {'collection': collection, 'projects': projects,
+                      'items': items})
 
 
 @login_required
 def project(request, id):
     project = get_object_or_404(Project, id=id)
     items = Item.objects.defer('collection', 'created', 'original_item_type',
-        'rawfiles_loc', 'qcfiles_loc', 'qafiles_loc', 'finfiles_loc',
-        'ocrfiles_loc', 'notes').filter(project=project)
+                               'notes').filter(project=project)
     if items.count > 10:
         items_paginator = Paginator(items, 10)
         items_page = request.GET.get('items_page')
@@ -46,7 +45,7 @@ def project(request, id):
         except EmptyPage:
             items = items_paginator.page(items_paginator.num_pages)
     return render(request, 'project.html',
-        {'project': project, 'items': items})
+                  {'project': project, 'items': items})
 
 
 @login_required
@@ -98,7 +97,8 @@ def home(request):
 def login_user(request):
     def error(message):
         form = LoginForm()
-        return render(request, 'login.html', {'message': message, 'form': form, 'next': request.POST.get('next')})
+        return render(request, 'login.html', {'message': message, 'form': form,
+                      'next': request.POST.get('next')})
 
     message = ''
     username = password = ''
@@ -125,7 +125,8 @@ def login_user(request):
             return error(message)
     else:
         form = LoginForm()
-        return render(request, 'login.html', {'message': message, 'form': form, 'next': request.GET.get('next')})
+        return render(request, 'login.html', {'message': message, 'form': form,
+                      'next': request.GET.get('next')})
 
 
 def logout_user(request):
