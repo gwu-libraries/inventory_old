@@ -29,4 +29,6 @@ urlpatterns += patterns('invapp.views',
     url(r'^bag/(?P<bagname>.*)$', 'bag', name='bag'),
     url(r'^login/$', 'login_user', name='login'),
     url(r'^logout/$', 'logout_user', name='logout'),
+    url(r'^change_password/$', 'change_password', name='change_password'),
+    url(r'^change_password_done/$', 'change_password_done', name='change_password_done'),
 )
