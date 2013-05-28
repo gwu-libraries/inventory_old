@@ -11,27 +11,23 @@
 
 {% block content %}
 <div id="login" class="container-fluid" style="padding:18% 35%">
-    {{ message }}
     <form action="{% url 'login' %}" method="post">{% csrf_token %}
-        <table>
-            <tr>
-                <td/>
-                <td><h1>Sign in</h1></td>
-            </tr>
-            <tr>
-                <td>{{ form.username.label_tag }}</td>
-                <td>{{ form.username }}</td>
-            </tr>
-            <tr>
-                <td>{{ form.password.label_tag }}</td>
-                <td>{{ form.password }}</td>
-            </tr>
-            <tr>
-                <td/>
-                <td><input type="submit" value="login"/></td>
-            </tr>
-        </table>
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.label_tag }} {{ field }}  {{ field.errors.as_text }}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Login"/>
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
+    {% if form.non_field_errors %}
+        {% block message %}
+            <div id='error_msg'>
+                {% for err in form.non_field_errors %}
+                    <p class="form-error">{{ err }}</p>
+                {% endfor %}
+            </div>
+        {% endblock message %}
+    {% endif %}
 </div>
 {% endblock content %}
