@@ -32,6 +32,12 @@
         {% endblock javascript %}
 
         {% block javascript_extra %}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                        setTimeout(function() {
+                            $("#message").fadeOut();}, 2000);
+                        });
+        </script>
         {% endblock javascript_extra %}
 
         {% block link_extra %}
@@ -49,7 +55,10 @@
                 <div id="libheader" class="container" style="">
                     {% if user.is_authenticated %}
                     <div class="libheader-link" style="float:right;padding:10">
-                        <a href="{% url 'logout' %}">logout</a>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                    <div class="libheader-link" style="float:right;padding:10">
+                        <a href="{% url 'change_password' %}">Change Password</a>
                     </div>
                     {% endif %}
                     <div class="libheader-logo hide-lo" style="">
@@ -70,6 +79,14 @@
         </header>
         <!-- end Libsite7 Lite Header -->
         {% endblock header %}
+
+        {% block message %}
+        <div id="message" class="container-fluid" align="center">
+            {% for message in messages %}
+                <p class="alert alert-{{message.tags}}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endblock message %}
 
         {% block content %}
         {% endblock content %}

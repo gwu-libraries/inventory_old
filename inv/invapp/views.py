@@ -1,12 +1,20 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
-from invapp.models import Collection, Project, Item, Bag, BagAction, LoginForm
+from invapp.models import Collection, Project, Item, Bag, BagAction
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout
+
+from django.contrib.auth.forms import AuthenticationForm
+
+from django.contrib.auth.views import password_change
+
+from django.core.urlresolvers import reverse
 
 
 @login_required
@@ -96,7 +104,7 @@ def home(request):
 
 def login_user(request):
     def error(message):
-        form = LoginForm()
+        form = AuthenticationForm(None, request.POST)
         return render(request, 'login.html', {'message': message, 'form': form,
                       'next': request.POST.get('next')})
 
@@ -124,13 +132,25 @@ def login_user(request):
             message = 'Invalid username/password. Please try again!'
             return error(message)
     else:
-        form = LoginForm()
+        form = AuthenticationForm(None, request.POST)
         return render(request, 'login.html', {'message': message, 'form': form,
                       'next': request.GET.get('next')})
 
 
 def logout_user(request):
     logout(request)
-    form = LoginForm()
+    form = AuthenticationForm(None, request.POST)
     message = 'You have been logged out successfully!'
     return render(request, 'login.html', {'message': message, 'form': form})
+
+
+@login_required
+def change_password(request):
+    return password_change(request, template_name='change_password.html',
+                           post_change_redirect=reverse('change_password_done'))
+
+
+@login_required
+def change_password_done(request):
+    messages.success(request, 'Password changed successfully!')
+    return redirect('home')
