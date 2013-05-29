@@ -21,13 +21,11 @@
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
     {% if form.non_field_errors %}
-        {% block message %}
             <div id='error_msg'>
                 {% for err in form.non_field_errors %}
                     <p class="form-error">{{ err }}</p>
                 {% endfor %}
             </div>
-        {% endblock message %}
     {% endif %}
 </div>
 {% endblock content %}
