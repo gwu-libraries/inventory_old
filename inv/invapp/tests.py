@@ -94,12 +94,25 @@ class ModelTestCase(TestCase):
         p1.save()
         self.assertTrue(p1.id)
         self.assertTrue(p1.created)
+        # test item
         i1 = Item(title='Test Item autoID', collection=c1, project=p1,
             original_item_type='1')
         i1.save()
         self.assertTrue(i1.id)
         self.assertTrue(i1.created)
-
+        # test bag + machine
+        m1 = Machine(name='test machine zzz', url='zzz.gwu.edu')
+        m1.save()
+        b1 = Bag(created=now(), item=i1, machine=m1, path='blah/blah',
+            bag_type='1')
+        b1.save()
+        # test copy numbers for duplicate bags
+        b2 = Bag(created=now(), item=i1, machine=m1, path='blah/blah',
+            bag_type='1')
+        b2.save()
+        self.assertNotEqual(b1.bagname, b2.bagname)
+        self.assertTrue(b2.bagname.startswith(b1.bagname))
+        
 
 class AggregateStatsTestCase(TestCase):
 

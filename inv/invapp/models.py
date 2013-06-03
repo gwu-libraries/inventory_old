@@ -163,6 +163,14 @@ class Bag(models.Model):
         return stats
 
     def save(self, *args, **kwargs):
+        if not self.bagname:
+            itemid = self.item.id
+            bagtype = self.get_bag_type_display().upper()
+            bagname = '%s_%s_BAG' % (itemid, bagtype)
+            other_copies = self.item.bags.filter(bagname__startswith=bagname)
+            if len(other_copies) > 0:
+                bagname  = '%s_%s' % (bagname, str(len(other_copies) + 1))
+            self.bagname = bagname
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Bag, self).save(*args, **kwargs)
