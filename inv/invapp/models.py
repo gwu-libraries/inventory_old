@@ -58,7 +58,8 @@ class Project(models.Model):
     created = models.DateTimeField(default=now)
     name = models.CharField(max_length=256)
     manager = models.CharField(max_length=256)
-    collection = models.ForeignKey(Collection, related_name='projects')
+    collection = models.ForeignKey(Collection, related_name='projects',
+        null=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     access_loc = models.URLField(blank=True)
@@ -87,7 +88,7 @@ class Item(models.Model):
     title = models.TextField(blank=True)
     local_id = models.CharField(max_length=256, blank=True)
     collection = models.ForeignKey(Collection, related_name='items',
-        null=True)
+        null=True, default=None)
     project = models.ForeignKey(Project, related_name='items', null=True)
     created = models.DateTimeField(default=now)
     original_item_type = models.CharField(max_length=1,

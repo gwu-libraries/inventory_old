@@ -708,3 +708,32 @@ class IDServiceTestCase(TestCase):
         self.assertRaises(self.ids.IDServiceError, self.ids.mint)
         self.assertRaises(self.ids.IDServiceError, self.ids.bind, '', '')
         self.assertRaises(self.ids.IDServiceError, self.ids.lookup, '')
+
+class NullCollectionTestCase(TestCase):
+
+    def test_item_no_collection(self):
+        item = Item(
+            id='38989/123456789',
+            title='Little Orphan Item',
+            local_id='123456789',
+            collection=None,
+            project=None,
+            created=now(),
+            original_item_type='1',
+            notes='',
+            access_loc='',
+            stats=None)
+        item.save()
+
+    def test_project_no_collection(self):
+        project = Project(
+            id='38989/4444444444',
+            created=now(),
+            name='Bridge to Nowhere',
+            manager='Who?',
+            collection=None,
+            start_date=None,
+            end_date=None,
+            access_loc='',
+            stats=None)
+        project.save()
