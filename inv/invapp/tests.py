@@ -2,6 +2,7 @@ from datetime import datetime
 import random
 import os
 import shutil
+import tempfile
 
 from django.conf import settings
 from django.core.management import call_command
@@ -11,8 +12,6 @@ from django.utils.unittest import skipIf
 from django.core.paginator import Paginator
 from django.http import HttpRequest
 from django.template.context import RequestContext
-
-from tempfile import NamedTemporaryFile
 
 from invapp.models import Machine, Collection, Project, Item, Bag, BagAction
 from invapp.templatetags import invapp_extras
@@ -560,40 +559,43 @@ class PaginationTestCase(TestCase):
 class ImportCommandTestCase(TestCase):
 
     def setUp(self):
-        os.makedirs('test_invapp/payloads')
-        with NamedTemporaryFile(dir='test_invapp', delete=True) as f:
-            f.write('Machine,DSpace Server,gwdspace.wrlc.org')
-            f.write('\nCollection,38989/c010g26gs40w,Cultural Imaginings,' +
-                '2011-03-01 11:33:00,,Martha Whitaker')
-            f.write('\nProject,38989/c0102488q518,2010-02-01 1:0:0,' +
-                'IMLS Cost Analysis,Martha Whitaker,38989/c010g26gs40w,' +
-                '2010-03-01,2011-11-01')
-            f.write('\nItem,38989/c01wdbsmv,"",39020025220180,' +
-                '38989/c010g26gs40w,38989/c0102488q518,' +
-                '2011-03-01 1:0:0,2,')
-            f.write('\nBag,39020025220180_PRESRV_BAG,2011-03-01 1:0:0,' +
-                '38989/c01wdbsmv,gwdspace.wrlc.org,' +
-                '/archive1/cult-imag-prsrv/39020025220180_PRESRV_BAG,' +
-                'preservation')
-            f.write('\nBagAction,39020025220180_PRESRV_BAG,' +
-                '2011-06-13 13:51:58,4,')
-            f.seek(0)
+        self.tmpdir = tempfile.mkdtemp()
+        
+        self.import_file = os.path.join(self.tmpdir, 'test_import.txt')
+        f = open(self.import_file, 'w')
+        f.write('Machine,DSpace Server,gwdspace.wrlc.org')
+        f.write('\nCollection,38989/c010g26gs40w,Cultural Imaginings,' +
+            '2011-03-01 11:33:00,,Martha Whitaker')
+        f.write('\nProject,38989/c0102488q518,2010-02-01 1:0:0,' +
+            'IMLS Cost Analysis,Martha Whitaker,38989/c010g26gs40w,' +
+            '2010-03-01,2011-11-01')
+        f.write('\nItem,38989/c01wdbsmv,"",39020025220180,' +
+            '38989/c010g26gs40w,38989/c0102488q518,' +
+            '2011-03-01 1:0:0,2,')
+        f.write('\nBag,39020025220180_PRESRV_BAG,2011-03-01 1:0:0,' +
+            '38989/c01wdbsmv,gwdspace.wrlc.org,' +
+            '/archive1/cult-imag-prsrv/39020025220180_PRESRV_BAG,' +
+            'preservation')
+        f.write('\nBagAction,39020025220180_PRESRV_BAG,2011-06-13 13:51:58,4,')
+        f.seek(0)
+        f.close()
 
-            bag_payload_file = open('test_invapp/payloads/39020025220180' +
-                '_PRESRV_BAG', 'w+')
-            bag_payload_file.write('data/JPEG2K/RAW254.jp2 582465')
-            bag_payload_file.write('\ndata/JPEG2K/RAW348.jp2 591732')
-            bag_payload_file.write('\ndata/METADATA/MIX/RAWmix107.xml 4663')
-            bag_payload_file.seek(0)
-
-            call_command('import', f.name)
-            bag_payload_file.close()
-            f.close()
+        self.payload_dir = os.path.join(self.tmpdir, 'payloads')
+        os.mkdir(self.payload_dir)
+        bag_payload_file = open(os.path.join(self.payload_dir,
+            '39020025220180_PRESRV_BAG'), 'w+')
+        bag_payload_file.write('data/JPEG2K/RAW254.jp2 582465')
+        bag_payload_file.write('\ndata/JPEG2K/RAW348.jp2 591732')
+        bag_payload_file.write('\ndata/METADATA/MIX/RAWmix107.xml 4663')
+        bag_payload_file.seek(0)
+        bag_payload_file.close()
 
     def tearDown(self):
-        shutil.rmtree('test_invapp')
+        shutil.rmtree(self.tmpdir)
 
     def test_import_command(self):
+        call_command('import', self.import_file)
+
         m1 = Machine.objects.get(name='DSpace Server')
         self.assertEqual(m1.url, 'gwdspace.wrlc.org')
 
