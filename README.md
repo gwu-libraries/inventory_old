@@ -74,10 +74,10 @@ PART III - Configure your installation
 
 1. Copy the local settings template to an active file
 
-        $ cd /inv/inv
+        $ cd inv/inv
         $ cp local_settings.py.template local_settings.py
 
-2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY.
+2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter appropriate values for requester, minter, url and port under IDSERVICE and TEST_IDSERVICE.
 
         $ vim local_settings.py
 
@@ -137,7 +137,7 @@ PART III - Configure your installation
     Edit your server name (base url)
     Edit the many instances of &lt;path to INV_HOME&gt;. Beware: the line for the WSGI Daemon has two references to that path.
 
-        $ sudo vim /etc/apache2/sites-available/inv
+        $ sudo vim /etc/apache2/sites-available/inventory
 
     To change all of the path values at once use the global replace command in vim
 
