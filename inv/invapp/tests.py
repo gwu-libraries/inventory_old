@@ -750,32 +750,29 @@ class NoCascadeTestcase(TestCase):
     def setUp(self):
         machine = Machine(url='www.gwu.edu', name='CascadeTestMachine')
         machine.save()
-        collection = Collection(name='CascadeTestCollection' )
+        collection = Collection(id='CascColl', name='CascadeTestCollection' )
         collection.save()
-        self.collection_id = collection.id
-        project = Project(name='CascadeTestProject', collection=collection)
+        project = Project(id='CascProj', name='CascadeTestProject',
+            collection=collection)
         project.save()
-        self.project_id = project.id
-        item = Item(title='CascadeTestItem', collection=collection,
-            project=project)
+        item = Item(id='CascItem', title='CascadeTestItem',
+            collection=collection, project=project)
         item.save()
-        self.item_id = item.id
-        bag = Bag(item=item, machine=machine, bag_type='1')
+        bag = Bag(bagname='CascBag', item=item, machine=machine, bag_type='1')
         bag.save()
-        self.bagname = bag.bagname
         action = BagAction(bag=bag, action='1')
         action.save()
 
     def test_delete_collection_set_null(self):
-        collection = Collection.objects.get(id=self.collection_id)
+        collection = Collection.objects.get(id='CascColl')
         collection.delete()
-        project = Project.objects.get(id=self.project_id)
-        item = Item.objects.get(id=self.item_id)
+        project = Project.objects.get(id='CascProj')
+        item = Item.objects.get(id='CascItem')
         self.assertEqual(item.collection, None)
         self.assertEqual(project.collection, None)
 
     def test_delete_item_raises_error(self):
-        item = Item.objects.get(id=self.item_id)
+        item = Item.objects.get(id='CascItem')
         self.assertRaises(ProtectedError, item.delete)
 
     def test_delete_machine_raises_error(self):
@@ -785,7 +782,7 @@ class NoCascadeTestcase(TestCase):
     def test_cascade_on_delete_bag(self):
         # this is a relation where we do want to cascade
         # no need to keep actions for a bag we deleted
-        bag = Bag.objects.get(bagname=self.bagname)
+        bag = Bag.objects.get(bagname='CascBag')
         bag.delete()
         actions = BagAction.objects.filter(bag=bag)
         self.assertEqual(len(actions), 0)
