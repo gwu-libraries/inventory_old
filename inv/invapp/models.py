@@ -181,7 +181,7 @@ class Bag(models.Model):
 
 class BagAction(models.Model):
     bag = models.ForeignKey(Bag, related_name='bag_action')
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(default=now)
     action = models.CharField(max_length=1, choices=settings.ACTIONS)
     note = models.TextField()
 
