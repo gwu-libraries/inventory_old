@@ -18,6 +18,10 @@ v1_api.register(BagActionResource())
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
+    url(r'^password_reset/$', 'django.contrib.auth.views.password_reset', {'post_reset_redirect': '/password_reset_done/', 'template_name': 'password_reset_form.html', 'email_template_name': 'password_reset_email.html'}, name='password_reset'),
+    url(r'^password_reset_done/$', 'django.contrib.auth.views.password_reset_done', {'template_name': 'password_reset_done.html'}, name='password_reset_done'),
+    url(r'^password_reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm', {'post_reset_redirect': '/password_done/', 'template_name': 'password_reset_confirm.html'}),
+    url(r'^password_done/$', 'django.contrib.auth.views.password_reset_complete', {'template_name': 'password_reset_complete.html'}, name='password_done'),
 )
 
 urlpatterns += patterns('invapp.views',
