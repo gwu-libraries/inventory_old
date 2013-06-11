@@ -64,8 +64,7 @@ class Project(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.id = mintandbind(objtype='p', objurl=self.access_loc,
-                description=self.name)
+            self.id = mintandbind(objtype='p', description=self.name)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Project, self).save(*args, **kwargs)
