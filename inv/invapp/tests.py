@@ -579,8 +579,7 @@ class ImportCommandTestCase(TestCase):
         f.write('\nCollection,38989/c010g26gs40w,Cultural Imaginings,' +
             '2011-03-01 11:33:00,,Martha Whitaker')
         f.write('\nProject,38989/c0102488q518,2010-02-01 1:0:0,' +
-            'IMLS Cost Analysis,Martha Whitaker,38989/c010g26gs40w,' +
-            '2010-03-01,2011-11-01')
+            'IMLS Cost Analysis,38989/c010g26gs40w')
         f.write('\nItem,38989/c01wdbsmv,"",39020025220180,' +
             '38989/c010g26gs40w,38989/c0102488q518,' +
             '2011-03-01 1:0:0,2,')
