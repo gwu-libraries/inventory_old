@@ -6,6 +6,7 @@ import tempfile
 
 from django.conf import settings
 from django.core.management import call_command
+from django.db.models import ProtectedError
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.unittest import skipIf
@@ -717,6 +718,7 @@ class IDServiceTestCase(TestCase):
         self.assertRaises(self.ids.IDServiceError, self.ids.bind, '', '')
         self.assertRaises(self.ids.IDServiceError, self.ids.lookup, '')
 
+
 class NullCollectionTestCase(TestCase):
 
     def test_item_no_collection(self):
@@ -741,3 +743,46 @@ class NullCollectionTestCase(TestCase):
             collection=None,
             stats=None)
         project.save()
+
+
+class NoCascadeTestcase(TestCase):
+
+    def setUp(self):
+        machine = Machine(url='www.gwu.edu', name='CascadeTestMachine')
+        machine.save()
+        collection = Collection(id='CascColl', name='CascadeTestCollection' )
+        collection.save()
+        project = Project(id='CascProj', name='CascadeTestProject',
+            collection=collection)
+        project.save()
+        item = Item(id='CascItem', title='CascadeTestItem',
+            collection=collection, project=project)
+        item.save()
+        bag = Bag(bagname='CascBag', item=item, machine=machine, bag_type='1')
+        bag.save()
+        action = BagAction(bag=bag, action='1')
+        action.save()
+
+    def test_delete_collection_set_null(self):
+        collection = Collection.objects.get(id='CascColl')
+        collection.delete()
+        project = Project.objects.get(id='CascProj')
+        item = Item.objects.get(id='CascItem')
+        self.assertEqual(item.collection, None)
+        self.assertEqual(project.collection, None)
+
+    def test_delete_item_raises_error(self):
+        item = Item.objects.get(id='CascItem')
+        self.assertRaises(ProtectedError, item.delete)
+
+    def test_delete_machine_raises_error(self):
+        machine = Machine.objects.get(name='CascadeTestMachine')
+        self.assertRaises(ProtectedError, machine.delete)
+
+    def test_cascade_on_delete_bag(self):
+        # this is a relation where we do want to cascade
+        # no need to keep actions for a bag we deleted
+        bag = Bag.objects.get(bagname='CascBag')
+        bag.delete()
+        actions = BagAction.objects.filter(bag=bag)
+        self.assertEqual(len(actions), 0)
