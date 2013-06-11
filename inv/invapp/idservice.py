@@ -18,8 +18,7 @@ def mintandbind(objtype, objurl='', description=''):
     idservice = get_idservice()
     data = idservice.mint(1)
     id = data['identifier']
-    idservice.bind(id=id, objurl=objurl, objtype=objtype,
-        desc=description)
+    idservice.bind(id=id, objurl=objurl, objtype=objtype, desc=description)
     return id
 
 
