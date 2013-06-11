@@ -58,12 +58,8 @@ class Project(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
     created = models.DateTimeField(default=now)
     name = models.CharField(max_length=256)
-    manager = models.CharField(max_length=256)
     collection = models.ForeignKey(Collection, related_name='projects',
         null=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
-    access_loc = models.URLField(blank=True)
     stats = JSONField()
 
     def save(self, *args, **kwargs):
