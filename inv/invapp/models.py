@@ -59,7 +59,7 @@ class Project(models.Model):
     created = models.DateTimeField(default=now)
     name = models.CharField(max_length=256)
     collection = models.ForeignKey(Collection, related_name='projects',
-        null=True)
+        null=True, blank=True, on_delete=models.SET_NULL)
     stats = JSONField()
 
     def save(self, *args, **kwargs):
@@ -84,8 +84,9 @@ class Item(models.Model):
     title = models.TextField(blank=True)
     local_id = models.CharField(max_length=256, blank=True)
     collection = models.ForeignKey(Collection, related_name='items',
-        null=True, default=None)
-    project = models.ForeignKey(Project, related_name='items', null=True)
+        null=True, default=None, blank=True, on_delete=models.SET_NULL)
+    project = models.ForeignKey(Project, related_name='items', null=True,
+        blank=True, default=None, on_delete=models.SET_NULL)
     created = models.DateTimeField(default=now)
     original_item_type = models.CharField(max_length=1,
         choices=settings.ITEM_TYPES)
@@ -118,9 +119,11 @@ class Item(models.Model):
 
 class Bag(models.Model):
     bagname = models.TextField(primary_key=True)
-    created = models.DateTimeField()
-    item = models.ForeignKey(Item, related_name='bags')
-    machine = models.ForeignKey(Machine, related_name='bags')
+    created = models.DateTimeField(default=now)
+    item = models.ForeignKey(Item, related_name='bags',
+        on_delete=models.PROTECT)
+    machine = models.ForeignKey(Machine, related_name='bags',
+        on_delete=models.PROTECT)
     path = models.URLField()
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
     payload = models.TextField(blank=True)
@@ -178,7 +181,7 @@ class Bag(models.Model):
 
 class BagAction(models.Model):
     bag = models.ForeignKey(Bag, related_name='bag_action')
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(default=now)
     action = models.CharField(max_length=1, choices=settings.ACTIONS)
     note = models.TextField()
 
