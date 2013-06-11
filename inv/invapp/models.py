@@ -58,18 +58,13 @@ class Project(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
     created = models.DateTimeField(default=now)
     name = models.CharField(max_length=256)
-    manager = models.CharField(max_length=256)
     collection = models.ForeignKey(Collection, related_name='projects',
         null=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
-    access_loc = models.URLField(blank=True)
     stats = JSONField()
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.id = mintandbind(objtype='p', objurl=self.access_loc,
-                description=self.name)
+            self.id = mintandbind(objtype='p', description=self.name)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Project, self).save(*args, **kwargs)

@@ -13,14 +13,7 @@
     <div class="span3">
     	<dl>
     	    <dt>Persistent ID</dt><dd>{{ project.id }}</dd>
-    	    <dt>Manager</dt><dd>{{ project.manager }}</dd>
     	    <dt>Collection</dt><dd><a href="{% url 'collection' project.collection.id %}">{{ project.collection.name }}</a></dd>
-        </dl>
-    </div>
-    <div class="span3">
-        <dl>
-            <dt>Start Date</dt><dd>{{ project.start_date }}</dd>
-            <dt>End Date</dt><dd>{{ project.end_date }}</dd>
         </dl>
     </div>
     <div class="span3">
