@@ -18,8 +18,7 @@ each line should be the item type. Below are the column orders for each type:
 
 Collection, id, name, created (date), description, manager
 
-Project, id, created (date), name, manager, collection (id), start_date,
-end_date
+Project, id, created (date), name, collection (id)
 
 Item, id, title, local_id, collection (id), project (id), created (date),
 original_item_type, rawfiles_loc, qcfiles_loc, qafiles_loc, finfiles_loc,
@@ -112,10 +111,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 id=row[1],
                 created=self._convert_datetime(row[2]),
                 name=row[3],
-                manager=row[4],
-                collection=Collection.objects.get(id=row[5]),
-                start_date=self._convert_date(row[6], null=True),
-                end_date=self._convert_date(row[7], null=True)
+                collection=Collection.objects.get(id=row[4])
                 )
             proj.save()
         except Exception, e:

@@ -31,7 +31,7 @@ class ModelTestCase(TestCase):
             created=now())
         c1.save()
         p1 = Project(id='pppppppppppppppppp', name='test-project-1',
-            manager='nobody', collection=c1, created=now())
+            collection=c1, created=now())
         p1.save()
         i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1', project=p1,
             created=now(), original_item_type='1')
@@ -89,8 +89,7 @@ class ModelTestCase(TestCase):
         self.assertTrue(c1.id)
         self.assertTrue(c1.created)
         # test project
-        p1 = Project(name='Test Project autoID', manager='Joshua Gomez',
-            collection=c1)
+        p1 = Project(name='Test Project autoID', collection=c1)
         p1.save()
         self.assertTrue(p1.id)
         self.assertTrue(p1.created)
@@ -121,7 +120,7 @@ class AggregateStatsTestCase(TestCase):
             created=now())
         c1.save()
         p1 = Project(id='pppppppppppppppppp', name='test-project-1',
-            manager='nobody', collection=c1, created=now())
+            collection=c1, created=now())
         p1.save()
         i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
             collection=c1, created=now(), original_item_type='1')
@@ -362,7 +361,7 @@ class AggregateStatsTestCase(TestCase):
         c1.save()
         self.assertTrue(utils.compare_dicts(c1.stats, expected))
         p1 = Project(id='nobagsproject', name='test-project-2',
-            manager='nobody', collection=c1, created=now())
+            collection=c1, created=now())
         p1.save()
         self.assertTrue(utils.compare_dicts(p1.stats, expected))
         i1 = Item(id='nobagsitem', title='test-item-1', project=p1,
@@ -462,22 +461,22 @@ class PaginationTestCase(TestCase):
         self.maxDiff = None
 
         c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
-                        created=now())
+            created=now())
         c1.save()
         p1 = Project(id='pppppppppppppppppp', name='test-project-1',
-                        manager='nobody', collection=c1, created=now())
+            collection=c1, created=now())
         p1.save()
         i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
-                  collection=c1, created=now(), original_item_type='1')
+            collection=c1, created=now(), original_item_type='1')
         i1.save()
         m1 = Machine(name='test-machine-1', url='test-url-1')
         m1.save()
         b1 = Bag(bagname='test-bag-1', created=now(), item=i1,
-                 machine=m1, path='test-path1', bag_type='1')
+            machine=m1, path='test-path1', bag_type='1')
         b2 = Bag(bagname='test-bag-4', created=now(), item=i1,
-                 machine=m1, path='test-path4', bag_type='1')
+            machine=m1, path='test-path4', bag_type='1')
         b3 = Bag(bagname='test-bag-5', created=now(), item=i1,
-                 machine=m1, path='test-path5', bag_type='1')
+            machine=m1, path='test-path5', bag_type='1')
         b1.payload = ''
         b2.payload = ''
         b3.payload = ''
@@ -580,8 +579,7 @@ class ImportCommandTestCase(TestCase):
         f.write('\nCollection,38989/c010g26gs40w,Cultural Imaginings,' +
             '2011-03-01 11:33:00,,Martha Whitaker')
         f.write('\nProject,38989/c0102488q518,2010-02-01 1:0:0,' +
-            'IMLS Cost Analysis,Martha Whitaker,38989/c010g26gs40w,' +
-            '2010-03-01,2011-11-01')
+            'IMLS Cost Analysis,38989/c010g26gs40w')
         f.write('\nItem,38989/c01wdbsmv,"",39020025220180,' +
             '38989/c010g26gs40w,38989/c0102488q518,' +
             '2011-03-01 1:0:0,2,')
@@ -625,13 +623,8 @@ class ImportCommandTestCase(TestCase):
         self.assertEqual(p1.created, timezone.make_aware(
             datetime.strptime('2010-02-01 1:0:0', '%Y-%m-%d %H:%M:%S'),
             timezone.utc))
-        self.assertEqual(p1.manager, 'Martha Whitaker')
         self.assertEqual(p1.collection.id, '38989/c010g26gs40w')
-        self.assertEqual(p1.start_date, datetime.strptime('2010-03-01',
-            '%Y-%m-%d').date())
-        self.assertEqual(p1.end_date, datetime.strptime('2011-11-01',
-            '%Y-%m-%d').date())
-
+        
         i1 = Item.objects.get(id='38989/c01wdbsmv')
         self.assertEqual(i1.title, '')
         self.assertEqual(i1.local_id, '39020025220180')
@@ -745,10 +738,6 @@ class NullCollectionTestCase(TestCase):
             id='38989/4444444444',
             created=now(),
             name='Bridge to Nowhere',
-            manager='Who?',
             collection=None,
-            start_date=None,
-            end_date=None,
-            access_loc='',
             stats=None)
         project.save()
