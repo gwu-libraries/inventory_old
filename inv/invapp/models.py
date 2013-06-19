@@ -143,8 +143,12 @@ class Bag(models.Model):
     relative_filepath_from_bag_directory file_size(MB)\n
     '''
 
-    def urlpath(self):
-        return '%s/%s' % (self.machine.url.rstrip('/'), self.path.lstrip('/'))
+    def access_url(self):
+        mach_path_parts = self.machine.access_root.strip('/').split('/')
+        path_parts = self.path.strip('/').split('/')
+        for i, value in enumerate(path_parts):
+            if i == len(mach_path_parts) or value != mach_path_parts[i]:
+                return '/'.join([self.machine.url] + path_parts[i:])
 
     def list_payload(self):
         return [line.split() for line in self.payload.split('\n') if line]
