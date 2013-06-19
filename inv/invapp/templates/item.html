@@ -57,7 +57,7 @@
                 <tr class="bag">
                     <td><a href="{% url 'bag' bag.bagname %}">{{ bag.bagname }}</a></td>
                     <td>{{ bag.machine.name }}</td>
-                    <td>{{ bag.urlpath }}</td>
+                    <td>{{ bag.access_url }}</td>
                 </tr>
             {% endfor %}
         </table>

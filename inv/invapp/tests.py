@@ -26,31 +26,34 @@ def now():
 
 class ModelTestCase(TestCase):
 
-    def test_payload(self):
+    def setUp(self):
         # set up hierarchy of fake objects for bag
-        c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
+        self.c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
             created=now())
-        c1.save()
-        p1 = Project(id='pppppppppppppppppp', name='test-project-1',
-            collection=c1, created=now())
-        p1.save()
-        i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1', project=p1,
-            created=now(), original_item_type='1')
-        i1.save()
-        m1 = Machine(name='test-machine-1', url='test-url-1')
-        m1.save()
+        self.c1.save()
+        self.p1 = Project(id='pppppppppppppppppp', name='test-project-1',
+            collection=self.c1, created=now())
+        self.p1.save()
+        self.i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1',
+            project=self.p1, created=now(), original_item_type='1')
+        self.i1.save()
+        self.m1 = Machine(name='test-machine-1', url='test.url.com',
+            access_root='/bags/')
+        self.m1.save()
 
         # load bag with raw data
-        bag = Bag(bagname='test-bag-1', created=now(), item=i1,
-            machine=m1, path='test-path1', bag_type='1')
-        bag.stats = bag.collect_stats()
-        bag.save()
-        self.assertEqual(bag.stats['total_size'], 0)
-        self.assertEqual(bag.stats['total_count'], 0)
-        self.assertEqual(len(bag.stats['types'].keys()), 0)
+        self.bag = Bag(bagname='test-bag-1', created=now(), item=self.i1,
+            machine=self.m1, path='/bags/partition1/test-bag-1', bag_type='1')
+        self.bag.stats = self.bag.collect_stats()
+        self.bag.save()
+
+    def test_payload(self):
+        self.assertEqual(self.bag.stats['total_size'], 0)
+        self.assertEqual(self.bag.stats['total_count'], 0)
+        self.assertEqual(len(self.bag.stats['types'].keys()), 0)
 
         # now add payload data
-        bag.payload = """/data/METADATA/0123456789-dc.xml 2655
+        self.bag.payload = """/data/METADATA/0123456789-dc.xml 2655
 /data/METADATA/0123456789-MRC.xml 3256
 /data/IMAGES/0123456789_pg1.jp2 1778740
 /data/IMAGES/0123456789_pg2.jp2 1878756
@@ -69,15 +72,25 @@ class ModelTestCase(TestCase):
                 'tiff': {'count': 3, 'size': 5573375}
                 }
             }
-        bag.stats = bag.collect_stats()
-        bag.save()
-        self.assertEqual(expect['total_size'], bag.stats['total_size'])
-        self.assertEqual(expect['total_count'], bag.stats['total_count'])
+        self.bag.stats = self.bag.collect_stats()
+        self.bag.save()
+        self.assertEqual(expect['total_size'], self.bag.stats['total_size'])
+        self.assertEqual(expect['total_count'], self.bag.stats['total_count'])
         for t in expect['types'].keys():
             self.assertEqual(expect['types'][t]['count'],
-                bag.stats['types'][t]['count'])
+                self.bag.stats['types'][t]['count'])
             self.assertEqual(expect['types'][t]['size'],
-                bag.stats['types'][t]['size'])
+                self.bag.stats['types'][t]['size'])
+
+    def test_bag_access_path(self):
+        self.assertEqual(self.bag.access_url(),
+            'test.url.com/partition1/test-bag-1')
+        self.m1.access_root = '/bags'
+        self.assertEqual(self.bag.access_url(),
+            'test.url.com/partition1/test-bag-1')
+        self.m1.access_root = 'bags'
+        self.assertEqual(self.bag.access_url(),
+            'test.url.com/partition1/test-bag-1')
 
     @skipIf(not settings.TEST_IDSERVICE.get('url') or
         not settings.TEST_IDSERVICE.get('requester') or
