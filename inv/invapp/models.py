@@ -172,13 +172,19 @@ class Bag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.bagname:
-            itemid = self.item.id
+            # derive bagname from item ID and bag type,
+            # but with no forward slashes (creates problems on file system)
+            itemid = self.item.id.replace('/', '_')
             bagtype = self.get_bag_type_display().upper()
             bagname = '%s_%s_BAG' % (itemid, bagtype)
+            # differentiate between multiple copies using simple incrementer
             other_copies = self.item.bags.filter(bagname__startswith=bagname)
             if len(other_copies) > 0:
-                bagname = '%s_%s' % (bagname, str(len(other_copies) + 1))
-            self.bagname = bagname
+                nums = [int(o.bagname.split('_')[-1]) for o in other_copies]
+                copy_num = sorted(nums)[-1] + 1
+            else:
+                copy_num = 1
+            self.bagname = '%s_%s' % (bagname, copy_num)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Bag, self).save(*args, **kwargs)
