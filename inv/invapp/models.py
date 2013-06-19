@@ -18,9 +18,16 @@ models.signals.post_save.connect(create_api_key, sender=User)
 class Machine(models.Model):
     name = models.CharField(max_length=64, unique=True)
     url = models.URLField(unique=True)
+    ip = models.IPAddressField(null=True, blank=True, default=None,
+        unique=True)
 
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.ip == '':
+            self.ip = None
+        super(Machine, self).save(*args, **kwargs)
 
 
 class Collection(models.Model):
