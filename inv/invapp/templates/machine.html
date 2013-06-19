@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load invapp_extras %}
+
+{% block title %}
+    {{ machine.name }}
+{% endblock title %}
+
+{% block content %}
+<section id="machine">
+    <header class="container-fluid">
+        <h1>{{ machine.name }}</h1>
+        <dl>
+            <dt>URL</dt><dd>{{ machine.url }}</dd>
+            <dt>IP</dt><dd>{{ machine.ip }}</dd>
+            <dt>Access Root</dt><dd>{{ machine.access_root }}</dd>
+        </dl>
+        {% if machine.notes %}
+        <p>{{ machine.notes }}</p>
+        {% endif %}
+    </header>
+    <div id="bags" class="container-fluid">
+        <h3>Bags on this machine</h3>
+        <table class="table table-striped">
+            <tr>
+                <th>Bag</th>
+                <th>Item</th>
+                <th>Size</th>
+            </tr>
+            {% if bags %}
+                {% for bag in bags %}
+                    <tr>
+                        <td><a href="{% url 'bag' bag.bagname %}">{{ bag.bagname }}</a></td>
+                        <td>{{ bag.stats.total_size|filesizeformat }}</td>
+                        <td><a href="{% url 'item' bag.item.id %}">
+                            {% if bag.item.title %}
+                                {{ bag.item.title }}
+                            {% else %}
+                                {{ bag.item.id }}
+                            {% endif %}
+                            </a></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td>No bags on this machine</td>
+                    <td></td><td></td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+</section>
+{% endblock content %}
