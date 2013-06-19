@@ -20,6 +20,7 @@ class Machine(models.Model):
     ip = models.IPAddressField(null=True, blank=True, default=None,
         unique=True)
     notes = models.TextField(blank=True)
+    access_root = models.FilePathField(blank=True)
 
     def __unicode__(self):
         return self.name
