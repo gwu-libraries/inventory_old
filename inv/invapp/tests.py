@@ -111,8 +111,22 @@ class ModelTestCase(TestCase):
             bag_type='1')
         b2.save()
         self.assertNotEqual(b1.bagname, b2.bagname)
-        self.assertTrue(b2.bagname.startswith(b1.bagname))
-        
+        self.assertTrue(b1.bagname.endswith('1'))
+        self.assertTrue(b2.bagname.endswith('2'))
+        parts1 = b1.bagname.split('_')
+        parts2 = b2.bagname.split('_')
+        for x, val in enumerate(parts1):
+            if x != len(parts1) - 1:
+                self.assertEqual(val, parts2[x])
+            else:
+                self.assertTrue(int(parts2[x]) - int(val) == 1)
+        # make sure bagname does not contain forward slash
+        i1.id = '12345/123456789'
+        i1.save()
+        b3 = Bag(created=now(), item=i1, machine=m1, path='xxxx', bag_type='1')
+        b3.save()
+        self.assertFalse('/' in b3.bagname)
+
 
 class AggregateStatsTestCase(TestCase):
 
