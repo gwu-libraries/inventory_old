@@ -1,6 +1,5 @@
 import json
 
-from django import forms
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
@@ -17,7 +16,7 @@ models.signals.post_save.connect(create_api_key, sender=User)
 
 class Machine(models.Model):
     name = models.CharField(max_length=64, unique=True)
-    url = models.URLField(unique=True)
+    url = models.URLField(null=True, blank=True, default=None, unique=True)
     ip = models.IPAddressField(null=True, blank=True, default=None,
         unique=True)
 
@@ -27,6 +26,8 @@ class Machine(models.Model):
     def save(self, *args, **kwargs):
         if self.ip == '':
             self.ip = None
+        if self.url == '':
+            self.url = None
         super(Machine, self).save(*args, **kwargs)
 
 
@@ -176,7 +177,7 @@ class Bag(models.Model):
             bagname = '%s_%s_BAG' % (itemid, bagtype)
             other_copies = self.item.bags.filter(bagname__startswith=bagname)
             if len(other_copies) > 0:
-                bagname  = '%s_%s' % (bagname, str(len(other_copies) + 1))
+                bagname = '%s_%s' % (bagname, str(len(other_copies) + 1))
             self.bagname = bagname
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
