@@ -19,6 +19,7 @@ class Machine(models.Model):
     url = models.URLField(null=True, blank=True, default=None, unique=True)
     ip = models.IPAddressField(null=True, blank=True, default=None,
         unique=True)
+    notes = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.name
