@@ -31,4 +31,6 @@ urlpatterns += patterns('invapp.views',
     url(r'^logout/$', 'logout_user', name='logout'),
     url(r'^change_password/$', 'change_password', name='change_password'),
     url(r'^change_password_done/$', 'change_password_done', name='change_password_done'),
+    url(r'^ajax/collection_items_autocomplete/$', 'collection_items_autocomplete', name='collection_items_autocomplete'),
+    url(r'^ajax/search_collection_autocomplete/$', 'search_collection_autocomplete', name='search_collection_autocomplete'),
 )
