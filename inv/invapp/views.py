@@ -16,14 +16,28 @@ from django.contrib.auth.views import password_change
 
 from django.core.urlresolvers import reverse
 
+from django.utils import simplejson
+
+from django.http import HttpResponse
+
+from django.core import serializers
+
+from pprint import pprint
+
 
 @login_required
 def collection(request, id):
     collection = get_object_or_404(Collection, id=id)
     projects = Project.objects.filter(collection=collection).defer('collection',
                                                                    'created')
-    items = Item.objects.defer('created', 'original_item_type',
-                               'notes').filter(collection=collection)
+    item_name = request.GET.get('search_collection_items')
+    if item_name:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(collection=collection, title__icontains=item_name)
+    else:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(collection=collection)
+
     if items.count > 10:
         items_paginator = Paginator(items, 10)
         items_page = request.GET.get('items_page')
@@ -95,7 +109,23 @@ def bag(request, bagname):
 
 @login_required
 def home(request):
-    collections = Collection.objects.all()
+
+    search_collection = request.GET.get("search_collection")
+    if search_collection:
+        collections = Collection.objects.filter(name__icontains=search_collection)
+    else:
+        collections = Collection.objects.all()
+
+    if collections.count > 10:
+        collections_paginator = Paginator(collections, 10)
+        collections_page = request.GET.get('collections_page')
+        try:
+            collections = collections_paginator.page(collections_page)
+        except PageNotAnInteger:
+            collections = collections_paginator.page(1)
+        except EmptyPage:
+            collections = collections_paginator.page(collections_paginator.num_pages)
+
     projects = Project.objects.all()
     items = Item.objects.order_by('created').reverse()[:20]
     return render(request, 'home.html', {'collections': collections,
@@ -154,3 +184,22 @@ def change_password(request):
 def change_password_done(request):
     messages.success(request, 'Password changed successfully!')
     return redirect('home')
+
+
+def collection_items_autocomplete(request):
+    item_name = request.GET.get('term')
+    collection = request.GET.get('collection')
+    result = []
+    if item_name:
+        data = Item.objects.filter(collection=collection, title__icontains=item_name)
+        result = simplejson.dumps([o.title for o in data])
+    return HttpResponse(result, 'application/json')
+
+
+def search_collection_autocomplete(request):
+    search_collection = request.GET.get('term')
+    result = []
+    if search_collection:
+        data = Collection.objects.filter(name__icontains=search_collection)
+        result = simplejson.dumps([o.name for o in data])
+    return HttpResponse(result, 'application/json')
