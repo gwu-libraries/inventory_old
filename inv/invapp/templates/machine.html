@@ -21,6 +21,9 @@
     </header>
     <div id="bags" class="container-fluid">
         <h3>Bags on this machine</h3>
+        {% if bags.paginator.count >= 10 %}
+            {% bootstrap_paginator_bar bags 'bags_page' %}
+        {% endif %}
         <table class="table table-striped">
             <tr>
                 <th>Bag</th>
