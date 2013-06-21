@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
-from invapp.models import Collection, Project, Item, Bag, BagAction
+from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -19,10 +19,6 @@ from django.core.urlresolvers import reverse
 from django.utils import simplejson
 
 from django.http import HttpResponse
-
-from django.core import serializers
-
-from pprint import pprint
 
 
 @login_required
@@ -71,9 +67,17 @@ def project(request, id):
 
 
 @login_required
+def machine(request, id):
+    machine = get_object_or_404(Machine, id=id)
+    bags = Bag.objects.filter(machine=machine)
+    return render(request, 'machine.html', {'machine': machine, 'bags': bags})
+
+
+@login_required
 def item(request, id):
     item = get_object_or_404(Item, id=id)
-    bags = Bag.objects.defer('created', 'bag_type', 'payload').filter(item=item)
+    bags = Bag.objects.defer('created', 'bag_type',
+        'payload').filter(item=item)
     return render(request, 'item.html', {'item': item, 'bags': bags})
 
 
@@ -104,7 +108,8 @@ def bag(request, bagname):
             files = bag_paginator.page(1)
         except EmptyPage:
             files = bag_paginator.page(bag_paginator.num_pages)
-    return render(request, 'bag.html', {'bag': bag, 'actions': actions, 'files': files})
+    return render(request, 'bag.html', {'bag': bag, 'actions': actions,
+        'files': files})
 
 
 @login_required
@@ -126,10 +131,11 @@ def home(request):
         except EmptyPage:
             collections = collections_paginator.page(collections_paginator.num_pages)
 
+    machines = Machine.objects.all()
     projects = Project.objects.all()
     items = Item.objects.order_by('created').reverse()[:20]
     return render(request, 'home.html', {'collections': collections,
-        'projects': projects, 'items': items})
+        'projects': projects, 'items': items, 'machines': machines})
 
 
 def login_user(request):
@@ -156,7 +162,8 @@ def login_user(request):
                     return redirect(next)
                 return redirect('home')
             else:
-                message = 'Your account is not active, please contact the site administrator.'
+                message = 'Your account is not active, please contact the' + \
+                    ' site administrator.'
                 return error(message)
         else:
             message = 'Invalid username/password. Please try again!'
@@ -177,7 +184,7 @@ def logout_user(request):
 @login_required
 def change_password(request):
     return password_change(request, template_name='change_password.html',
-                           post_change_redirect=reverse('change_password_done'))
+        post_change_redirect=reverse('change_password_done'))
 
 
 @login_required

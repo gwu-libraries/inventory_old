@@ -6,6 +6,7 @@ import tempfile
 
 from django.conf import settings
 from django.core.management import call_command
+from django.db.models import ProtectedError
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.unittest import skipIf
@@ -25,31 +26,34 @@ def now():
 
 class ModelTestCase(TestCase):
 
-    def test_payload(self):
+    def setUp(self):
         # set up hierarchy of fake objects for bag
-        c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
+        self.c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
             created=now())
-        c1.save()
-        p1 = Project(id='pppppppppppppppppp', name='test-project-1',
-            manager='nobody', collection=c1, created=now())
-        p1.save()
-        i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1', project=p1,
-            created=now(), original_item_type='1')
-        i1.save()
-        m1 = Machine(name='test-machine-1', url='test-url-1')
-        m1.save()
+        self.c1.save()
+        self.p1 = Project(id='pppppppppppppppppp', name='test-project-1',
+            collection=self.c1, created=now())
+        self.p1.save()
+        self.i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1',
+            project=self.p1, created=now(), original_item_type='1')
+        self.i1.save()
+        self.m1 = Machine(name='test-machine-1', url='test.url.com',
+            access_root='/bags/')
+        self.m1.save()
 
         # load bag with raw data
-        bag = Bag(bagname='test-bag-1', created=now(), item=i1,
-            machine=m1, path='test-path1', bag_type='1')
-        bag.stats = bag.collect_stats()
-        bag.save()
-        self.assertEqual(bag.stats['total_size'], 0)
-        self.assertEqual(bag.stats['total_count'], 0)
-        self.assertEqual(len(bag.stats['types'].keys()), 0)
+        self.bag = Bag(bagname='test-bag-1', created=now(), item=self.i1,
+            machine=self.m1, path='/bags/partition1/test-bag-1', bag_type='1')
+        self.bag.stats = self.bag.collect_stats()
+        self.bag.save()
+
+    def test_payload(self):
+        self.assertEqual(self.bag.stats['total_size'], 0)
+        self.assertEqual(self.bag.stats['total_count'], 0)
+        self.assertEqual(len(self.bag.stats['types'].keys()), 0)
 
         # now add payload data
-        bag.payload = """/data/METADATA/0123456789-dc.xml 2655
+        self.bag.payload = """/data/METADATA/0123456789-dc.xml 2655
 /data/METADATA/0123456789-MRC.xml 3256
 /data/IMAGES/0123456789_pg1.jp2 1778740
 /data/IMAGES/0123456789_pg2.jp2 1878756
@@ -68,15 +72,25 @@ class ModelTestCase(TestCase):
                 'tiff': {'count': 3, 'size': 5573375}
                 }
             }
-        bag.stats = bag.collect_stats()
-        bag.save()
-        self.assertEqual(expect['total_size'], bag.stats['total_size'])
-        self.assertEqual(expect['total_count'], bag.stats['total_count'])
+        self.bag.stats = self.bag.collect_stats()
+        self.bag.save()
+        self.assertEqual(expect['total_size'], self.bag.stats['total_size'])
+        self.assertEqual(expect['total_count'], self.bag.stats['total_count'])
         for t in expect['types'].keys():
             self.assertEqual(expect['types'][t]['count'],
-                bag.stats['types'][t]['count'])
+                self.bag.stats['types'][t]['count'])
             self.assertEqual(expect['types'][t]['size'],
-                bag.stats['types'][t]['size'])
+                self.bag.stats['types'][t]['size'])
+
+    def test_bag_access_path(self):
+        self.assertEqual(self.bag.access_url(),
+            'test.url.com/partition1/test-bag-1')
+        self.m1.access_root = '/bags'
+        self.assertEqual(self.bag.access_url(),
+            'test.url.com/partition1/test-bag-1')
+        self.m1.access_root = 'bags'
+        self.assertEqual(self.bag.access_url(),
+            'test.url.com/partition1/test-bag-1')
 
     @skipIf(not settings.TEST_IDSERVICE.get('url') or
         not settings.TEST_IDSERVICE.get('requester') or
@@ -89,8 +103,7 @@ class ModelTestCase(TestCase):
         self.assertTrue(c1.id)
         self.assertTrue(c1.created)
         # test project
-        p1 = Project(name='Test Project autoID', manager='Joshua Gomez',
-            collection=c1)
+        p1 = Project(name='Test Project autoID', collection=c1)
         p1.save()
         self.assertTrue(p1.id)
         self.assertTrue(p1.created)
@@ -111,8 +124,22 @@ class ModelTestCase(TestCase):
             bag_type='1')
         b2.save()
         self.assertNotEqual(b1.bagname, b2.bagname)
-        self.assertTrue(b2.bagname.startswith(b1.bagname))
-        
+        self.assertTrue(b1.bagname.endswith('1'))
+        self.assertTrue(b2.bagname.endswith('2'))
+        parts1 = b1.bagname.split('_')
+        parts2 = b2.bagname.split('_')
+        for x, val in enumerate(parts1):
+            if x != len(parts1) - 1:
+                self.assertEqual(val, parts2[x])
+            else:
+                self.assertTrue(int(parts2[x]) - int(val) == 1)
+        # make sure bagname does not contain forward slash
+        i1.id = '12345/123456789'
+        i1.save()
+        b3 = Bag(created=now(), item=i1, machine=m1, path='xxxx', bag_type='1')
+        b3.save()
+        self.assertFalse('/' in b3.bagname)
+
 
 class AggregateStatsTestCase(TestCase):
 
@@ -121,7 +148,7 @@ class AggregateStatsTestCase(TestCase):
             created=now())
         c1.save()
         p1 = Project(id='pppppppppppppppppp', name='test-project-1',
-            manager='nobody', collection=c1, created=now())
+            collection=c1, created=now())
         p1.save()
         i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
             collection=c1, created=now(), original_item_type='1')
@@ -362,7 +389,7 @@ class AggregateStatsTestCase(TestCase):
         c1.save()
         self.assertTrue(utils.compare_dicts(c1.stats, expected))
         p1 = Project(id='nobagsproject', name='test-project-2',
-            manager='nobody', collection=c1, created=now())
+            collection=c1, created=now())
         p1.save()
         self.assertTrue(utils.compare_dicts(p1.stats, expected))
         i1 = Item(id='nobagsitem', title='test-item-1', project=p1,
@@ -462,22 +489,22 @@ class PaginationTestCase(TestCase):
         self.maxDiff = None
 
         c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
-                        created=now())
+            created=now())
         c1.save()
         p1 = Project(id='pppppppppppppppppp', name='test-project-1',
-                        manager='nobody', collection=c1, created=now())
+            collection=c1, created=now())
         p1.save()
         i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
-                  collection=c1, created=now(), original_item_type='1')
+            collection=c1, created=now(), original_item_type='1')
         i1.save()
         m1 = Machine(name='test-machine-1', url='test-url-1')
         m1.save()
         b1 = Bag(bagname='test-bag-1', created=now(), item=i1,
-                 machine=m1, path='test-path1', bag_type='1')
+            machine=m1, path='test-path1', bag_type='1')
         b2 = Bag(bagname='test-bag-4', created=now(), item=i1,
-                 machine=m1, path='test-path4', bag_type='1')
+            machine=m1, path='test-path4', bag_type='1')
         b3 = Bag(bagname='test-bag-5', created=now(), item=i1,
-                 machine=m1, path='test-path5', bag_type='1')
+            machine=m1, path='test-path5', bag_type='1')
         b1.payload = ''
         b2.payload = ''
         b3.payload = ''
@@ -580,8 +607,7 @@ class ImportCommandTestCase(TestCase):
         f.write('\nCollection,38989/c010g26gs40w,Cultural Imaginings,' +
             '2011-03-01 11:33:00,,Martha Whitaker')
         f.write('\nProject,38989/c0102488q518,2010-02-01 1:0:0,' +
-            'IMLS Cost Analysis,Martha Whitaker,38989/c010g26gs40w,' +
-            '2010-03-01,2011-11-01')
+            'IMLS Cost Analysis,38989/c010g26gs40w')
         f.write('\nItem,38989/c01wdbsmv,"",39020025220180,' +
             '38989/c010g26gs40w,38989/c0102488q518,' +
             '2011-03-01 1:0:0,2,')
@@ -625,13 +651,8 @@ class ImportCommandTestCase(TestCase):
         self.assertEqual(p1.created, timezone.make_aware(
             datetime.strptime('2010-02-01 1:0:0', '%Y-%m-%d %H:%M:%S'),
             timezone.utc))
-        self.assertEqual(p1.manager, 'Martha Whitaker')
         self.assertEqual(p1.collection.id, '38989/c010g26gs40w')
-        self.assertEqual(p1.start_date, datetime.strptime('2010-03-01',
-            '%Y-%m-%d').date())
-        self.assertEqual(p1.end_date, datetime.strptime('2011-11-01',
-            '%Y-%m-%d').date())
-
+        
         i1 = Item.objects.get(id='38989/c01wdbsmv')
         self.assertEqual(i1.title, '')
         self.assertEqual(i1.local_id, '39020025220180')
@@ -724,6 +745,7 @@ class IDServiceTestCase(TestCase):
         self.assertRaises(self.ids.IDServiceError, self.ids.bind, '', '')
         self.assertRaises(self.ids.IDServiceError, self.ids.lookup, '')
 
+
 class NullCollectionTestCase(TestCase):
 
     def test_item_no_collection(self):
@@ -745,10 +767,49 @@ class NullCollectionTestCase(TestCase):
             id='38989/4444444444',
             created=now(),
             name='Bridge to Nowhere',
-            manager='Who?',
             collection=None,
-            start_date=None,
-            end_date=None,
-            access_loc='',
             stats=None)
         project.save()
+
+
+class NoCascadeTestcase(TestCase):
+
+    def setUp(self):
+        machine = Machine(url='www.gwu.edu', name='CascadeTestMachine')
+        machine.save()
+        collection = Collection(id='CascColl', name='CascadeTestCollection' )
+        collection.save()
+        project = Project(id='CascProj', name='CascadeTestProject',
+            collection=collection)
+        project.save()
+        item = Item(id='CascItem', title='CascadeTestItem',
+            collection=collection, project=project)
+        item.save()
+        bag = Bag(bagname='CascBag', item=item, machine=machine, bag_type='1')
+        bag.save()
+        action = BagAction(bag=bag, action='1')
+        action.save()
+
+    def test_delete_collection_set_null(self):
+        collection = Collection.objects.get(id='CascColl')
+        collection.delete()
+        project = Project.objects.get(id='CascProj')
+        item = Item.objects.get(id='CascItem')
+        self.assertEqual(item.collection, None)
+        self.assertEqual(project.collection, None)
+
+    def test_delete_item_raises_error(self):
+        item = Item.objects.get(id='CascItem')
+        self.assertRaises(ProtectedError, item.delete)
+
+    def test_delete_machine_raises_error(self):
+        machine = Machine.objects.get(name='CascadeTestMachine')
+        self.assertRaises(ProtectedError, machine.delete)
+
+    def test_cascade_on_delete_bag(self):
+        # this is a relation where we do want to cascade
+        # no need to keep actions for a bag we deleted
+        bag = Bag.objects.get(bagname='CascBag')
+        bag.delete()
+        actions = BagAction.objects.filter(bag=bag)
+        self.assertEqual(len(actions), 0)

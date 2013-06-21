@@ -5,9 +5,6 @@ from tastypie.models import ApiAccess, ApiKey
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-admin.site.register(ApiKey)
-admin.site.register(ApiAccess)
-
 
 class UserModelAdmin(UserAdmin):
     inlines = UserAdmin.inlines + [ApiKeyInline]
@@ -20,10 +17,8 @@ class MachineAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    fields = ['id', 'name', 'collection', 'manager', 'start_date', 'end_date',
-        'created']
-    list_display = ('id', 'name', 'collection', 'manager', 'start_date',
-        'end_date', 'created')
+    fields = ['id', 'name', 'collection', 'created']
+    list_display = ('id', 'name', 'collection', 'created')
     search_fields = ['name']
 
 

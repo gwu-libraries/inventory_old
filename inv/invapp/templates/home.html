@@ -29,6 +29,23 @@
 {% endblock javascript_extra %}
 
 {% block content %}
+<section id="machines" class="container-fluid">
+    <h3>Digital Storage Places (Machines)<h3>
+    <table class="table table-striped">
+        <tr>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Notes</th>
+        </tr>
+        {% for machine in machines %}
+            <tr>
+                <td><a href="{% url 'machine' machine.id %}">{{ machine.name }}</a></td>
+                <td>{{ machine.url }}</td>
+                <td>{{ machines.notes }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
 <section id="collections" class="container-fluid">
     <h3>Our Collections</h3>
     
@@ -64,17 +81,11 @@
         <tr>
             <th>ID</th>
             <th>Project</th>
-            <th>Manager</th>
-            <th>Start Date</th>
-            <th>End Date</th>
         </tr>
         {% for project in projects %}
             <tr class="project">
                 <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
                 <td>{{ project.name }}</td>
-                <td>{{ project.manager }}</td>
-                <td>{{ project.start_date }}</td>
-                <td>{{ project.end_date }}</td>
             </tr>
         {% endfor %}
     </table>

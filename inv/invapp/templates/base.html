@@ -35,7 +35,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                         setTimeout(function() {
-                            $("#message").fadeOut();}, 2000);
+                            $("#message").fadeOut();}, 5000);
                         });
         </script>
         {% endblock javascript_extra %}
@@ -54,10 +54,10 @@
             <div id="libheader-container" style="">
                 <div id="libheader" class="container" style="">
                     {% if user.is_authenticated %}
-                    <div class="libheader-link" style="float:right;padding:10">
+                    <div class="libheader-link" style="float:right;">
                         <a href="{% url 'logout' %}">Logout</a>
                     </div>
-                    <div class="libheader-link" style="float:right;padding:10">
+                    <div class="libheader-link" style="float:right;">
                         <a href="{% url 'change_password' %}">Change Password</a>
                     </div>
                     {% endif %}
