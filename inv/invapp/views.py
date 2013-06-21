@@ -34,15 +34,7 @@ def collection(request, id):
         items = Item.objects.defer('created', 'original_item_type',
                                    'notes').filter(collection=collection)
 
-    if items.count > 10:
-        items_paginator = Paginator(items, 10)
-        items_page = request.GET.get('items_page')
-        try:
-            items = items_paginator.page(items_page)
-        except PageNotAnInteger:
-            items = items_paginator.page(1)
-        except EmptyPage:
-            items = items_paginator.page(items_paginator.num_pages)
+    items = _paginate(items, request.GET.get('items_page'))
     return render(request, 'collection.html',
                   {'collection': collection, 'projects': projects,
                       'items': items})
@@ -53,15 +45,7 @@ def project(request, id):
     project = get_object_or_404(Project, id=id)
     items = Item.objects.defer('collection', 'created', 'original_item_type',
                                'notes').filter(project=project)
-    if items.count > 10:
-        items_paginator = Paginator(items, 10)
-        items_page = request.GET.get('items_page')
-        try:
-            items = items_paginator.page(items_page)
-        except PageNotAnInteger:
-            items = items_paginator.page(1)
-        except EmptyPage:
-            items = items_paginator.page(items_paginator.num_pages)
+    items = _paginate(items, request.GET.get('items_page'))
     return render(request, 'project.html',
                   {'project': project, 'items': items})
 
@@ -70,6 +54,7 @@ def project(request, id):
 def machine(request, id):
     machine = get_object_or_404(Machine, id=id)
     bags = Bag.objects.filter(machine=machine)
+    bags = _paginate(bags, request.GET.get('bags_page'))
     return render(request, 'machine.html', {'machine': machine, 'bags': bags})
 
 
@@ -99,15 +84,7 @@ def bag(request, bagname):
                 temp_files.append(f)
         files = temp_files
 
-    if files.count > 10:
-        bag_paginator = Paginator(files, 10)
-        files_page = request.GET.get('files_page')
-        try:
-            files = bag_paginator.page(files_page)
-        except PageNotAnInteger:
-            files = bag_paginator.page(1)
-        except EmptyPage:
-            files = bag_paginator.page(bag_paginator.num_pages)
+    files = _paginate(files, request.GET.get('files_page'))
     return render(request, 'bag.html', {'bag': bag, 'actions': actions,
         'files': files})
 
@@ -121,15 +98,7 @@ def home(request):
     else:
         collections = Collection.objects.all()
 
-    if collections.count > 10:
-        collections_paginator = Paginator(collections, 10)
-        collections_page = request.GET.get('collections_page')
-        try:
-            collections = collections_paginator.page(collections_page)
-        except PageNotAnInteger:
-            collections = collections_paginator.page(1)
-        except EmptyPage:
-            collections = collections_paginator.page(collections_paginator.num_pages)
+    collections = _paginate(collections, request.GET.get('collections_page'))
 
     machines = Machine.objects.all()
     projects = Project.objects.all()
@@ -210,3 +179,15 @@ def search_collection_autocomplete(request):
         data = Collection.objects.filter(name__icontains=search_collection)
         result = simplejson.dumps([o.name for o in data])
     return HttpResponse(result, 'application/json')
+
+
+def _paginate(items, page):
+    if items.count > 10:
+        items_paginator = Paginator(items, 10)
+        try:
+            items = items_paginator.page(page)
+        except PageNotAnInteger:
+            items = items_paginator.page(1)
+        except EmptyPage:
+            items = items_paginator.page(items_paginator.num_pages)
+    return items
