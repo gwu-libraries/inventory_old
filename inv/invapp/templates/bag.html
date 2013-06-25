@@ -13,6 +13,10 @@
 <script type="text/javascript">
     $(function() {
         $("#search_bag_files").autocomplete({
+            select: function(event, ui) {
+                $(this).val(ui.item.value);
+                $("#search_form").submit();
+            },
             source: function(request, response) {
                 var files = {{bag.list_payload_str|safe}};
                 var result = [];
