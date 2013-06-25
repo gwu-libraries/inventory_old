@@ -13,9 +13,27 @@
 <script type="text/javascript">
         $(function() {
             $("#search_collection").autocomplete({
-                source:"/ajax/search_collection_autocomplete/",
-                    minLength: 2,
-                });
+                select: function(event, ui) {
+                    $(this).val(ui.item.value);
+                    $("#search_form").submit();
+                },
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/ajax/search_collection_autocomplete/",
+                        dataType: "json",
+                        data: { search: request.term },
+                        success: function(data) {
+                            response($.map(data, function(item) {
+                                    return {
+                                        value: item.pk,
+                                        label: item.pk + " : " + item.fields.name
+                                    }
+                            }));
+                        },     
+                   });
+                },
+                minLength: 2,
+            });
          });
 </script>
 <style>
