@@ -16,11 +16,11 @@ from django.contrib.auth.views import password_change
 
 from django.core.urlresolvers import reverse
 
-from django.utils import simplejson
-
 from django.http import HttpResponse
 
 from django.db.models import Q
+
+from django.core import serializers
 
 
 @login_required
@@ -165,21 +165,21 @@ def change_password_done(request):
 
 
 def collection_items_autocomplete(request):
-    item_name = request.GET.get('term')
+    item_name = request.GET.get('search')
     collection = request.GET.get('collection')
     result = []
     if item_name:
-        data = Item.objects.filter(collection=collection).filter(Q(title__icontains=item_name) | Q(id__icontains=item_name))
-        result = simplejson.dumps([o.title for o in data])
+        data = Item.objects.filter(collection=collection).filter(Q(title__icontains=item_name) | Q(id__icontains=item_name) | Q(local_id__icontains=item_name))
+        result = serializers.serialize('json', data, fields=('title', 'local_id'))
     return HttpResponse(result, 'application/json')
 
 
 def search_collection_autocomplete(request):
-    search_collection = request.GET.get('term')
+    search_collection = request.GET.get('search')
     result = []
     if search_collection:
         data = Collection.objects.filter(Q(name__icontains=search_collection) | Q(id__icontains=search_collection))
-        result = simplejson.dumps([o.id + ' : ' + o.name for o in data])
+        result = serializers.serialize('json', data, fields=('name'))
     return HttpResponse(result, 'application/json')
 
 
