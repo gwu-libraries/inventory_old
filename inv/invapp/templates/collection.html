@@ -13,7 +13,25 @@
 <script type="text/javascript">
     $(function() {
             $("#search_collection_items").autocomplete({
-                    source:"/ajax/collection_items_autocomplete/?collection={{collection.id}}",
+                    select: function(event, ui) {
+                        $(this).val(ui.item.value);
+                        $("#search_form").submit();
+                    },
+                    source: function(request, response) {
+                        $.ajax({
+                            url: "/ajax/collection_items_autocomplete/?collection={{collection.id}}",
+                            datatype: 'json',
+                            data: { search: request.term },
+                            success: function(data) {
+                                response($.map(data, function(item) {
+                                        return {
+                                            label: item.fields.local_id + " : " + item.fields.title + " (" + item.pk + ")",
+                                            value: item.pk
+                                        }
+                                }))
+                            }
+                        });
+                    },
                     minLength: 2,
             });
       });
