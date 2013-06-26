@@ -1,26 +1,20 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
-from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from django.contrib import messages
-
-from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-
 from django.contrib.auth.views import password_change
 
+from django.core import serializers
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.http import HttpResponse
 
 from django.db.models import Q
 
-from django.core import serializers
+from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
 
 
 @login_required
@@ -31,7 +25,10 @@ def collection(request, id):
     item_name = request.GET.get('search_collection_items')
     if item_name:
         items = Item.objects.defer('created', 'original_item_type',
-                                   'notes').filter(collection=collection).filter(Q(id__icontains=item_name) | Q(title__icontains=item_name) | Q(local_id__icontains=item_name))
+                                   'notes').filter(collection=collection).filter(
+                                       Q(id__icontains=item_name) |
+                                       Q(title__icontains=item_name) |
+                                       Q(local_id__icontains=item_name))
     else:
         items = Item.objects.defer('created', 'original_item_type',
                                    'notes').filter(collection=collection)
@@ -49,7 +46,10 @@ def project(request, id):
     item_name = request.GET.get('search_project_items')
     if item_name:
         items = Item.objects.defer('created', 'original_item_type',
-                                   'notes').filter(project=project).filter(Q(id__icontains=item_name) | Q(title__icontains=item_name) | Q(local_id__icontains=item_name))
+                                   'notes').filter(project=project).filter(
+                                       Q(id__icontains=item_name) |
+                                       Q(title__icontains=item_name) |
+                                       Q(local_id__icontains=item_name))
     else:
         items = Item.objects.defer('created', 'original_item_type',
                                    'notes').filter(project=project)
@@ -71,7 +71,7 @@ def machine(request, id):
 def item(request, id):
     item = get_object_or_404(Item, id=id)
     bags = Bag.objects.defer('created', 'bag_type',
-        'payload').filter(item=item)
+                             'payload').filter(item=item)
     return render(request, 'item.html', {'item': item, 'bags': bags})
 
 
@@ -95,7 +95,7 @@ def bag(request, bagname):
 
     files = _paginate(files, request.GET.get('files_page'))
     return render(request, 'bag.html', {'bag': bag, 'actions': actions,
-        'files': files})
+                                        'files': files})
 
 
 @login_required
@@ -103,7 +103,9 @@ def home(request):
 
     search_collection = request.GET.get("search_collection")
     if search_collection:
-        collections = Collection.objects.filter(Q(name__icontains=search_collection) | Q(id__icontains=search_collection))
+        collections = Collection.objects.filter(
+            Q(name__icontains=search_collection) |
+            Q(id__icontains=search_collection))
     else:
         collections = Collection.objects.all()
 
@@ -111,7 +113,8 @@ def home(request):
 
     search_project = request.GET.get("search_project")
     if search_project:
-        projects = Project.objects.filter(Q(name__icontains=search_project) | Q(id__icontains=search_project))
+        projects = Project.objects.filter(Q(name__icontains=search_project) |
+                                          Q(id__icontains=search_project))
     else:
         projects = Project.objects.all()
 
@@ -120,7 +123,8 @@ def home(request):
     machines = Machine.objects.all()
     items = Item.objects.order_by('created').reverse()[:20]
     return render(request, 'home.html', {'collections': collections,
-        'projects': projects, 'items': items, 'machines': machines})
+                                         'projects': projects, 'items': items,
+                                         'machines': machines})
 
 
 def login_user(request):
@@ -169,7 +173,7 @@ def logout_user(request):
 @login_required
 def change_password(request):
     return password_change(request, template_name='change_password.html',
-        post_change_redirect=reverse('change_password_done'))
+                           post_change_redirect=reverse('change_password_done'))
 
 
 @login_required
@@ -183,8 +187,11 @@ def collection_items_autocomplete(request):
     collection = request.GET.get('collection')
     result = []
     if item_name:
-        data = Item.objects.filter(collection=collection).filter(Q(title__icontains=item_name) | Q(id__icontains=item_name) | Q(local_id__icontains=item_name))
-        result = serializers.serialize('json', data, fields=('title', 'local_id'))
+        data = Item.objects.filter(collection=collection).filter(
+            Q(title__icontains=item_name) | Q(id__icontains=item_name) |
+            Q(local_id__icontains=item_name))
+        result = serializers.serialize('json', data,
+                                       fields=('title', 'local_id'))
     return HttpResponse(result, 'application/json')
 
 
@@ -192,7 +199,8 @@ def search_collection_autocomplete(request):
     search_collection = request.GET.get('search')
     result = []
     if search_collection:
-        data = Collection.objects.filter(Q(name__icontains=search_collection) | Q(id__icontains=search_collection))
+        data = Collection.objects.filter(Q(name__icontains=search_collection) |
+                                         Q(id__icontains=search_collection))
         result = serializers.serialize('json', data, fields=('name'))
     return HttpResponse(result, 'application/json')
 
@@ -201,7 +209,8 @@ def search_project_autocomplete(request):
     project = request.GET.get('search')
     result = []
     if project:
-        data = Project.objects.filter(Q(name__icontains=project) | Q(id__icontains=project))
+        data = Project.objects.filter(Q(name__icontains=project) |
+                                      Q(id__icontains=project))
         result = serializers.serialize('json', data, fields=('name'))
     return HttpResponse(result, 'application/json')
 
@@ -211,8 +220,11 @@ def project_items_autocomplete(request):
     project = request.GET.get('project')
     result = []
     if item_name:
-        data = Item.objects.filter(project=project).filter(Q(title__icontains=item_name) | Q(id__icontains=item_name) | Q(local_id__icontains=item_name))
-        result = serializers.serialize('json', data, fields=('title', 'local_id'))
+        data = Item.objects.filter(project=project).filter(
+            Q(title__icontains=item_name) | Q(id__icontains=item_name) |
+            Q(local_id__icontains=item_name))
+        result = serializers.serialize('json', data,
+                                       fields=('title', 'local_id'))
     return HttpResponse(result, 'application/json')
 
 
