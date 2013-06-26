@@ -31,7 +31,7 @@ def collection(request, id):
     item_name = request.GET.get('search_collection_items')
     if item_name:
         items = Item.objects.defer('created', 'original_item_type',
-                                   'notes').filter(collection=collection).filter(Q(id__icontains=item_name) | Q(title__icontains=item_name))
+                                   'notes').filter(collection=collection).filter(Q(id__icontains=item_name) | Q(title__icontains=item_name) | Q(local_id__icontains=item_name))
     else:
         items = Item.objects.defer('created', 'original_item_type',
                                    'notes').filter(collection=collection)
@@ -45,8 +45,15 @@ def collection(request, id):
 @login_required
 def project(request, id):
     project = get_object_or_404(Project, id=id)
-    items = Item.objects.defer('collection', 'created', 'original_item_type',
-                               'notes').filter(project=project)
+
+    item_name = request.GET.get('search_project_items')
+    if item_name:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(project=project).filter(Q(id__icontains=item_name) | Q(title__icontains=item_name) | Q(local_id__icontains=item_name))
+    else:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(project=project)
+
     items = _paginate(items, request.GET.get('items_page'))
     return render(request, 'project.html',
                   {'project': project, 'items': items})
@@ -102,8 +109,15 @@ def home(request):
 
     collections = _paginate(collections, request.GET.get('collections_page'))
 
+    search_project = request.GET.get("search_project")
+    if search_project:
+        projects = Project.objects.filter(Q(name__icontains=search_project) | Q(id__icontains=search_project))
+    else:
+        projects = Project.objects.all()
+
+    projects = _paginate(projects, request.GET.get('project_page'))
+
     machines = Machine.objects.all()
-    projects = Project.objects.all()
     items = Item.objects.order_by('created').reverse()[:20]
     return render(request, 'home.html', {'collections': collections,
         'projects': projects, 'items': items, 'machines': machines})
@@ -180,6 +194,25 @@ def search_collection_autocomplete(request):
     if search_collection:
         data = Collection.objects.filter(Q(name__icontains=search_collection) | Q(id__icontains=search_collection))
         result = serializers.serialize('json', data, fields=('name'))
+    return HttpResponse(result, 'application/json')
+
+
+def search_project_autocomplete(request):
+    project = request.GET.get('search')
+    result = []
+    if project:
+        data = Project.objects.filter(Q(name__icontains=project) | Q(id__icontains=project))
+        result = serializers.serialize('json', data, fields=('name'))
+    return HttpResponse(result, 'application/json')
+
+
+def project_items_autocomplete(request):
+    item_name = request.GET.get('search')
+    project = request.GET.get('project')
+    result = []
+    if item_name:
+        data = Item.objects.filter(project=project).filter(Q(title__icontains=item_name) | Q(id__icontains=item_name) | Q(local_id__icontains=item_name))
+        result = serializers.serialize('json', data, fields=('title', 'local_id'))
     return HttpResponse(result, 'application/json')
 
 
