@@ -15,7 +15,7 @@
             $("#search_collection").autocomplete({
                 select: function(event, ui) {
                     $(this).val(ui.item.value);
-                    $("#search_form").submit();
+                    $("#search_collection_form").submit();
                 },
                 source: function(request, response) {
                     $.ajax({
@@ -34,6 +34,30 @@
                 },
                 minLength: 2,
             });
+
+            $("#search_project").autocomplete({
+                select: function(event, ui) {
+                    $(this).val(ui.item.value);
+                    $("#search_project_form").submit();
+                },
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/ajax/search_project_autocomplete/",
+                        dataType: "json",
+                        data: { search: request.term },
+                        success: function(data) {
+                            response($.map(data, function(item) {
+                                return {
+                                    value: item.pk,
+                                    label: item.pk + " : " + item.fields.name
+                                }
+                            }));
+                        },     
+                    });
+                },
+                minLength: 2,
+            });
+
          });
 </script>
 <style>
@@ -71,7 +95,7 @@
         {% bootstrap_paginator_bar collections 'collections_page' %}
     {% endif %}
     <div style="width:100%;float:left;">
-        <form id="search_form" action="{% url 'home' %}" method="GET">
+        <form id="search_collection_form" action="{% url 'home' %}" method="GET">
             <label for="search_collection"><h5>Search: </h5></label>
             <input id="search_collection" name="search_collection" type="text" />
         </form>
@@ -95,6 +119,16 @@
 </section>
 <section id="projects" class="container-fluid">
     <h3>Current Projects</h3>
+
+    {% if collections.paginator.count > 10 %}
+        {% bootstrap_paginator_bar projects 'projects_page' %}
+    {% endif %}
+    <div style="width:100%;float:left;">
+        <form id="search_project_form" action="{% url 'home' %}" method="GET">
+            <label for="search_project"><h5>Search: </h5></label>
+            <input id="search_project" name="search_project" type="text" />
+        </form>
+    </div>
     <table class="table table-striped">
         <tr>
             <th>ID</th>
