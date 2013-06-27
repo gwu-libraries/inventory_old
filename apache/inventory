@@ -12,6 +12,11 @@
     # Example:
     # ServerName gwdev-gomez.wrlc.org
 
+    #Uncomment the following line to redirect all traffic to https
+    #Redirect permanent / <your server base url over https>
+    #Example:
+    #Redirect permanent / https://gwdev-gomez.wrlc.org/
+
     # Set your document root
     DocumentRoot /<path to INV_HOME>/inv/inv
     # Example:
