@@ -1,0 +1,108 @@
+<VirtualHost *:443>
+    # Change the above line to serve whichever port you wish to run this app on
+    # Example:
+    # <VirtualHost *:80>
+
+    #################
+    # Base Settings #
+    #################
+
+    # Set your server name
+    ServerName <your server base url over https>
+    # Example:
+    # ServerName gwdev-gomez.wrlc.org:443
+
+    # Set your document root
+    DocumentRoot /<path to INV_HOME>/inv/inv
+    # Example:
+    # DocumentRoot /home/gomez/Projects/inventory/inv/inv
+
+    ########################
+    # Static File Aliasing #
+    ########################
+
+    # Set aliases to your static media and javascript directories
+
+    # CSS files
+    AliasMatch ^/static/css/([^/]*\.css) /<path to INV_HOME>/inv/invapp/static/css/$1
+    # Example:
+    # AliasMatch ^/static/css/([^/]*\.css) /home/gomez/Projects/inventory/inv/invapp/static/css/$1
+
+    # Images
+    AliasMatch ^/static/img/([^/]*\.png) /<path to INV_HOME>/inv/invapp/static/img/$1
+    # Example:
+    # AliasMatch ^/static/img/([^/]*\.png) /home/gomez/Projects/inventory/inv/invapp/static/img/$1
+
+    AliasMatch ^/static/img/([^/]*\.jpg) /<path to INV_HOME>/inv/invapp/static/img/$1
+    # Example:
+    # AliasMatch ^/static/img/([^/]*\.jpg) /home/gomez/Projects/inventory/inv/invapp/static/img/$1
+
+    AliasMatch ^/static/img/([^/]*\.ico) /<path to INV_HOME>/inv/invapp/static/img/$1
+    # Example:
+    # AliasMatch ^/static/img/([^/]*\.ico) /home/gomez/Projects/inventory/inv/invapp/static/img/$1
+
+    # JavaScript
+    AliasMatch ^/static/admin/ij([^/]*\.js) /<path to INV_HOME>/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/css/$1
+    # Example:
+    # AliasMatch ^/static/admin/ij([^/]*\.js) /home/gomez/Projects/inventory/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/css/$1
+
+
+    ###############################
+    # Add the Django admin module #
+    ###############################
+
+    Alias /static/admin/ /<path to INV_HOME>/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/
+    # Example:
+    # Alias /static/admin/ /home/gomez/Projects/inventory/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/
+
+    # Add permissions to django admin module
+    <Directory /<path to INV_HOME>/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/>
+        Order deny,allow
+        Allow from all
+    </Directory>
+    # Example:
+    # <Directory /home/gomez/Projects/inventory/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/>
+    #     Order deny,allow
+    #     Allow from all
+    # </Directory>
+
+
+    #######################
+    # Add the WSGI Daemon #
+    #######################
+
+    WSGIDaemonProcess inventory processes=2 threads=15 python-path=/<path to INV_HOME>/ENV/lib/python/2.6/site-packages:/<path to INV_HOME>/inv
+    # Example:
+    # WSGIDaemonProcess inventory processes=2 threads=15 python-path=/home/gomez/Projects/inventory/ENV/lib/python/2.6/site-packages:/home/gomez/Projects/inventory/inv
+
+    # Do not edit this value
+    WSGIProcessGroup inventory
+
+    WSGIScriptAlias / /<path to INV_HOME>/inv/inv/wsgi.py
+    # Example:
+    # WSGIScriptAlias / /home/gomez/Projects/inventory/inv/inv/wsgi.py
+
+    # Do not edit this value
+    WSGIPassAuthorization On
+
+    # Add permissions to project directory
+    <Directory /<path to INV_HOME>/inv/inv>
+        <Files wsgi.py>
+            Order deny,allow
+            Allow from all
+        </Files>
+    </Directory>
+    # Example:
+    # <Directory /home/gomez/Projects/inventory/inv/inv>
+    #     <Files wsgi.py>
+    #         Order deny,allow
+    #         Allow from all
+    #     </Files>
+    # </Directory>
+
+     #SSL Configuration Line
+     SSLEngine on
+     SSLCertificateFile /etc/ssl/certs/server.crt
+     SSLCertificateKeyFile /etc/ssl/private/server.key
+
+</VirtualHost>
