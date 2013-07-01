@@ -1,9 +1,10 @@
 from tastypie import fields
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.resources import ModelResource
-from tastypie.authentication import ApiKeyAuthentication, MultiAuthentication, Authentication
+from tastypie.authentication import ApiKeyAuthentication, \
+    MultiAuthentication, Authentication
 from tastypie.authorization import DjangoAuthorization
-from invapp.models import *
+from invapp.models import Machine, Collection, Project, Item, Bag, BagAction
 
 
 class MachineResource(ModelResource):
@@ -33,7 +34,8 @@ class CollectionResource(ModelResource):
 
 
 class ProjectResource(ModelResource):
-    collection = fields.ForeignKey(CollectionResource, 'collection')
+    collection = fields.ForeignKey(CollectionResource, 'collection', null=True,
+        blank=True)
 
     class Meta:
         queryset = Project.objects.all()
@@ -50,8 +52,10 @@ class ProjectResource(ModelResource):
 
 
 class ItemResource(ModelResource):
-    collection = fields.ForeignKey(CollectionResource, 'collection')
-    project = fields.ForeignKey(ProjectResource, 'project')
+    collection = fields.ForeignKey(CollectionResource, 'collection', null=True,
+        blank=True)
+    project = fields.ForeignKey(ProjectResource, 'project', null=True,
+        blank=True)
 
     class Meta:
         queryset = Item.objects.all()
@@ -91,7 +95,6 @@ class BagResource(ModelResource):
 
     def dehydrate_payload(self, bundle):
         return bundle.obj.list_payload()
-
 
 
 class BagActionResource(ModelResource):
