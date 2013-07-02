@@ -1,7 +1,6 @@
 from django.contrib import admin
 from invapp.models import Machine, Collection, Project, Item, Bag, BagAction
 from tastypie.admin import ApiKeyInline
-from tastypie.models import ApiAccess, ApiKey
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
@@ -11,8 +10,8 @@ class UserModelAdmin(UserAdmin):
 
 
 class MachineAdmin(admin.ModelAdmin):
-    fields = ['name', 'url']
-    list_display = ('name', 'url')
+    fields = ['name', 'url', 'ip', 'notes', 'access_root']
+    list_display = ('name', 'url', 'ip', 'access_root')
     search_fields = ['name']
 
 
@@ -20,26 +19,29 @@ class ProjectAdmin(admin.ModelAdmin):
     fields = ['id', 'name', 'collection', 'created']
     list_display = ('id', 'name', 'collection', 'created')
     search_fields = ['name']
+    date_hierarchy = 'created'
 
 
 class BagAdmin(admin.ModelAdmin):
     fields = ('bagname', 'item', 'machine', 'path', 'bag_type', 'created',
-        'payload')
+              'payload')
     list_display = ('bagname', 'item', 'machine', 'path', 'bag_type',
-        'created')
+                    'created')
+    search_fields = ['bagname']
+    date_hierarchy = 'created'
 
 
 class CollectionAdmin(admin.ModelAdmin):
-    fields = ['id', 'name', 'manager', 'description', 'created']
-    list_display = ('id', 'name', 'manager', 'description', 'created')
+    fields = ['id', 'name', 'manager', 'description', 'access_loc', 'created']
+    list_display = ('id', 'name', 'manager', 'description', 'access_loc', 'created')
     search_fields = ['name']
     date_hierarchy = 'created'
 
 
 class ItemAdmin(admin.ModelAdmin):
-    fields = ['id', 'title', 'collection', 'project', 'original_item_type',
-              'notes', 'created']
-    list_display = ('id', 'title', 'collection', 'project',
+    fields = ['id', 'title', 'local_id', 'collection', 'project',
+              'original_item_type', 'notes', 'access_loc', 'created']
+    list_display = ('id', 'title', 'local_id', 'collection', 'project',
                     'original_item_type', 'created')
     search_fields = ['title']
     date_hierarchy = 'created'
