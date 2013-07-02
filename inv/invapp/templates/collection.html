@@ -6,6 +6,43 @@
     {{ collection.name }}
 {% endblock title %}
 
+{% block javascript_extra %}
+<script type="text/javascript">
+    $(function() {
+            $("#search_collection_items").autocomplete({
+                    select: function(event, ui) {
+                        $(this).val(ui.item.value);
+                        $("#search_form").submit();
+                    },
+                    source: function(request, response) {
+                        $.ajax({
+                            url: "/ajax/collection_items_autocomplete/?collection={{collection.id}}",
+                            datatype: 'json',
+                            data: { search: request.term },
+                            success: function(data) {
+                                response($.map(data, function(item) {
+                                        return {
+                                            label: item.fields.local_id + " : " + item.fields.title + " (" + item.pk + ")",
+                                            value: item.pk
+                                        }
+                                }))
+                            }
+                        });
+                    },
+                    minLength: 2,
+            });
+      });
+</script>
+<style>
+    .ui-autocomplete {
+        max-height: 100px;
+        max-width: 400px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+</style>
+{% endblock javascript_extra %}
+
 {% block content %}
 <section id="collection">
     <header class="container-fluid">
@@ -66,6 +103,13 @@
         {% if items.paginator.count > 10 %}
             {% bootstrap_paginator_bar items 'items_page' %}
         {% endif %}
+
+        <div style="width:100%;float:left;">
+            <form id="search_form" action="{% url 'collection' collection.id %}" method="GET">
+                <label for="search_collection_items"><h5>Search: </h5></label>
+                <input id="search_collection_items" name="search_collection_items" type="text" />
+            </form>
+        </div>
 
         <table class="table table-striped">
             <tr>

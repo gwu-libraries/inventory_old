@@ -1,38 +1,39 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
-from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from django.contrib import messages
-
-from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-
 from django.contrib.auth.views import password_change
 
+from django.core import serializers
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.http import HttpResponse
+
+from django.db.models import Q
+
+from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
 
 
 @login_required
 def collection(request, id):
     collection = get_object_or_404(Collection, id=id)
-    projects = Project.objects.filter(collection=collection).defer(
-        'collection', 'created')
-    items = Item.objects.defer('created', 'original_item_type',
-                               'notes').filter(collection=collection)
-    if items.count > 10:
-        items_paginator = Paginator(items, 10)
-        items_page = request.GET.get('items_page')
-        try:
-            items = items_paginator.page(items_page)
-        except PageNotAnInteger:
-            items = items_paginator.page(1)
-        except EmptyPage:
-            items = items_paginator.page(items_paginator.num_pages)
+    projects = Project.objects.filter(collection=collection).defer('collection',
+                                                                   'created')
+    item_name = request.GET.get('search_collection_items')
+    if item_name:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(collection=collection).filter(
+                                       Q(id__icontains=item_name) |
+                                       Q(title__icontains=item_name) |
+                                       Q(local_id__icontains=item_name))
+    else:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(collection=collection)
+
+    items = _paginate(items, request.GET.get('items_page'))
     return render(request, 'collection.html',
                   {'collection': collection, 'projects': projects,
                       'items': items})
@@ -41,17 +42,19 @@ def collection(request, id):
 @login_required
 def project(request, id):
     project = get_object_or_404(Project, id=id)
-    items = Item.objects.defer('collection', 'created', 'original_item_type',
-                               'notes').filter(project=project)
-    if items.count > 10:
-        items_paginator = Paginator(items, 10)
-        items_page = request.GET.get('items_page')
-        try:
-            items = items_paginator.page(items_page)
-        except PageNotAnInteger:
-            items = items_paginator.page(1)
-        except EmptyPage:
-            items = items_paginator.page(items_paginator.num_pages)
+
+    item_name = request.GET.get('search_project_items')
+    if item_name:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(project=project).filter(
+                                       Q(id__icontains=item_name) |
+                                       Q(title__icontains=item_name) |
+                                       Q(local_id__icontains=item_name))
+    else:
+        items = Item.objects.defer('created', 'original_item_type',
+                                   'notes').filter(project=project)
+
+    items = _paginate(items, request.GET.get('items_page'))
     return render(request, 'project.html',
                   {'project': project, 'items': items})
 
@@ -60,6 +63,7 @@ def project(request, id):
 def machine(request, id):
     machine = get_object_or_404(Machine, id=id)
     bags = Bag.objects.filter(machine=machine)
+    bags = _paginate(bags, request.GET.get('bags_page'))
     return render(request, 'machine.html', {'machine': machine, 'bags': bags})
 
 
@@ -67,7 +71,7 @@ def machine(request, id):
 def item(request, id):
     item = get_object_or_404(Item, id=id)
     bags = Bag.objects.defer('created', 'bag_type',
-        'payload').filter(item=item)
+                             'payload').filter(item=item)
     return render(request, 'item.html', {'item': item, 'bags': bags})
 
 
@@ -89,27 +93,38 @@ def bag(request, bagname):
                 temp_files.append(f)
         files = temp_files
 
-    if files.count > 10:
-        bag_paginator = Paginator(files, 10)
-        files_page = request.GET.get('files_page')
-        try:
-            files = bag_paginator.page(files_page)
-        except PageNotAnInteger:
-            files = bag_paginator.page(1)
-        except EmptyPage:
-            files = bag_paginator.page(bag_paginator.num_pages)
+    files = _paginate(files, request.GET.get('files_page'))
     return render(request, 'bag.html', {'bag': bag, 'actions': actions,
-        'files': files})
+                                        'files': files})
 
 
 @login_required
 def home(request):
+
+    search_collection = request.GET.get("search_collection")
+    if search_collection:
+        collections = Collection.objects.filter(
+            Q(name__icontains=search_collection) |
+            Q(id__icontains=search_collection))
+    else:
+        collections = Collection.objects.all()
+
+    collections = _paginate(collections, request.GET.get('collections_page'))
+
+    search_project = request.GET.get("search_project")
+    if search_project:
+        projects = Project.objects.filter(Q(name__icontains=search_project) |
+                                          Q(id__icontains=search_project))
+    else:
+        projects = Project.objects.all()
+
+    projects = _paginate(projects, request.GET.get('project_page'))
+
     machines = Machine.objects.all()
-    collections = Collection.objects.all()
-    projects = Project.objects.all()
     items = Item.objects.order_by('created').reverse()[:20]
     return render(request, 'home.html', {'collections': collections,
-        'projects': projects, 'items': items, 'machines': machines})
+                                         'projects': projects, 'items': items,
+                                         'machines': machines})
 
 
 def login_user(request):
@@ -158,10 +173,68 @@ def logout_user(request):
 @login_required
 def change_password(request):
     return password_change(request, template_name='change_password.html',
-        post_change_redirect=reverse('change_password_done'))
+                           post_change_redirect=reverse('change_password_done'))
 
 
 @login_required
 def change_password_done(request):
     messages.success(request, 'Password changed successfully!')
     return redirect('home')
+
+
+def collection_items_autocomplete(request):
+    item_name = request.GET.get('search')
+    collection = request.GET.get('collection')
+    result = []
+    if item_name:
+        data = Item.objects.filter(collection=collection).filter(
+            Q(title__icontains=item_name) | Q(id__icontains=item_name) |
+            Q(local_id__icontains=item_name))
+        result = serializers.serialize('json', data,
+                                       fields=('title', 'local_id'))
+    return HttpResponse(result, 'application/json')
+
+
+def search_collection_autocomplete(request):
+    search_collection = request.GET.get('search')
+    result = []
+    if search_collection:
+        data = Collection.objects.filter(Q(name__icontains=search_collection) |
+                                         Q(id__icontains=search_collection))
+        result = serializers.serialize('json', data, fields=('name'))
+    return HttpResponse(result, 'application/json')
+
+
+def search_project_autocomplete(request):
+    project = request.GET.get('search')
+    result = []
+    if project:
+        data = Project.objects.filter(Q(name__icontains=project) |
+                                      Q(id__icontains=project))
+        result = serializers.serialize('json', data, fields=('name'))
+    return HttpResponse(result, 'application/json')
+
+
+def project_items_autocomplete(request):
+    item_name = request.GET.get('search')
+    project = request.GET.get('project')
+    result = []
+    if item_name:
+        data = Item.objects.filter(project=project).filter(
+            Q(title__icontains=item_name) | Q(id__icontains=item_name) |
+            Q(local_id__icontains=item_name))
+        result = serializers.serialize('json', data,
+                                       fields=('title', 'local_id'))
+    return HttpResponse(result, 'application/json')
+
+
+def _paginate(items, page):
+    if items.count > 10:
+        items_paginator = Paginator(items, 10)
+        try:
+            items = items_paginator.page(page)
+        except PageNotAnInteger:
+            items = items_paginator.page(1)
+        except EmptyPage:
+            items = items_paginator.page(items_paginator.num_pages)
+    return items
