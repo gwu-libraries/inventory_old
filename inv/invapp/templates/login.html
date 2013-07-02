@@ -10,7 +10,7 @@
 {% endblock javascript_extra %}
 
 {% block content %}
-<div id="login" class="container-fluid" style="padding:16.5% 35%">
+<div id="login" class="container-fluid login">
     <form action="{% url 'login' %}" method="post">{% csrf_token %}
         {% for field in form %}
             <div class="fieldWrapper">

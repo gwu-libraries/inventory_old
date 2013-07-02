@@ -34,13 +34,6 @@
         }
     });
 </script>
-<style>
-    .ui-autocomplete {
-        max-height: 100px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-</style>
 {% endblock javascript_extra %}
 
 {% block content %}
@@ -101,8 +94,8 @@
             </tr>
         </table>
         <h5>Individual Files</h5>
-        <div style="width:100%">
-            <div class="dropdown" style="float:left;width:5%">
+        <div>
+            <div class="dropdown file-type-dropdown">
                 <a class="dropwdown-toggle ui-button" id="dLabel" role="button" data-toggle="dropdown" data-target="" href="">
                     File Type
                     <b class="caret"></b>
@@ -118,7 +111,7 @@
                 {% bootstrap_paginator_bar files 'files_page' %}
             {% endif %}
         </div>
-        <div style="width:100%;float:left;">
+        <div class="search">
             <form id="search_form" action="{% url 'bag' bag.bagname %}" method="GET">
                 <label for="search_bag_files"><h5>Search: </h5></label>
                 <input id="search_bag_files" name="search_bag_files" type="text" />

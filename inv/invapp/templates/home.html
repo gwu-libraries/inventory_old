@@ -7,9 +7,6 @@
 {% endblock title %}
 
 {% block javascript_extra %}
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
-<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 <script type="text/javascript">
         $(function() {
             $("#search_collection").autocomplete({
@@ -60,14 +57,6 @@
 
          });
 </script>
-<style>
-.ui-autocomplete {
-    max-height: 100px;
-    max-width: 400px;
-    overflow-y: auto;
-    overflow-x: auto;
-}
-</style>
 {% endblock javascript_extra %}
 
 {% block content %}
@@ -94,7 +83,7 @@
     {% if collections.paginator.count > 10 %}
         {% bootstrap_paginator_bar collections 'collections_page' %}
     {% endif %}
-    <div style="width:100%;float:left;">
+    <div class="search">
         <form id="search_collection_form" action="{% url 'home' %}" method="GET">
             <label for="search_collection"><h5>Search: </h5></label>
             <input id="search_collection" name="search_collection" type="text" />
@@ -123,7 +112,7 @@
     {% if collections.paginator.count > 10 %}
         {% bootstrap_paginator_bar projects 'projects_page' %}
     {% endif %}
-    <div style="width:100%;float:left;">
+    <div class="search">
         <form id="search_project_form" action="{% url 'home' %}" method="GET">
             <label for="search_project"><h5>Search: </h5></label>
             <input id="search_project" name="search_project" type="text" />
