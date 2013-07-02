@@ -6,6 +6,44 @@
 	{{ project.name }}
 {% endblock title %}
 
+{% block javascript_extra %}
+<script type="text/javascript">
+    $(function() {
+        $("#search_project_items").autocomplete({
+            select: function(event, ui) {
+                $(this).val(ui.item.value);
+                $("#search_form").submit();
+            },
+            source: function(request, response) {
+                $.ajax({
+                    url: "/ajax/project_items_autocomplete/?project={{project.id}}",
+                    datatype: 'json',
+                    data: { search: request.term },
+                    success: function(data) {
+                        response($.map(data, function(item) {
+                            return {
+                                label: item.fields.local_id + " : " + item.fields.title + " (" + item.pk + ")", 
+                                value: item.pk
+                            }
+                        }));
+                    },
+                });
+            },
+            minLength: 2,
+        });
+    });
+</script>
+<style>
+    .ui-autocomplete {
+        max-height: 100px;
+        max-width: 400px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+</style>
+{% endblock javascript_extra %}
+
+
 {% block content %}
 <section id="project">
     <header class="container-fluid">
@@ -38,6 +76,12 @@
     {% if items.paginator.count >= 10 %}
        {% bootstrap_paginator_bar items 'items_page' %}
     {% endif %}
+    <div style="width:100%;float:left;">
+        <form id="search_form" action="{% url 'project' project.id %}" method="GET">
+            <label for="search_project_items"><h5>Search: </h5></label>
+            <input id="search_project_items" name="search_project_items" type="text" />
+        </form>
+    </div>
 	<table class="table table-striped">
             <tr>
                 <th>ID</th>
