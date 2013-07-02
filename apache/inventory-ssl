@@ -1,4 +1,4 @@
-<VirtualHost *:8081>
+<VirtualHost *:443>
     # Change the above line to serve whichever port you wish to run this app on
     # Example:
     # <VirtualHost *:80>
@@ -8,14 +8,9 @@
     #################
 
     # Set your server name
-    ServerName <your server base url>
+    ServerName <your server base url over https>
     # Example:
-    # ServerName gwdev-gomez.wrlc.org
-
-    #Uncomment the following line to redirect all traffic to https
-    #Redirect permanent / <your server base url over https>
-    #Example:
-    #Redirect permanent / https://gwdev-gomez.wrlc.org/
+    # ServerName gwdev-gomez.wrlc.org:443
 
     # Set your document root
     DocumentRoot /<path to INV_HOME>/inv/inv
@@ -104,5 +99,10 @@
     #         Allow from all
     #     </Files>
     # </Directory>
+
+     #SSL Configuration Line
+     SSLEngine on
+     SSLCertificateFile /etc/ssl/certs/server.crt
+     SSLCertificateKeyFile /etc/ssl/private/server.key
 
 </VirtualHost>
