@@ -149,7 +149,28 @@ PART III - Configure your installation
         $ sudo a2dissite default
         $ sudo /etc/init.d/apache2 restart
 
-10. Test your installation by pasting your base url and port in your web browser
+10. If you want to enable SSL follow these steps,
+    
+    Copy the Apache virtual host SSL file to the Apache2 directory
+        
+        $ cd /<INV_HOME>/inventory
+        $ sudo cp apache/inventory-ssl /etc/apache2/sites-available/inventory-ssl
+
+    Uncomment the following line in /etc/apache2/sites-available
+
+        #Redirect permanent / https://gwinventory-test.wrlc.org/
+
+    See the [SSL documentation](https://github.com/gwu-libraries/SSL_HowTo) for detailed instructions.
+
+    Enable the new virutalhost file
+
+        $ sudo a2dissite inventory
+        $ sudo a2ensite inventory
+        $ sudo a2ensite inventory-ssl
+        $ sudo /etc/init.d/apache2 restart
+
+11. Test your installation by pasting your base url and port in your web browser
+
 
 
 Usage Instructions
