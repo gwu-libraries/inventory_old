@@ -12,7 +12,9 @@ class MachineResource(ModelResource):
         queryset = Machine.objects.all()
         filtering = {
             'name': ALL_WITH_RELATIONS,
-            'url': ALL_WITH_RELATIONS
+            'url': ALL_WITH_RELATIONS,
+            'ip': ALL_WITH_RELATIONS,
+            'notes': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
             Authentication())
@@ -41,10 +43,9 @@ class ProjectResource(ModelResource):
         queryset = Project.objects.all()
         filtering = {
             'id': 'exact',
+            'name': ALL_WITH_RELATIONS,
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
-            'manager': ALL_WITH_RELATIONS,
-            'start_date': ['exact', 'gt', 'lt', 'gte', 'lte'],
-            'end_date': ['exact', 'gt', 'lt', 'gte', 'lte'],
+            'collection': 'exact'
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
             Authentication())
@@ -63,13 +64,11 @@ class ItemResource(ModelResource):
             'id': 'exact',
             'title': ALL_WITH_RELATIONS,
             'local_id': ALL,
+            'collection': 'exact',
+            'project': 'exact',
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'original_item_type': ALL,
-            'rawfiles_loc': ALL_WITH_RELATIONS,
-            'qcfiles_loc': ALL_WITH_RELATIONS,
-            'qafiles_loc': ALL_WITH_RELATIONS,
-            'finfiles_loc': ALL_WITH_RELATIONS,
-            'ocrfiles_loc': ALL_WITH_RELATIONS,
+            'notes': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
             Authentication())
@@ -85,9 +84,10 @@ class BagResource(ModelResource):
         filtering = {
             'bagname': ALL_WITH_RELATIONS,
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
+            'machine': 'exact',
+            'item': 'exact',
             'path': 'ALL_WITH_RELATIONS',
             'bag_type': ALL,
-            'urlpath': ALL_WITH_RELATIONS,
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
             Authentication())
@@ -103,8 +103,10 @@ class BagActionResource(ModelResource):
     class Meta:
         queryset = BagAction.objects.all()
         filtering = {
+            'bag': 'exact',
             'timestamp': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'action': ALL,
+            'note': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
             Authentication())
