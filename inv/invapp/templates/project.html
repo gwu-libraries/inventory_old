@@ -33,14 +33,6 @@
         });
     });
 </script>
-<style>
-    .ui-autocomplete {
-        max-height: 100px;
-        max-width: 400px;
-        overflow-y: auto;
-        overflow-x: auto;
-    }
-</style>
 {% endblock javascript_extra %}
 
 
@@ -76,7 +68,7 @@
     {% if items.paginator.count >= 10 %}
        {% bootstrap_paginator_bar items 'items_page' %}
     {% endif %}
-    <div style="width:100%;float:left;">
+    <div class="search">
         <form id="search_form" action="{% url 'project' project.id %}" method="GET">
             <label for="search_project_items"><h5>Search: </h5></label>
             <input id="search_project_items" name="search_project_items" type="text" />
