@@ -144,11 +144,16 @@ class Bag(models.Model):
     '''
 
     def access_url(self):
+        url = self.machine.url if self.machine.url else self.machine.ip
+        if not url:
+            return None
+        if not url.startswith('http://'):
+            url = 'http://%s' % url
         mach_path_parts = self.machine.access_root.strip('/').split('/')
         path_parts = self.path.strip('/').split('/')
         for i, value in enumerate(path_parts):
             if i == len(mach_path_parts) or value != mach_path_parts[i]:
-                return '/'.join([self.machine.url] + path_parts[i:])
+                return '/'.join([url] + path_parts[i:])
 
     def list_payload(self):
         return [line.split() for line in self.payload.split('\n') if line]
