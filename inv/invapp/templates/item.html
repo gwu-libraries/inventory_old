@@ -22,8 +22,8 @@
         	<dl>
         	    <dt>Persistent ID</dt><dd>{{ item.id }}</dd>
         	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
-        	    <dt>Collection</dt><dd><a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a></dd>
-        	    <dt>Project</dt><dd><a href="{% url 'project' item.project.id %}">{{ item.project.name }}</a></dd>        	
+        	    <dt>Collection</dt><dd>{% if item.collection %}<a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a>{% endif %}</dd>
+        	    <dt>Project</dt><dd>{% if item.project %}<a href="{% url 'project' item.project.id %}">{{ item.project.name }}</a>{% endif %}</dd>
         	</dl>
         </div>
         <div class="span3">
