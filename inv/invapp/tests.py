@@ -84,13 +84,13 @@ class ModelTestCase(TestCase):
 
     def test_bag_access_path(self):
         self.assertEqual(self.bag.access_url(),
-            'test.url.com/partition1/test-bag-1')
+            'http://test.url.com/partition1/test-bag-1')
         self.m1.access_root = '/bags'
         self.assertEqual(self.bag.access_url(),
-            'test.url.com/partition1/test-bag-1')
+            'http://test.url.com/partition1/test-bag-1')
         self.m1.access_root = 'bags'
         self.assertEqual(self.bag.access_url(),
-            'test.url.com/partition1/test-bag-1')
+            'http://test.url.com/partition1/test-bag-1')
 
     @skipIf(not settings.TEST_IDSERVICE.get('url') or
         not settings.TEST_IDSERVICE.get('requester') or
