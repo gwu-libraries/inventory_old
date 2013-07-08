@@ -43,7 +43,7 @@
         <dl>
             <dt>Item</dt><dd><a href="{% url 'item' bag.item.id %}">{% if bag.item.title %}{{ bag.item.title }}{% else %}{{ bag.item.id }}{% endif %}</a></dd>
             <dt>Machine</dt><dd><a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></dd>
-            <dt>URL path</dt><dd><a href="http://{{ bag.access_url }}">{{ bag.access_url }}</a></dd>
+            <dt>URL path</dt><dd><a href="{{ bag.access_url }}">{{ bag.access_url }}</a></dd>
         </dl>
     </header>
     <div id="actions" class="container-fluid">
