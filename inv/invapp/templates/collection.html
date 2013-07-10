@@ -74,17 +74,11 @@
             <tr>
                 <th>ID</th>
                 <th>Project</th>
-                <th>Manager</th>
-                <th>Start Date</th>
-                <th>End Date</th>
             </tr>
             {% for project in projects %}
                 <tr class="project">
                     <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
                     <td>{{ project.name }}</td>
-                    <td>{{ project.manager }}</td>
-                    <td>{{ project.start_date }}</td>
-                    <td>{{ project.end_date }}</td>
                 </tr>
             {% endfor %}
         </table>
