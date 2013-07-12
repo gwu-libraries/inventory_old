@@ -61,6 +61,6 @@ def update_model_stats(model):
 
 
 def update_all_stats():
-    from invapp.models import Item, Project, Collection
+    from invapp.models import Bag, Item, Project, Collection
     return reduce(lambda x,y: x + y,
-        map(update_model_stats, [Item, Project, Collection]))
+        map(update_model_stats, [Bag, Item, Project, Collection]))
