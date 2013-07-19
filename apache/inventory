@@ -47,26 +47,26 @@
     # AliasMatch ^/static/img/([^/]*\.ico) /home/gomez/Projects/inventory/inv/invapp/static/img/$1
 
     # JavaScript
-    AliasMatch ^/static/admin/ij([^/]*\.js) /<path to INV_HOME>/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/css/$1
+    AliasMatch ^/static/admin/ij([^/]*\.js) /<path to INV_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/css/$1
     # Example:
-    # AliasMatch ^/static/admin/ij([^/]*\.js) /home/gomez/Projects/inventory/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/css/$1
+    # AliasMatch ^/static/admin/ij([^/]*\.js) /home/gomez/Projects/inventory/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/css/$1
 
 
     ###############################
     # Add the Django admin module #
     ###############################
 
-    Alias /static/admin/ /<path to INV_HOME>/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/
+    Alias /static/admin/ /<path to INV_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/
     # Example:
-    # Alias /static/admin/ /home/gomez/Projects/inventory/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/
+    # Alias /static/admin/ /home/gomez/Projects/inventory/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/
 
     # Add permissions to django admin module
-    <Directory /<path to INV_HOME>/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/>
+    <Directory /<path to INV_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/>
         Order deny,allow
         Allow from all
     </Directory>
     # Example:
-    # <Directory /home/gomez/Projects/inventory/ENV/lib/python2.6/site-packages/django/contrib/admin/static/admin/>
+    # <Directory /home/gomez/Projects/inventory/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/>
     #     Order deny,allow
     #     Allow from all
     # </Directory>
@@ -76,9 +76,9 @@
     # Add the WSGI Daemon #
     #######################
 
-    WSGIDaemonProcess inventory processes=2 threads=15 python-path=/<path to INV_HOME>/ENV/lib/python/2.6/site-packages:/<path to INV_HOME>/inv
+    WSGIDaemonProcess inventory processes=2 threads=15 python-path=/<path to INV_HOME>/ENV/lib/python/2.7/site-packages:/<path to INV_HOME>/inv
     # Example:
-    # WSGIDaemonProcess inventory processes=2 threads=15 python-path=/home/gomez/Projects/inventory/ENV/lib/python/2.6/site-packages:/home/gomez/Projects/inventory/inv
+    # WSGIDaemonProcess inventory processes=2 threads=15 python-path=/home/gomez/Projects/inventory/ENV/lib/python/2.7/site-packages:/home/gomez/Projects/inventory/inv
 
     # Do not edit this value
     WSGIProcessGroup inventory

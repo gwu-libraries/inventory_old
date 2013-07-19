@@ -156,7 +156,7 @@ PART III - Configure your installation
         $ cd /<INV_HOME>/inventory
         $ sudo cp apache/inventory-ssl /etc/apache2/sites-available/inventory-ssl
 
-    Uncomment the following line in /etc/apache2/sites-available
+    Uncomment the following line in /etc/apache2/sites-available/inventory
 
         #Redirect permanent / https://gwinventory-test.wrlc.org/
 
@@ -171,6 +171,7 @@ PART III - Configure your installation
 
 11. Test your installation by pasting your base url and port in your web browser
 
+12. Login to the admin module and change the website information by entering your base url and port under the Sites section.
 
 
 Usage Instructions
