@@ -65,6 +65,7 @@ PART II - Set up project environment
 
         (ENV)$ pip install -r requirements.txt
 
+
 PART III - Configure your installation
 --------------------------------------
 
@@ -77,7 +78,10 @@ PART III - Configure your installation
         $ cd inv/inv
         $ cp local_settings.py.template local_settings.py
 
-2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter appropriate values for requester, minter, url and port under IDSERVICE and TEST_IDSERVICE.
+2. Update the values in the local_setting.py file:  for the database,
+NAME, USER, and PASSWORD to the database you created above, and set ENGINE
+to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter appropriate values
+for requester, minter, url and port under IDSERVICE and TEST_IDSERVICE.
 
         $ vim local_settings.py
 
@@ -89,7 +93,8 @@ PART III - Configure your installation
 
         $ vim wsgi.py
 
-5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
+5. Initialize database tables. WARNING: Be sure you are still using your
+virtualenv. DO NOT create a superuser when prompted!
 
         (ENV)$ cd /<INV_HOME>/inv
         (ENV)$ python manage.py syncdb
@@ -115,23 +120,24 @@ PART III - Configure your installation
 
     Now, rerun the syncdb command
 
+        (ENV)$ python manage.py syncdb
+
 6. Migrate the database to the latest updates
 
         $ python manage.py migrate
 
-
-6. Create the database super user
+7. Create the database super user
 
         (ENV)$ python manage.py createsuperuser
 
     Enter your information when prompted
 
-7. Copy the Apache virtual host file to the Apache2 directory
+8. Copy the Apache virtual host file to the Apache2 directory
 
         $ cd /<INV_HOME>/inventory
         $ sudo cp apache/inventory /etc/apache2/sites-available/inventory
 
-8. Update the values in the Apache virtual host file.
+9. Update the values in the Apache virtual host file.
 
     Edit the host port number
     Edit your server name (base url)
@@ -143,34 +149,36 @@ PART III - Configure your installation
 
         :%s/old_value/new_value/g
 
-9. Enable the new virtualhost. If you are using port 80 also disable the default host
+10. Enable the new virtualhost. If you are using port 80 also disable the default host
 
         $ sudo a2ensite inventory
         $ sudo a2dissite default
         $ sudo /etc/init.d/apache2 restart
 
-10. If you want to enable SSL follow these steps,
+11. If you want to enable SSL follow these steps,
     
     Copy the Apache virtual host SSL file to the Apache2 directory
         
         $ cd /<INV_HOME>/inventory
         $ sudo cp apache/inventory-ssl /etc/apache2/sites-available/inventory-ssl
 
-    Uncomment the following line in /etc/apache2/sites-available
+    Uncomment the following line in /etc/apache2/sites-available/inventory
 
-        #Redirect permanent / https://gwinventory-test.wrlc.org/
+        #Redirect permanent / https://inventory.example.com/
 
     See the [SSL documentation](https://github.com/gwu-libraries/SSL_HowTo) for detailed instructions.
 
-    Enable the new virutalhost file
+    Enable the new virtualhost file
 
         $ sudo a2dissite inventory
         $ sudo a2ensite inventory
         $ sudo a2ensite inventory-ssl
         $ sudo /etc/init.d/apache2 restart
 
-11. Test your installation by pasting your base url and port in your web browser
+12. Test your installation by pasting your base url and port in your web browser
 
+13. Log in to the admin module and change the website information by
+entering your base url and port under the Sites section.
 
 
 Usage Instructions
@@ -189,7 +197,7 @@ The version by default is v1. The api_key for a user can be found in the admin i
 
 Here is an example url with the api key removed:
 
-http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wdbsmv/?format=json&username=gomez&api_key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+http://inventory.example.com/api/v1/item/38989/c01wdbsmv/?format=json&username=gomez&api_key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 POST
 ----
@@ -198,11 +206,13 @@ To create a new item, use the POST method with a url pointing to the model type 
 
 URL
 
-http://gwdev-gomez.wrlc.org:8081/api/v1/item/
+http://inventory.example.com/api/v1/item/
 
 Body Data
 
-    {"collection": "38989/c010g26gs40w/", "id": "38989/c01wwwwww", "local_id": "39020025220180", "notes": "A test item", "original_item_type": "2", "project": "38989/c0102488q518", "title": "Our Test Item!"}
+```json
+{"collection": "38989/c010g26gs40w/", "id": "38989/c01wwwwww", "local_id": "39020025220180", "notes": "A test item", "original_item_type": "2", "project": "38989/c0102488q518", "title": "Our Test Item!"}
+```
 
 PUT
 ---
@@ -211,11 +221,13 @@ To edit the data of an existing item, use the PUT method. Point the url to the s
 
 URL
 
-http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
+http://inventory.example.com/api/v1/item/38989/c01wwwwww
 
 Body Data
 
-    {"collection": "38989/c010g26gs40w/", "id": "38989/c01wwwwww", "local_id": "39020025220180", "notes": "A test item", "original_item_type": "2", "project": "38989/c0102488q518", "title": "Our Test Item!"}
+```json
+{"collection": "38989/c010g26gs40w/", "id": "38989/c01wwwwww", "local_id": "39020025220180", "notes": "A test item", "original_item_type": "2", "project": "38989/c0102488q518", "title": "Our Test Item!"}
+```
 
 PATCH
 -----
@@ -224,11 +236,13 @@ To edit just a few attributes for an item, use the PATCH method instead of PUT.
 
 URL
 
-http://gwdev-gomez.wrlc.org:8081/api/v1/item/38989/c01wwwwww
+http://inventory.example.com/api/v1/item/38989/c01wwwwww
 
 Body Data
 
-    {"title": "We Changed the Title"}
+```json
+{"title": "We Changed the Title"}
+```
 
 DELETE
 ------
