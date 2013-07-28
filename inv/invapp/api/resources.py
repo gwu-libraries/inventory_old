@@ -1,9 +1,10 @@
 from tastypie import fields
-from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication, \
     MultiAuthentication, Authentication
 from tastypie.authorization import DjangoAuthorization
+from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.resources import ModelResource
+
 from invapp.models import Machine, Collection, Project, Item, Bag, BagAction
 
 
@@ -17,7 +18,7 @@ class MachineResource(ModelResource):
             'notes': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
-            Authentication())
+                                             Authentication())
         authorization = DjangoAuthorization()
 
 
@@ -31,13 +32,13 @@ class CollectionResource(ModelResource):
             'manager': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
-            Authentication())
+                                             Authentication())
         authorization = DjangoAuthorization()
 
 
 class ProjectResource(ModelResource):
-    collection = fields.ForeignKey(CollectionResource, 'collection', null=True,
-        blank=True)
+    collection = fields.ForeignKey(CollectionResource, 'collection',
+                                   null=True, blank=True)
 
     class Meta:
         queryset = Project.objects.all()
@@ -48,15 +49,15 @@ class ProjectResource(ModelResource):
             'collection': 'exact'
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
-            Authentication())
+                                             Authentication())
         authorization = DjangoAuthorization()
 
 
 class ItemResource(ModelResource):
-    collection = fields.ForeignKey(CollectionResource, 'collection', null=True,
-        blank=True)
+    collection = fields.ForeignKey(CollectionResource, 'collection',
+                                   null=True, blank=True)
     project = fields.ForeignKey(ProjectResource, 'project', null=True,
-        blank=True)
+                                blank=True)
 
     class Meta:
         queryset = Item.objects.all()
@@ -71,7 +72,7 @@ class ItemResource(ModelResource):
             'notes': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
-            Authentication())
+                                             Authentication())
         authorization = DjangoAuthorization()
 
 
@@ -90,7 +91,7 @@ class BagResource(ModelResource):
             'bag_type': ALL,
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
-            Authentication())
+                                             Authentication())
         authorization = DjangoAuthorization()
 
     def dehydrate_payload(self, bundle):
@@ -109,5 +110,5 @@ class BagActionResource(ModelResource):
             'note': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
-            Authentication())
+                                             Authentication())
         authorization = DjangoAuthorization()
