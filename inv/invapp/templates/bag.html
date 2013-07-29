@@ -124,7 +124,7 @@
             </tr>
         {% for file in files %}
             <tr>
-                <td><a href="http://{{ bag.access_url }}/{{ file.0 }}">{{ file.0 }}</a></td>
+                <td><a href="{{ bag.access_url }}/{{ file.0 }}">{{ file.0 }}</a></td>
                 <td>{{ file.1 }} ({{ file.1|filesizeformat }})</td>
             </tr>
         {% endfor %}
