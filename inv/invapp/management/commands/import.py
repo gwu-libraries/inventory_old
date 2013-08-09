@@ -33,8 +33,7 @@ BagAction, bag (bagname), timestamp, action, note'''
         try:
             f = open(args[0], 'rb')
             payload_dir = os.path.join(os.path.dirname(args[0]), 'payloads')
-            cmddir = os.path.dirname(os.path.realpath(__file__))
-            logdir = os.path.join(cmddir, '../../../../logs')
+            logdir = settings.LOGS_DIRECTORY
             error_log = open(os.path.join(logdir, 'import_errors.log'), 'a')
         except IndexError:
             raise CommandError('Please specify a csv file to read')
