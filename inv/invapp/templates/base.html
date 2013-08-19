@@ -58,6 +58,9 @@
                     <div class="libheader-link" style="float:right;">
                         <a href="{% url 'change_password' %}">Change Password</a>
                     </div>
+                    <div class="libheader-link" style="float:right;">
+                        <label>Logged in as {{ request.user.username }} -</label>
+                    </div>
                     {% endif %}
                     <div class="libheader-logo hide-lo" style="">
                         <a href="http://www.gwu.edu" target="_blank" title="GWU website"><img src="{{ STATIC_URL }}img/gwheaderlogo.png" alt="logo: The George Washington University" /></a>
