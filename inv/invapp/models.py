@@ -134,7 +134,7 @@ class Bag(models.Model):
         on_delete=models.PROTECT)
     machine = models.ForeignKey(Machine, related_name='bags',
         on_delete=models.PROTECT)
-    path = models.URLField()
+    path = models.CharField(max_length=255)
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
     payload = models.TextField(blank=True)
     stats = JSONField()
@@ -147,6 +147,7 @@ class Bag(models.Model):
         url = self.machine.url if self.machine.url else self.machine.ip
         if not url:
             return None
+        # FIXME: really?  what about https?
         if not url.startswith('http://'):
             url = 'http://%s' % url
         mach_path_parts = self.machine.access_root.strip('/').split('/')
