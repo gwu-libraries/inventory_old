@@ -32,6 +32,8 @@ TIME_ZONE = 'America/New_York'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '_$mfn4it@819%gjc$c*uo$_##_(kc9m0pjk==-^z4y(1alef8r'
 
+LOGS_DIRECTORY = ''
+
 IDSERVICE = {
     'requester': '',
     'minter': '',
