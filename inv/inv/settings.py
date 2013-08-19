@@ -183,21 +183,22 @@ ITEM_TYPES = (
     ('4', 'video'),
     ('5', 'mixed'),
     ('6', 'other')
-    )
+)
 
 BAG_TYPES = (
     ('1', 'Access'),
     ('2', 'Preservation'),
     ('3', 'Export')
-    )
+)
 
 ACTIONS = (
     ('1', 'updated'),
     ('2', 'moved'),
     ('3', 'validated'),
-    ('4', 'imported to DSpace')
+    ('4', 'imported to DSpace'),
+    ('5', 'added')
     # and so on...
-    )
+)
 
 try:
     from local_settings import *
