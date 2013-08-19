@@ -79,10 +79,10 @@ PART III - Configure your installation
         $ cp local_settings.py.template local_settings.py
 
 2. Update the values in the local_setting.py file:  for the database,
-NAME, USER, and PASSWORD to the database you created above, and set ENGINE
-to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter appropriate values
-for requester, minter, url and port under IDSERVICE and TEST_IDSERVICE. Set appropriate
-    path for LOGS_DIRECTORY.
+NAME, USER, and PASSWORD to the database you created above, and
+set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter
+appropriate values for requester, minter, url and port under IDSERVICE
+and TEST_IDSERVICE, and set an appropriate path for LOGS_DIRECTORY.
 
         $ vim local_settings.py
 
