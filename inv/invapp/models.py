@@ -1,11 +1,12 @@
 import json
 
+from json_field import JSONField
+from tastypie.models import create_api_key
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 from django.utils.timezone import now
-from json_field import JSONField
-from tastypie.models import create_api_key
 
 from invapp.idservice import mintandbind
 from invapp.utils import merge_dicts
@@ -18,9 +19,9 @@ class Machine(models.Model):
     name = models.CharField(max_length=64, unique=True)
     url = models.URLField(null=True, blank=True, default=None, unique=True)
     ip = models.IPAddressField(null=True, blank=True, default=None,
-        unique=True)
+                               unique=True)
     notes = models.TextField(blank=True)
-    access_root = models.FilePathField(blank=True)
+    access_root = models.CharField(max_length=255)
 
     def __unicode__(self):
         return self.name
@@ -45,7 +46,7 @@ class Collection(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             self.id = mintandbind(objtype='c', objurl=self.access_loc,
-                description=self.name)
+                                  description=self.name)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Collection, self).save(*args, **kwargs)
@@ -53,12 +54,12 @@ class Collection(models.Model):
     def collect_stats(self):
         if self.items.count():
             return reduce(merge_dicts,
-                map(lambda item: item.stats, self.items.all()))
+                          map(lambda item: item.stats, self.items.all()))
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
     def purl(self):
         return '%s:%s/%s' % (settings.IDSERVICE['url'],
-            settings.IDSERVICE['port'], self.id)
+                             settings.IDSERVICE['port'], self.id)
 
     def __unicode__(self):
         return self.name
@@ -69,7 +70,8 @@ class Project(models.Model):
     created = models.DateTimeField(default=now)
     name = models.CharField(max_length=256)
     collection = models.ForeignKey(Collection, related_name='projects',
-        null=True, blank=True, on_delete=models.SET_NULL)
+                                   null=True, blank=True,
+                                   on_delete=models.SET_NULL)
     stats = JSONField()
 
     def save(self, *args, **kwargs):
@@ -82,7 +84,7 @@ class Project(models.Model):
     def collect_stats(self):
         if self.items.count():
             return reduce(merge_dicts,
-                map(lambda item: item.stats, self.items.all()))
+                          map(lambda item: item.stats, self.items.all()))
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
     def __unicode__(self):
@@ -94,12 +96,14 @@ class Item(models.Model):
     title = models.TextField(blank=True)
     local_id = models.CharField(max_length=256, blank=True)
     collection = models.ForeignKey(Collection, related_name='items',
-        null=True, default=None, blank=True, on_delete=models.SET_NULL)
+                                   null=True, default=None, blank=True,
+                                   on_delete=models.SET_NULL)
     project = models.ForeignKey(Project, related_name='items', null=True,
-        blank=True, default=None, on_delete=models.SET_NULL)
+                                blank=True, default=None,
+                                on_delete=models.SET_NULL)
     created = models.DateTimeField(default=now)
     original_item_type = models.CharField(max_length=1,
-        choices=settings.ITEM_TYPES)
+                                          choices=settings.ITEM_TYPES)
     notes = models.TextField(blank=True)
     access_loc = models.URLField(blank=True)
     stats = JSONField()
@@ -108,7 +112,7 @@ class Item(models.Model):
         if not self.id:
             desc = 'local_id: %s; title: %s;' % (self.local_id, self.title)
             self.id = mintandbind(objtype='i', objurl=self.access_loc,
-                description=desc)
+                                  description=desc)
         if not self.stats:
             self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
         super(Item, self).save(*args, **kwargs)
@@ -116,12 +120,12 @@ class Item(models.Model):
     def collect_stats(self):
         if self.bags.count():
             return reduce(merge_dicts,
-                map(lambda bag: bag.stats, self.bags.all()))
+                          map(lambda bag: bag.stats, self.bags.all()))
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
     def purl(self):
         return '%s:%s/%s' % (settings.IDSERVICE['url'],
-            settings.IDSERVICE['port'], self.id)
+                             settings.IDSERVICE['port'], self.id)
 
     def __unicode__(self):
         return self.title
@@ -131,9 +135,9 @@ class Bag(models.Model):
     bagname = models.TextField(primary_key=True)
     created = models.DateTimeField(default=now)
     item = models.ForeignKey(Item, related_name='bags',
-        on_delete=models.PROTECT)
+                             on_delete=models.PROTECT)
     machine = models.ForeignKey(Machine, related_name='bags',
-        on_delete=models.PROTECT)
+                                on_delete=models.PROTECT)
     path = models.CharField(max_length=255)
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
     payload = models.TextField(blank=True)
