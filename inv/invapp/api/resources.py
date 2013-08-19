@@ -65,8 +65,8 @@ class ItemResource(ModelResource):
             'id': 'exact',
             'title': ALL_WITH_RELATIONS,
             'local_id': ALL,
-            'collection': 'exact',
-            'project': 'exact',
+            'collection': ALL_WITH_RELATIONS,
+            'project': ALL_WITH_RELATIONS,
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'original_item_type': ALL,
             'notes': ALL_WITH_RELATIONS
@@ -85,9 +85,9 @@ class BagResource(ModelResource):
         filtering = {
             'bagname': ALL_WITH_RELATIONS,
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
-            'machine': 'exact',
-            'item': 'exact',
-            'path': 'ALL_WITH_RELATIONS',
+            'machine': ALL_WITH_RELATIONS,
+            'item': ALL_WITH_RELATIONS,
+            'path': ALL_WITH_RELATIONS,
             'bag_type': ALL,
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
