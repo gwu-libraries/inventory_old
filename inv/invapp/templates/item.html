@@ -49,15 +49,17 @@
 	<h3>Bags for this item</h3>
 	<table class="table table-striped">
             <tr>
-                <th>Bag Name</th>
+                <th>Name</th>
                 <th>Location (machine)</th>
                 <th>Location (path)</th>
+                <th>Type</th>
             </tr>
             {% for bag in bags %}
                 <tr class="bag">
                     <td><a href="{% url 'bag' bag.bagname %}">{{ bag.bagname }}</a></td>
                     <td>{{ bag.machine.name }}</td>
                     <td>{{ bag.access_url }}</td>
+                    <td>{{ bag.get_bag_type_display }}</td>
                 </tr>
             {% endfor %}
         </table>
