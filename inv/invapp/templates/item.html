@@ -16,7 +16,9 @@
                 (title not available)
             </p>
         {% endif %}
-        <p><a class="btn btn-primary" href="{{ item.purl }}">View Access Version</a></p>
+        {% if item.access_loc != '' %}
+        <p><a class="btn btn-primary" href="{{ item.access_loc }}">View Access Version</a></p>
+        {% endif %}
         <div class="span3">
 
         	<dl>
