@@ -10,8 +10,8 @@ class UserModelAdmin(UserAdmin):
 
 
 class MachineAdmin(admin.ModelAdmin):
-    fields = ['name', 'url', 'ip', 'notes', 'access_root']
-    list_display = ('name', 'url', 'ip', 'access_root')
+    fields = ['name', 'url', 'ip', 'notes', 'www_root']
+    list_display = ('name', 'url', 'ip', 'www_root')
     search_fields = ['name']
 
 
@@ -23,10 +23,10 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 class BagAdmin(admin.ModelAdmin):
-    fields = ('bagname', 'item', 'machine', 'path', 'bag_type', 'created',
-              'payload')
-    list_display = ('bagname', 'item', 'machine', 'path', 'bag_type',
-                    'created')
+    fields = ('bagname', 'item', 'machine', 'absolute_filesystem_path',
+              'bag_type', 'created', 'payload')
+    list_display = ('bagname', 'item', 'machine', 'absolute_filesystem_path',
+                    'bag_type', 'created')
     search_fields = ['bagname']
     date_hierarchy = 'created'
 
