@@ -87,7 +87,7 @@ class BagResource(ModelResource):
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'machine': ALL_WITH_RELATIONS,
             'item': ALL_WITH_RELATIONS,
-            'path': ALL_WITH_RELATIONS,
+            'absolute_filesystem_path': ALL_WITH_RELATIONS,
             'bag_type': ALL,
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),

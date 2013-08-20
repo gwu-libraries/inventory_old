@@ -21,7 +21,7 @@ class Machine(models.Model):
     ip = models.IPAddressField(null=True, blank=True, default=None,
                                unique=True)
     notes = models.TextField(blank=True)
-    access_root = models.CharField(max_length=255)
+    www_root = models.CharField(max_length=255)
 
     def __unicode__(self):
         return self.name
@@ -130,7 +130,7 @@ class Bag(models.Model):
                              on_delete=models.PROTECT)
     machine = models.ForeignKey(Machine, related_name='bags',
                                 on_delete=models.PROTECT)
-    path = models.CharField(max_length=255)
+    absolute_filesystem_path = models.CharField(max_length=255)
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
     payload = models.TextField(blank=True)
     stats = JSONField()
@@ -146,8 +146,8 @@ class Bag(models.Model):
         # FIXME: really?  what about https?
         if not url.startswith('http://'):
             url = 'http://%s' % url
-        mach_path_parts = self.machine.access_root.strip('/').split('/')
-        path_parts = self.path.strip('/').split('/')
+        mach_path_parts = self.machine.www_root.strip('/').split('/')
+        path_parts = self.absolute_filesystem_path.strip('/').split('/')
         for i, value in enumerate(path_parts):
             if i == len(mach_path_parts) or value != mach_path_parts[i]:
                 return '/'.join([url] + path_parts[i:])
