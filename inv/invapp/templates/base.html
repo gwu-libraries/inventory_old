@@ -53,13 +53,13 @@
                 <div id="libheader" class="container" style="">
                     {% if user.is_authenticated %}
                     <div class="libheader-link" style="float:right;">
-                        <a href="{% url 'logout' %}">Logout</a>
+                        <i class='icon-off icon-white'></i>&nbsp;<a href="{% url 'logout' %}">logout</a>
                     </div>
                     <div class="libheader-link" style="float:right;">
-                        <a href="{% url 'change_password' %}">Change Password</a>
+                        <i class='icon-wrench icon-white'></i>&nbsp;<a href="{% url 'change_password' %}">change password</a>
                     </div>
                     <div class="libheader-link" style="float:right;">
-                        <label>Logged in as {{ request.user.username }} -</label>
+                        <i class='icon-user icon-white'></i>&nbsp;{{ request.user.username }}
                     </div>
                     {% endif %}
                     <div class="libheader-logo hide-lo" style="">
