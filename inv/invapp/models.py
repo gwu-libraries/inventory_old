@@ -57,10 +57,6 @@ class Collection(models.Model):
                           map(lambda item: item.stats, self.items.all()))
         return {'total_count': 0, 'total_size': 0, 'types': {}}
 
-    def purl(self):
-        return '%s:%s/%s' % (settings.IDSERVICE['url'],
-                             settings.IDSERVICE['port'], self.id)
-
     def __unicode__(self):
         return self.name
 
@@ -122,10 +118,6 @@ class Item(models.Model):
             return reduce(merge_dicts,
                           map(lambda bag: bag.stats, self.bags.all()))
         return {'total_count': 0, 'total_size': 0, 'types': {}}
-
-    def purl(self):
-        return '%s:%s/%s' % (settings.IDSERVICE['url'],
-                             settings.IDSERVICE['port'], self.id)
 
     def __unicode__(self):
         return self.title

@@ -40,7 +40,9 @@
     <header class="container-fluid">
         <h1>{{ collection.name }}</h1>
         <p id="description">{{ collection.description }}</p>
-        <p><a class="btn btn-primary" href="{{ collection.purl }}">View In Access System</a></p>
+        {% if collection.access_loc != '' %}
+        <p><a class="btn btn-primary" href="{{ collection.access_loc }}">View In Access System</a></p>
+        {% endif %}
         <div class="row">
             <div class="span3">
                 <dl>
