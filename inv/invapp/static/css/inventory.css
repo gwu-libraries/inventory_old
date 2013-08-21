@@ -18,6 +18,10 @@ dd {
     font-weight: bold;
 }
 
+p#description {
+    font-size: large;
+}
+
 .login {
     padding: 16.5% 35%;
 }

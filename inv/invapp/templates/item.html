@@ -1,15 +1,11 @@
 {% extends "base.html" %}
 {% load url from future %}
 
-{% block title %}
-	{{ item.title }}
-{% endblock title %}
-
 {% block content %}
 <section id="item">
     <header class="container-fluid">
         <h1>
-            <a href='{% url "collection" item.collection.id %}' alt="collection: {{ item.collection.name }}"'>{{ item.collection.name }}</a> /
+            <a href='{% url "collection" item.collection.id %}' alt="collection: {{ item.collection.name }}"'>{{ item.collection.name }}</a> &raquo;
             {% if item.title %}
                 {{ item.title }}
             {% else %}
@@ -29,9 +25,9 @@
                     <dt>Project</dt><dd><a href="{% url 'project' item.project.id %}">{{ item.project.name }}</a></dd>
                     {% endif %}
                     <dt>created</dt><dd>{{ item.created }}</dd>
-                    <dt>original item type</dt><dd>{{ item.get_original_item_type_display }}</dd>
+                    <dt>original type</dt><dd>{{ item.get_original_item_type_display }}</dd>
                     {% if item.notes %}
-                    <dt>Item notes</dt><dd>{{ item.notes }}</dd>
+                    <dt>notes</dt><dd>{{ item.notes }}</dd>
                     {% endif %}
                 </dl>
 

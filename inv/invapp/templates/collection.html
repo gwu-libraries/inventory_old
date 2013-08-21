@@ -2,10 +2,6 @@
 {% load url from future %}
 {% load invapp_extras %}
 
-{% block title %}
-    {{ collection.name }}
-{% endblock title %}
-
 {% block javascript_extra %}
 <script type="text/javascript">
     $(function() {
@@ -39,37 +35,48 @@
 <section id="collection">
     <header class="container-fluid">
         <h1>{{ collection.name }}</h1>
-        <p id="description">{{ collection.description }}</p>
-        {% if collection.access_loc != '' %}
-        <p><a class="btn btn-primary" href="{{ collection.access_loc }}">View In Access System</a></p>
-        {% endif %}
-        <div class="row">
-            <div class="span3">
-                <dl>
-                    <dt>Persistent ID</dt><dd>{{ collection.id }}</dd>
-                    <dt>Created</dt><dd>{{ collection.created }}</dd>
-                    <dt>Manager</dt><dd>{{ collection.manager }}</dd>
-
+        <div class="row-fluid">
+            <div class="span2">
+                <p id="description">{{ collection.description }}</p>
+                {% if collection.access_loc != '' %}
+                <p><a class="btn btn-primary" href="{{ collection.access_loc }}">View In Access System</a></p>
+                {% endif %}
+            </div>
+            <div class="span4">
+                <dl class='dl-horizontal' >
+                    <dt>persistent id</dt><dd>{{ collection.id }}</dd>
+                    <dt>created</dt><dd>{{ collection.created }}</dd>
+                    <dt>contact</dt><dd>{{ collection.manager }}</dd>
+                    <dt># items</dt><dd>{{ items.paginator.count }}</dd>
                 </dl>
             </div>
             <div class="span3">
-                <dl>
-                    <dt>Total Items</dt><dd>{{ items.paginator.count }}</dd>
-                    <dt>Total Files</dt><dd>{{ collection.stats.total_count }}</dd>
-                    <dt>Total Size</dt><dd>{{ collection.stats.total_size|filesizeformat}}</dd>
-                </dl>
-            </div>
-            <div class="span3">
-                <dl>
-                    <dt>File Types</dt><dd>
-                    {% for key, value in collection.stats.types.items %}
-                    {{ key }} | {{ value.count }} | {{value.size|filesizeformat }}<br />
-                    {% endfor %}
-                    </dd>
-                </dl>
+                <table class='table table-condensed table-striped'>
+                    <thead>
+                        <th>type</th>
+                        <th>#</th>
+                        <th>size</th>
+                    </thead>
+                    <tbody>
+                        {% for key, value in collection.stats.types.items %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value.count }}</td>
+                            <td>{{ value.size|filesizeformat }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><strong>total</strong></td>
+                            <td><strong>{{ collection.stats.total_count }}</strong</td>
+                            <td><strong>{{ collection.stats.total_size|filesizeformat }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </header>
+
+    {% if projects %}
     <div id="projects" class="container-fluid">
         <h3>Projects contributing to this collection</h3>
         <table class="table table-striped">
@@ -78,56 +85,48 @@
                 <th>Project</th>
             </tr>
             {% for project in projects %}
-                <tr class="project">
-                    <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
-                    <td>{{ project.name }}</td>
-                </tr>
+            <tr class="project">
+                <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
+                <td>{{ project.name }}</td>
+            </tr>
             {% endfor %}
         </table>
     </div>
+    {% endif %}
+
     <div id="items" class="container-fluid">
-        <h3>Items in this Collection</h3>
-
-        {% if items.paginator.count > 10 %}
-            {% bootstrap_paginator_bar items 'items_page' %}
-        {% endif %}
-
-        <div class="search">
-            <form id="search_form" action="{% url 'collection' collection.id %}" method="GET">
+        <h2>Items</h2>
+        <div class='row-fluid'>
+            <form id="search_form" class='form-inline' action="{% url 'collection' collection.id %}" method="GET">
                 <label for="search_collection_items"><h5>Search: </h5></label>
                 <input id="search_collection_items" name="search_collection_items" type="text" />
             </form>
+            {% if items.paginator.count > 10 %}
+                {% bootstrap_paginator_bar items 'items_page' %}
+            {% endif %}
         </div>
 
         <table class="table table-striped">
             <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Local ID</th>
-                <th>Project</th>
+                <th width='20%'>Local ID</th>
+                <th width='50%'>Title</th>
+                <th width='15%'>ID</th>
+                <th width='15%'>Project</th>
             </tr>
             {% for item in items %}
                 <tr class="item">
-                    <td><a href="{% url 'item' item.id %}">{{ item.id }}</a></td>
-                    <td>{{ item.title }}</td>
                     <td>{{ item.local_id }}</td>
+                    <td><a href="{% url 'item' item.id %}">{{ item.title }}</a></td>
+                    <td>{{ item.id }}</td>
                     <td>{{ item.project.name }}</td>
                 </tr>
             {% endfor %}
         </table>
+            {% if items.paginator.count > 10 %}
+                {% bootstrap_paginator_bar items 'items_page' %}
+            {% endif %}
     </div>
 </section>
 
-
-<!-- TODO: build out recent activity section
-<section id="recent-activity">
-    <header>
-        <h4>Recent Activity</h4>
-    </header>
-    <div id="actions">
-        ...
-    </div>
-</section>
--->
 
 {% endblock content %}
