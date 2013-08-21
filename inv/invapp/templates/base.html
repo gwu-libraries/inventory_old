@@ -12,9 +12,9 @@
         {% block styles %}
         <link rel="stylesheet" type='text/css' href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/smoothness/jquery-ui.css" />
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
-    	<link href="{{ STATIC_URL }}css/inventory.css" rel="stylesheet" type='text/css' media='screen' />
         <link href="{{ STATIC_URL }}css/libheader7_lite.css" rel="stylesheet" type='text/css' media='screen' />
         <link href="{{ STATIC_URL }}css/libheader7_lite_bootswatch.css" rel="stylesheet" type='text/css' media='screen' />
+    	<link href="{{ STATIC_URL }}css/inventory.css" rel="stylesheet" type='text/css' media='screen' />
         <!--[if lt IE 9]>
             <link href="{{ STATIC_URL }}css/libheader7_lite_ie.css" rel="stylesheet">
         <![endif]--> 
@@ -71,10 +71,6 @@
                     <div class="libheader-link" style="">
                         <a href="{% url 'home' %}" title="inventory home">Inventory</a>
                     </div>
-                    <!-- don't need these yet
-                    <div class="bullet" style="">&bull;</div>
-                    <div class="libheader-link" style=""><a href="#" target="_blank" title="">Placeholder Link 2</a></div>
-                    -->
                 </div>
             </div>
         </header>

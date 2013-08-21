@@ -8,62 +8,83 @@
 {% block content %}
 <section id="item">
     <header class="container-fluid">
-    	{% if item.title %}
-            <h1>{{ item.title }}</h1>
-        {% else %}
-            <p>
-                <h1>{{ item.id }}</h1>
-                (title not available)
-            </p>
-        {% endif %}
-        {% if item.access_loc != '' %}
-        <p><a class="btn btn-primary" href="{{ item.access_loc }}">View Access Version</a></p>
-        {% endif %}
-        <div class="span3">
+        <h1>
+            <a href='{% url "collection" item.collection.id %}' alt="collection: {{ item.collection.name }}"'>{{ item.collection.name }}</a> /
+            {% if item.title %}
+                {{ item.title }}
+            {% else %}
+                {{ item.id }} (title not available)
+            {% endif %}
+        </h1>
 
-        	<dl>
-        	    <dt>Persistent ID</dt><dd>{{ item.id }}</dd>
-        	    <dt>Local ID</dt><dd>{{item.local_id }}</dd>
-        	    <dt>Collection</dt><dd>{% if item.collection %}<a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a>{% endif %}</dd>
-        	    <dt>Project</dt><dd>{% if item.project %}<a href="{% url 'project' item.project.id %}">{{ item.project.name }}</a>{% endif %}</dd>
-        	</dl>
-        </div>
-        <div class="span3">
-            <dl>
-                <dt>Created</dt><dd>{{ item.created }}</dd>
-                <dt>Original Item Type</dt><dd>{{ item.get_original_item_type_display }}</dd>
-                <dt>Item notes</dt><dd>{{ item.notes }}</dd>
-            </dl>
-        </div>
-        <div class="span3">
-            <dl>
-                <dt>Total Files</dt><dd>{{ item.stats.total_count }}</dd>
-                <dt>Total Size</dt><dd>{{ item.stats.total_size|filesizeformat }}</dd>
-                <dt>File types</dt>
-                <dd>{% for key, value in item.stats.types.items %}
-                    {{key}} | {{value.count}} | {{value.size|filesizeformat}}<br />
-                    {% endfor %}
-                </dd>
-            </dl>
+        <div class='row-fluid'>
+            <div class="span4">
+        	<dl class='dl-horizontal'>
+        	    <dt>collection</dt><dd>{% if item.collection %}<a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a>{% endif %}</dd>
+        	    <dt>persistent id</dt><dd>{{ item.id }}</dd>
+                    {% if item.local_id %}
+        	    <dt>local id</dt><dd>{{ item.local_id }}</dd>
+                    {% endif %}
+                    {% if item.project %}
+                    <dt>Project</dt><dd><a href="{% url 'project' item.project.id %}">{{ item.project.name }}</a></dd>
+                    {% endif %}
+                    <dt>created</dt><dd>{{ item.created }}</dd>
+                    <dt>original item type</dt><dd>{{ item.get_original_item_type_display }}</dd>
+                    {% if item.notes %}
+                    <dt>Item notes</dt><dd>{{ item.notes }}</dd>
+                    {% endif %}
+                </dl>
+
+                {% if item.access_loc != '' %}
+                <p><a class="btn btn-primary" href="{{ item.access_loc }}">View Access Version</a></p>
+                {% endif %}
+            </div>
+            <div class="span3">
+                <table class='table table-condensed table-striped'>
+                    <thead>
+                        <th>type</th>
+                        <th>#</th>
+                        <th>size</th>
+                    </thead>
+                    <tbody>
+                        {% for key, value in item.stats.types.items %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value.count }}</td>
+                            <td>{{ value.size|filesizeformat }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><strong>total</strong></td>
+                            <td><strong>{{ item.stats.total_count }}</strong</td>
+                            <td><strong>{{ item.stats.total_size|filesizeformat }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </header>
     <div id="bags" class="container-fluid">
-	<h3>Bags for this item</h3>
+	<h2>Stored copies</h2>
 	<table class="table table-striped">
-            <tr>
-                <th>Name</th>
-                <th>Location (machine)</th>
-                <th>Location (path)</th>
-                <th>Type</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Storage</th>
+                    <th>Raw content URL</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for bag in bags %}
                 <tr class="bag">
                     <td><a href="{% url 'bag' bag.bagname %}">{{ bag.bagname }}</a></td>
-                    <td>{{ bag.machine.name }}</td>
-                    <td>{{ bag.access_url }}</td>
+                    <td><a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></td>
+                    <td>{{ bag.access_url|urlize }}</td>
                     <td>{{ bag.get_bag_type_display }}</td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     </div>
 </section>
