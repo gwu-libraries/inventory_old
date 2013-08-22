@@ -130,7 +130,7 @@
         </tr>
         {% for item in items %}
             <tr class="item">
-                <td><a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a></td>
+                <td>{% if item.collection %}<a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a>{% endif %}</td>
                 <td>{{ item.local_id }}</td>
                 <td><a href="{% url 'item' item.id %}">{{ item.title }}</a></td>
                 <td>{{ item.id }}</td>

@@ -5,7 +5,7 @@
 <section id="item">
     <header class="container-fluid">
         <h1>
-            <a href='{% url "collection" item.collection.id %}' alt="collection: {{ item.collection.name }}"'>{{ item.collection.name }}</a> &raquo;
+            {% if item.collection %}<a href='{% url "collection" item.collection.id %}' alt="collection: {{ item.collection.name }}">{{ item.collection.name }}</a> &raquo;{% endif %}
             {% if item.title %}
                 {{ item.title }}
             {% else %}

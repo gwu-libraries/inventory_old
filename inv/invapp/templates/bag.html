@@ -35,7 +35,7 @@
 {% block content %}
 <section id="bag">
     <header class="container-fluid">
-        <h1><a href="{% url 'collection' bag.item.collection.id %}">{{ bag.item.collection.name }}</a> &raquo;
+        <h1>{% if bag.item.collection %}<a href="{% url 'collection' bag.item.collection.id %}">{{ bag.item.collection.name }}</a> &raquo;{% endif %}
             <a href="{% url 'item' bag.item.id %}">{% if bag.item.title %}{{ bag.item.title }}{% else %}{{ bag.item.id }}{% endif %}</a> &raquo;
             {{ bag.bagname }}</h1>
 
