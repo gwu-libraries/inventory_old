@@ -1,5 +1,6 @@
-import os, csv, re
+import csv
 import datetime
+import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -24,7 +25,7 @@ Item, id, title, local_id, collection (id), project (id), created (date),
 original_item_type, rawfiles_loc, qcfiles_loc, qafiles_loc, finfiles_loc,
 ocrfiles_loc, notes
 
-Bag, bagname, created, item, machine, path, bag_type
+Bag, bagname, created, item, machine, absolute_filesystem_path, bag_type
 
 BagAction, bag (bagname), timestamp, action, note'''
 
@@ -99,7 +100,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 created=self._convert_datetime(row[3]),
                 description=row[4],
                 manager=row[5]
-                )
+            )
             coll.save()
         except Exception, e:
             return e
@@ -111,7 +112,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 created=self._convert_datetime(row[2]),
                 name=row[3],
                 collection=Collection.objects.get(id=row[4])
-                )
+            )
             proj.save()
         except Exception, e:
             return e
@@ -131,7 +132,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 created=self._convert_datetime(row[6]),
                 original_item_type=row[7],
                 notes=row[8]
-                )
+            )
             item.save()
         except Exception, e:
             return e
@@ -155,10 +156,10 @@ BagAction, bag (bagname), timestamp, action, note'''
                 created=self._convert_datetime(row[2]),
                 item=item,
                 machine=Machine.objects.get(url=row[4]),
-                path=row[5],
+                absolute_filesystem_path=row[5],
                 bag_type=bag_type,
                 payload=payload_file.read()
-                )
+            )
             bag.save()
         except Exception, e:
             return e
@@ -170,16 +171,13 @@ BagAction, bag (bagname), timestamp, action, note'''
                 timestamp=self._convert_datetime(row[2]),
                 action=row[3],
                 note=row[4]
-                )
+            )
             action.save()
         except Exception, e:
             return e
 
     def _import_machine(self, row):
         try:
-            machine = Machine.objects.create(
-                name = row[1],
-                url = row[2]
-                )
+            machine = Machine.objects.create(name=row[1], url=row[2])
         except Exception, e:
             return e
