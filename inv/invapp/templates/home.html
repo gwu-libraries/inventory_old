@@ -2,10 +2,6 @@
 {% load url from future %}
 {% load invapp_extras %}
 
-{% block title %}
-    GWU Libraries Digital Inventory
-{% endblock title %}
-
 {% block javascript_extra %}
 <script type="text/javascript">
         $(function() {
@@ -60,8 +56,94 @@
 {% endblock javascript_extra %}
 
 {% block content %}
+
+<section id="collections" class="container-fluid">
+    <h2>Our Collections</h2>
+    
+    {% if collections.paginator.count > 10 %}
+        {% bootstrap_paginator_bar collections 'collections_page' %}
+    {% endif %}
+    <div class="search">
+        <form id="search_collection_form" class='form-inline' action="{% url 'home' %}" method="GET">
+            <label for="search_collection"><h5>Search: </h5></label>
+            <input id="search_collection" name="search_collection" type="text" />
+        </form>
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>Collection</th>
+            <th>ID</th>
+            <th>Contact</th>
+            <th>Description</th>
+        </tr>
+        {% for collection in collections %}
+            <tr class="collection">
+                <td><a href="{% url 'collection' collection.id %}">{{ collection.name }}</a></td>
+                <td>{{ collection.id }}</td>
+                <td>{{ collection.manager }}</td>
+                <td>{{ collection.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+
+{% if projects %}
+<section id="projects" class="container-fluid">
+    <h2>Current Projects</h2>
+
+    {% if collections.paginator.count > 10 %}
+        {% bootstrap_paginator_bar projects 'projects_page' %}
+    {% endif %}
+    <div class="search">
+        <form id="search_project_form" class='form-inline' action="{% url 'home' %}" method="GET">
+            <label for="search_project"><h5>Search: </h5></label>
+            <input id="search_project" name="search_project" type="text" />
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <tr>
+            <th>ID</th>
+            <th>Project</th>
+        </tr>
+        {% for project in projects %}
+            <tr class="project">
+                <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
+                <td>{{ project.name }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endif %}
+
+<section id="items" class="container-fluid">
+    <h2>Recently Added Items</h2>
+    <table class="table table-striped">
+        <tr>
+            <th>Collection</th>
+            <th>Local ID</th>
+            <th>Title</th>
+            <th>ID</th>
+            <th>Project</th>
+            <th>Created</th>
+            <th>Original type</th>
+        </tr>
+        {% for item in items %}
+            <tr class="item">
+                <td>{% if item.collection %}<a href="{% url 'collection' item.collection.id %}">{{ item.collection.name }}</a>{% endif %}</td>
+                <td>{{ item.local_id }}</td>
+                <td><a href="{% url 'item' item.id %}">{{ item.title }}</a></td>
+                <td>{{ item.id }}</td>
+                <td>{{ item.project.name }}</td>
+                <td>{{ item.created }}</td>
+                <td>{{ item.get_original_item_type_display }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+
 <section id="machines" class="container-fluid">
-    <h3>Digital Storage Places (Machines)<h3>
+    <h2>Storage hosts</h2>
     <table class="table table-striped">
         <tr>
             <th>Name</th>
@@ -77,84 +159,4 @@
         {% endfor %}
     </table>
 </section>
-<section id="collections" class="container-fluid">
-    <h3>Our Collections</h3>
-    
-    {% if collections.paginator.count > 10 %}
-        {% bootstrap_paginator_bar collections 'collections_page' %}
-    {% endif %}
-    <div class="search">
-        <form id="search_collection_form" action="{% url 'home' %}" method="GET">
-            <label for="search_collection"><h5>Search: </h5></label>
-            <input id="search_collection" name="search_collection" type="text" />
-        </form>
-    </div>
-    <table class="table table-striped">
-        <tr>
-            <th>ID</th>
-            <th>Collection</th>
-            <th>Manager</th>
-            <th>Description</th>
-        </tr>
-        {% for collection in collections %}
-            <tr class="collection">
-                <td><a href="{% url 'collection' collection.id %}">{{ collection.id }}</a></td>
-                <td>{{ collection.name }}</td>
-                <td>{{ collection.manager }}</td>
-                <td>{{ collection.description }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-</section>
-<section id="projects" class="container-fluid">
-    <h3>Current Projects</h3>
-
-    {% if collections.paginator.count > 10 %}
-        {% bootstrap_paginator_bar projects 'projects_page' %}
-    {% endif %}
-    <div class="search">
-        <form id="search_project_form" action="{% url 'home' %}" method="GET">
-            <label for="search_project"><h5>Search: </h5></label>
-            <input id="search_project" name="search_project" type="text" />
-        </form>
-    </div>
-    <table class="table table-striped">
-        <tr>
-            <th>ID</th>
-            <th>Project</th>
-        </tr>
-        {% for project in projects %}
-            <tr class="project">
-                <td><a href="{% url 'project' project.id %}">{{ project.id }}</a></td>
-                <td>{{ project.name }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-</section>
-<section id="items" class="container-fluid">
-    <h3>Recently Added Items</h3>
-    <table class="table table-striped">
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Local ID</th>
-            <th>Project</th>
-            <th>Collection</th>
-            <th>Created</th>
-            <th>Item Type</th>
-        </tr>
-        {% for item in items %}
-            <tr class="item">
-                <td><a href="{% url 'item' item.id %}">{{ item.id }}</a></td>
-                <td>{{ item.title }}</td>
-                <td>{{ item.local_id }}</td>
-                <td>{{ item.project.name }}</td>
-                <td>{{ item.collection.name }}</td>
-                <td>{{ item.created }}</td>
-                <td>{{ item.get_original_item_type_display }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-</section>
-
 {% endblock content %}

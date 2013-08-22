@@ -2,10 +2,6 @@
 {% load url from future %}
 {% load invapp_extras %}
 
-{% block title %}
-    {{ bag.bagname }}
-{% endblock title %}
-
 {% block javascript_extra %}
 <script type="text/javascript">
     $(function() {
@@ -39,22 +35,52 @@
 {% block content %}
 <section id="bag">
     <header class="container-fluid">
-        <h1>{{ bag.bagname }}</h1>
-        <dl>
-            <dt>Item</dt><dd><a href="{% url 'item' bag.item.id %}">{% if bag.item.title %}{{ bag.item.title }}{% else %}{{ bag.item.id }}{% endif %}</a></dd>
-            <dt>Machine</dt><dd><a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></dd>
-            <dt>URL path</dt><dd><a href="{{ bag.access_url }}">{{ bag.access_url }}</a></dd>
-        </dl>
+        <h1>{% if bag.item.collection %}<a href="{% url 'collection' bag.item.collection.id %}">{{ bag.item.collection.name }}</a> &raquo;{% endif %}
+            <a href="{% url 'item' bag.item.id %}">{% if bag.item.title %}{{ bag.item.title }}{% else %}{{ bag.item.id }}{% endif %}</a> &raquo;
+            {{ bag.bagname }}</h1>
+
+        <div class='row-fluid'>
+            <div class='span3'>
+                <h2>on storage: <a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></h2>
+                <p><a class="btn btn-primary" href="{{ bag.access_url }}">View all raw content</a></p>
+            </div>
+            <div id="payload" class="span3">
+                <table class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>type</th>
+                            <th>#</th>
+                            <th>size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for ftype, values in bag.stats.types.items %}
+                        <tr>
+                            <td>{{ ftype }}</td>
+                            <td>{{ values.count }}</td>
+                            <td>{{ values.size|filesizeformat }}</td>
+                        </tr>
+                    {% endfor %}
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td><strong>{{ bag.filecount }}</strong></td>
+                            <td><strong>{{ bag.size|filesizeformat }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </header>
+
+    {% if actions %}
     <div id="actions" class="container-fluid">
-        <h3>History of this bag</h3>
+        <h3>History</h3>
         <table class="table table-striped">
             <tr>
                 <th>Action</th>
                 <th>Timestamp</th>
-                 <th>Note</th>
+                <th>Note</th>
             </tr>
-            {% if actions %}
                 {% for action in actions %}
                 <tr class="action">
                     <td>{{ action.get_action_display }}</td>
@@ -62,37 +88,12 @@
                     <td>{{ action.note }}</td>
                 </tr>
                 {% endfor %}
-            {% else %}
-                <tr>
-                    <td>No history data for this bag</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            {% endif %}
         </table>
     </div>
-    <div id="payload" class="container-fluid">
-        <h3>Bag Payload</h3>
-        <h5>Aggregate Stats</h5>
-        <table class="table table-striped">
-            <tr>
-                <th>File Type</th>
-                <th>Count</th>
-                <th>Size</th>
-            </tr>
-            {% for ftype, values in bag.stats.types.items %}
-            <tr>
-                <td>{{ ftype }}</td>
-                <td>{{ values.count }}</td>
-                <td>{{ values.size }} ({{ values.size|filesizeformat }})</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td><b>Total</b></td>
-                <td>{{ bag.filecount }}</td>
-                <td>{{ bag.size }} ({{ bag.size|filesizeformat }})</td>
-            </tr>
-        </table>
+    {% endif %}
+
+
+    <div class='container-fluid'>
         <h5>Individual Files</h5>
         <div>
             <div class="dropdown file-type-dropdown">
@@ -112,7 +113,7 @@
             {% endif %}
         </div>
         <div class="search">
-            <form id="search_form" action="{% url 'bag' bag.bagname %}" method="GET">
+            <form id="search_form" class='form-inline' action="{% url 'bag' bag.bagname %}" method="GET">
                 <label for="search_bag_files"><h5>Search: </h5></label>
                 <input id="search_bag_files" name="search_bag_files" type="text" />
             </form>
@@ -125,10 +126,13 @@
         {% for file in files %}
             <tr>
                 <td><a href="{{ bag.access_url }}/{{ file.0 }}">{{ file.0 }}</a></td>
-                <td>{{ file.1 }} ({{ file.1|filesizeformat }})</td>
+                <td>{{ file.1|filesizeformat }}</td>
             </tr>
         {% endfor %}
         </table>
+        {% if files.paginator.count >= 10 %}
+            {% bootstrap_paginator_bar files 'files_page' %}
+        {% endif %}
     </div>
 </section>
 

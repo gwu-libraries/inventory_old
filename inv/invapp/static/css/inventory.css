@@ -2,6 +2,26 @@ body {
     padding-top: 40px;
 }
 
+h1 {
+    font-size: x-large;
+}
+
+.table th {
+    font-weight: normal;
+}
+
+dt {
+    font-weight: normal;
+}
+
+dd {
+    font-weight: bold;
+}
+
+p#description {
+    font-size: large;
+}
+
 .login {
     padding: 16.5% 35%;
 }
