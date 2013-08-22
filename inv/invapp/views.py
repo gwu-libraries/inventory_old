@@ -1,18 +1,14 @@
-from django.shortcuts import get_object_or_404, render, redirect
-
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import password_change
-
 from django.core import serializers
-from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-from django.http import HttpResponse
-
+from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render, redirect
 
 from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
 
@@ -20,23 +16,20 @@ from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
 @login_required
 def collection(request, id):
     collection = get_object_or_404(Collection, id=id)
-    projects = Project.objects.filter(collection=collection).defer('collection',
-                                                                   'created')
+    projects = Project.objects.filter(collection=collection)
+    projects = projects.defer('collection', 'created')
     item_name = request.GET.get('search_collection_items')
+    items = Item.objects.defer('created', 'original_item_type', 'notes')
+    items = items.filter(collection=collection)
     if item_name:
-        items = Item.objects.defer('created', 'original_item_type',
-                                   'notes').filter(collection=collection).filter(
-                                       Q(id__icontains=item_name) |
-                                       Q(title__icontains=item_name) |
-                                       Q(local_id__icontains=item_name))
-    else:
-        items = Item.objects.defer('created', 'original_item_type',
-                                   'notes').filter(collection=collection)
-
+        items = items.filter(Q(id__icontains=item_name) |
+                             Q(title__icontains=item_name) |
+                             Q(local_id__icontains=item_name))
     items = _paginate(items, request.GET.get('items_page'))
     return render(request, 'collection.html',
-                  {'collection': collection, 'projects': projects,
-                      'items': items})
+                  {'title': 'collection: %s' % collection.name,
+                   'collection': collection, 'projects': projects,
+                   'items': items})
 
 
 @login_required
@@ -70,9 +63,10 @@ def machine(request, id):
 @login_required
 def item(request, id):
     item = get_object_or_404(Item, id=id)
-    bags = Bag.objects.defer('created', 'bag_type',
-                             'payload').filter(item=item)
-    return render(request, 'item.html', {'item': item, 'bags': bags})
+    bags = Bag.objects.defer('created', 'bag_type', 'payload')
+    bags = bags.filter(item=item)
+    return render(request, 'item.html', {'title': 'item: %s' % item.title,
+                  'item': item, 'bags': bags})
 
 
 @login_required
@@ -84,7 +78,6 @@ def bag(request, bagname):
     file_name = request.GET.get('search_bag_files')
     if file_name:
         files = [f for f in files if file_name.lower() in f[0].lower()]
-
     if file_type and file_type != 'all':
         temp_files = list()
         for f in files:
@@ -92,15 +85,13 @@ def bag(request, bagname):
             if ftype == file_type:
                 temp_files.append(f)
         files = temp_files
-
     files = _paginate(files, request.GET.get('files_page'))
-    return render(request, 'bag.html', {'bag': bag, 'actions': actions,
-                                        'files': files})
+    return render(request, 'bag.html', {'title': 'bag: %s' % bag.bagname,
+                  'bag': bag, 'actions': actions, 'files': files})
 
 
 @login_required
 def home(request):
-
     search_collection = request.GET.get("search_collection")
     if search_collection:
         collections = Collection.objects.filter(
@@ -122,9 +113,9 @@ def home(request):
 
     machines = Machine.objects.all()
     items = Item.objects.order_by('created').reverse()[:20]
-    return render(request, 'home.html', {'collections': collections,
-                                         'projects': projects, 'items': items,
-                                         'machines': machines})
+    return render(request, 'home.html', {'title': 'home',
+                  'collections': collections, 'projects': projects,
+                  'items': items, 'machines': machines})
 
 
 def login_user(request):
