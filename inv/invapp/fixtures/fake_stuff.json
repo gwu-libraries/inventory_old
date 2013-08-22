@@ -118,7 +118,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000001",
       "machine": 1,
-      "path": "s1/12345/i000000001_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000001_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/IMAGES/page1.jpg 2232354\ndata/IMAGES/page2.jpg 2113065\ndata/METADATA/3228564793126_MRC.xml 6154"
     }
@@ -150,7 +150,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000001",
       "machine": 1,
-      "path": "s1/12345/i000000001_PRESERV_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000001_PRESERV_BAG",
       "bag_type": "2",
       "payload": "data/IMAGES/page1.tif 59876543\ndata/IMAGES/page2.tif 57312468\ndata/METADATA/3228564793126_MRC.xml 6222"
     }
@@ -200,7 +200,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000002",
       "machine": 1,
-      "path": "s1/12345/i000000002_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000002_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/IMAGES/page1.jpg 1717950\ndata/IMAGES/page2.jpg 1825859\ndata/METADATA/3228564793122_MRC.xml 5156"
     }
@@ -232,7 +232,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000002",
       "machine": 1,
-      "path": "s1/12345/i000000002_PRESERV_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000002_PRESERV_BAG",
       "bag_type": "2",
       "payload": "data/IMAGES/page1.tif 59862314\ndata/IMAGES/page2.tif 57865794\ndata/METADATA/3228564793122_MRC.xml 3216"
     }
@@ -282,7 +282,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000003",
       "machine": 1,
-      "path": "s1/12345/i000000003_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000003_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/IMAGES/page1.jpg 2309398\ndata/IMAGES/page2.jpg 404\ndata/METADATA/3228564793123_MRC.xml 5986"
     }
@@ -314,7 +314,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000003",
       "machine": 1,
-      "path": "s1/12345/i000000003_PRESERV_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000003_PRESERV_BAG",
       "bag_type": "2",
       "payload": "data/IMAGES/page1.tif 17929640\ndata/IMAGES/page2.tif 17929642\ndata/METADATA/3228564793123_MRC.xml 6532"
     }
@@ -364,7 +364,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000011",
       "machine": 1,
-      "path": "s1/12345/i000000011_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000011_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/IMAGES/1.jpg 1877771\ndata/IMAGES/2.jpg 2020263 \ndata/METADATA/3228564793126-DC.xml 7951"
     }
@@ -414,7 +414,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000012",
       "machine": 1,
-      "path": "s1/12345/i000000012_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000012_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/IMAGES/1.jpg 192329\ndata/IMAGES/2.jpg 1877771\ndata/METADATA/3228564793126-DC.xml 4598"
     }
@@ -464,7 +464,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000021",
       "machine": 1,
-      "path": "s1/12345/i000000021_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000021_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/PDF/doc1.pdf 26608986\ndata/METADATA/doc1-DC.xml 5486"
     }
@@ -514,7 +514,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000022",
       "machine": 1,
-      "path": "s1/12345/i000000022_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000022_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/PDF/doc2.pdf 26608986\ndata/METADATA/doc2-DC.xml 7211"
     }
@@ -564,7 +564,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000031",
       "machine": 1,
-      "path": "s1/12345/i000000031_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i000000031_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/AUDIO/audio1.mp3 11111111\ndata/METADATA/audio1-DC.xml 6154"
     }
@@ -614,7 +614,7 @@
       "created": "2013-03-12",
       "item": "12345/i000000041",
       "machine": 1,
-      "path": "s1/12345/i0000000041_ACCESS_BAG",
+      "absolute_filesystem_path": "s1/12345/i0000000041_ACCESS_BAG",
       "bag_type": "1",
       "payload": "data/AUDIO/video1.mp3 11111111111\ndata/METADATA/video1-DC.xml 6000"
     }
