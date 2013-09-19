@@ -124,7 +124,7 @@ class Item(models.Model):
 
 
 class Bag(models.Model):
-    bagname = models.TextField(primary_key=True)
+    bagname = models.TextField()
     created = models.DateTimeField(default=now)
     item = models.ForeignKey(Item, related_name='bags',
                              on_delete=models.PROTECT)

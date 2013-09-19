@@ -70,8 +70,8 @@ def item(request, id):
 
 
 @login_required
-def bag(request, bagname):
-    bag = get_object_or_404(Bag, bagname=bagname)
+def bag(request, bag_id):
+    bag = get_object_or_404(Bag, id=bag_id)
     actions = BagAction.objects.filter(bag=bag)
     files = bag.list_payload()
     file_type = request.GET.get('file_type')

@@ -158,7 +158,8 @@ BagAction, bag (bagname), timestamp, action, note'''
                 machine=Machine.objects.get(url=row[4]),
                 absolute_filesystem_path=row[5],
                 bag_type=bag_type,
-                payload=payload_file.read()
+                payload=payload_file.read(),
+                id=row[7]
             )
             bag.save()
         except Exception, e:
@@ -167,7 +168,7 @@ BagAction, bag (bagname), timestamp, action, note'''
     def _import_action(self, row):
         try:
             action = BagAction.objects.create(
-                bag=Bag.objects.get(bagname=row[1]),
+                bag=Bag.objects.get(id=row[1]),
                 timestamp=self._convert_datetime(row[2]),
                 action=row[3],
                 note=row[4]
