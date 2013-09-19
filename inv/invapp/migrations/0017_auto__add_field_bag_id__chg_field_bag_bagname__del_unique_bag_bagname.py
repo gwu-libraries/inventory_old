@@ -15,7 +15,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'Bag.id'
         db.add_column(u'invapp_bag', u'id',
-                      self.gf('django.db.models.fields.IntegerField')(primary_key=True),
+                      self.gf('django.db.models.fields.IntegerField')(primary_key=True, default=0),
                       keep_default=False)
 
         db.delete_column(u'invapp_bagaction', 'bag_id')
