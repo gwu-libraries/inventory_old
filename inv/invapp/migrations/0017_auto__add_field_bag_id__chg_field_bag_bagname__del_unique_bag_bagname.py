@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
 
         db.delete_column(u'invapp_bagaction', 'bag_id')
 
-        db.add_column(u'invapp_bagaction', 'bag_id', self.gf('django.db.models.fields.IntegerField')())
+        db.add_column(u'invapp_bagaction', 'bag_id', self.gf('django.db.models.fields.IntegerField')(default=0))
 
         db.execute("CREATE SEQUENCE invapp_bag_id_seq")
         db.execute("ALTER TABLE invapp_bag ALTER COLUMN id "
