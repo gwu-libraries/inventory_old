@@ -1,7 +1,18 @@
 from django import template
+from django.utils.safestring import mark_safe
+
 import urllib
+import re
 
 register = template.Library()
+
+
+@register.filter(name='urlize_with_label')
+def urlize_with_label(text, arg):
+    if re.findall('>.*</a>', text):
+        return mark_safe(re.sub(r'>.*</a>', '>' + arg + '</a>', text))
+    else:
+        return arg
 
 
 @register.inclusion_tag('paginator_bar.html', takes_context=True)
