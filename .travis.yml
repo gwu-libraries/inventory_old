@@ -2,7 +2,8 @@ language: python
 python:
   - "2.7"
 env:
-  - DJANGO=1.5.2
+  - DJANGO=1.5.4
+  - DB=postgresql
 #Command to install dependencies
 install: "pip install -r requirements.txt --use-mirrors"
 #Command to run tests
@@ -11,6 +12,8 @@ script:
   - cp inv/inv/local_settings.py.template inv/inv/local_settings.py
   - cd inv
   - python manage.py test invapp
+before_script:
+  - psql -c 'create database invapp_test' -U postgres
 # Email notifications
 notifications:
     email:
