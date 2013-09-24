@@ -30,7 +30,7 @@ class Migration(SchemaMigration):
         db.execute(sql)
 
         # Changing field 'Bag.bagname'
-        db.alter_column(u'invapp_bag', 'bagname', self.gf('django.db.models.fields.TextField')())
+        #db.alter_column(u'invapp_bag', 'bagname', self.gf('django.db.models.fields.TextField')())
 
         db.create_unique('invapp_bagaction', ['bag_id', 'action', 'timestamp'])
 
