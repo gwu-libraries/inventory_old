@@ -33,7 +33,7 @@
             {% if bags %}
                 {% for bag in bags %}
                     <tr>
-                        <td><a href="{% url 'bag' bag.bagname %}">{{ bag.bagname }}</a></td>
+                        <td><a href="{% url 'bag' bag.id %}">{{ bag.bagname }}</a></td>
                         <td>{{ bag.stats.total_size|filesizeformat }}</td>
                         <td><a href="{% url 'item' bag.item.id %}">
                             {% if bag.item.title %}

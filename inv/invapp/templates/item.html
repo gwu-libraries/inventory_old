@@ -74,7 +74,7 @@
             <tbody>
             {% for bag in bags %}
                 <tr class="bag">
-                    <td><a href="{% url 'bag' bag.bagname %}">{{ bag.bagname }}</a></td>
+                    <td><a href="{% url 'bag' bag.id %}">{{ bag.bagname }}</a></td>
                     <td><a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></td>
                     <td>{{ bag.access_url|urlize }}</td>
                     <td>{{ bag.get_bag_type_display }}</td>
