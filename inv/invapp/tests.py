@@ -37,7 +37,7 @@ class ModelTestCase(TestCase):
         self.i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1',
                        project=self.p1, created=now(), original_item_type='1')
         self.i1.save()
-        self.m1 = Machine(name='test-machine-1', url='test.url.com',
+        self.m1 = Machine(name='test-machine-1', url='http://test.url.com',
                           www_root='/bags/')
         self.m1.save()
 
