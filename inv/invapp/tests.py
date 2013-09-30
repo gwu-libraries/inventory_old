@@ -13,6 +13,7 @@ from django.test import TestCase
 from django.utils import timezone
 from django.utils.unittest import skipIf
 from django.template.context import RequestContext
+from django.utils.html import urlize
 
 from invapp.idservice import get_idservice
 from invapp.models import Machine, Collection, Project, Item, Bag, BagAction
@@ -37,7 +38,7 @@ class ModelTestCase(TestCase):
         self.i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1',
                        project=self.p1, created=now(), original_item_type='1')
         self.i1.save()
-        self.m1 = Machine(name='test-machine-1', url='test.url.com',
+        self.m1 = Machine(name='test-machine-1', url='http://test.url.com',
                           www_root='/bags/')
         self.m1.save()
 
@@ -830,3 +831,63 @@ class NoCascadeTestcase(TestCase):
         bag.delete()
         actions = BagAction.objects.filter(bag=bag)
         self.assertEqual(len(actions), 0)
+
+
+class TemplateTagsTestCase(TestCase):
+
+    def setUp(self):
+        self.m1 = Machine(url='http://dspace.wrlc.org', name='DSpace Server')
+        self.m1.save()
+        self.m2 = Machine(url='dspace.wrlc.org', name='Backup DSpace Server')
+        self.m2.save()
+        self.collection = Collection(id='testcoll', name='TestCollection')
+        self.collection.save()
+        self.project = Project(id='testproj', name='TestProject',
+                               collection=self.collection)
+        self.project.save()
+        self.item = Item(id='testItem', title='TestItem',
+                         collection=self.collection, project=self.project)
+        self.item.save()
+        self.bag1 = Bag(bagname='testBag1', item=self.item,
+                        machine=self.m1, bag_type='1',
+                        absolute_filesystem_path='/tmp/fakebag')
+        self.bag1.payload = """/data/METADATA/0123456789-dc.xml 2655
+                           /data/METADATA/0123456789-MRC.xml 3256
+                           /data/IMAGES/0123456789_pg1.jp2 1778740
+                           /data/IMAGES/0123456789_pg2.jp2 1878756
+                           /data/IMAGES/0123456789_pg3.jp2 1915879
+                           /data/IMAGES/0123456789_pg1.tiff 1778740
+                           /data/IMAGES/0123456789_pg2.tiff 1878756
+                           /data/IMAGES/0123456789_pg3.tiff 1915879
+                           """
+        self.bag1.save()
+        self.bag2 = Bag(bagname='testBag2', item=self.item,
+                        machine=self.m2, bag_type='1',
+                        absolute_filesystem_path='/tmp/fakebag')
+        self.bag2.payload = """/data/METADATA/0123456789-dc.xml 2655
+                           /data/METADATA/0123456789-MRC.xml 3256
+                           /data/IMAGES/0123456789_pg1.jp2 1778740
+                           /data/IMAGES/0123456789_pg2.jp2 1878756
+                           /data/IMAGES/0123456789_pg3.jp2 1915879
+                           /data/IMAGES/0123456789_pg1.tiff 1778740
+                           /data/IMAGES/0123456789_pg2.tiff 1878756
+                           /data/IMAGES/0123456789_pg3.tiff 1915879
+                           """
+        self.bag2.save()
+
+    def test_urlize_with_label_templatetag(self):
+        bag1_files = self.bag1.list_payload()
+        bag1_url = invapp_extras.urlize_with_label(
+            urlize(self.bag1.access_url() + bag1_files[0][0]),
+            bag1_files[0][0])
+
+        self.assertEqual(bag1_url, '<a href="http://dspace.wrlc.org/tmp/'
+                         'fakebag/data/METADATA/0123456789-dc.xml">'
+                         '/data/METADATA/0123456789-dc.xml</a>')
+
+        bag2_files = self.bag2.list_payload()
+        bag2_url = invapp_extras.urlize_with_label(
+            urlize(self.bag2.access_url() + bag2_files[0][0]),
+            bag2_files[0][0])
+
+        self.assertEqual(bag2_url, '/data/METADATA/0123456789-dc.xml')

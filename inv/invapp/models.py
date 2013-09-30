@@ -143,9 +143,6 @@ class Bag(models.Model):
         url = self.machine.url if self.machine.url else self.machine.ip
         if not url:
             return None
-        # FIXME: really?  what about https?
-        if not url.startswith('http://'):
-            url = 'http://%s' % url
         mach_path_parts = self.machine.www_root.strip('/').split('/')
         path_parts = self.absolute_filesystem_path.strip('/').split('/')
         for i, value in enumerate(path_parts):
