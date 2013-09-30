@@ -631,8 +631,8 @@ class ImportCommandTestCase(TestCase):
         f.write('\nBag,39020025220180_PRESRV_BAG,2011-03-01 1:0:0,' +
                 '38989/c01wdbsmv,gwdspace.wrlc.org,' +
                 '/archive1/cult-imag-prsrv/39020025220180_PRESRV_BAG,' +
-                'preservation')
-        f.write('\nBagAction,39020025220180_PRESRV_BAG,2011-06-13 13:51:58,4,')
+                'preservation,1')
+        f.write('\nBagAction,1,2011-06-13 13:51:58,4,')
         f.seek(0)
         f.close()
 
