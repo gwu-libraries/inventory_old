@@ -113,7 +113,7 @@
             {% endif %}
         </div>
         <div class="search">
-            <form id="search_form" class='form-inline' action="{% url 'bag' bag.bagname %}" method="GET">
+            <form id="search_form" class='form-inline' action="{% url 'bag' bag.id %}" method="GET">
                 <label for="search_bag_files"><h5>Search: </h5></label>
                 <input id="search_bag_files" name="search_bag_files" type="text" />
             </form>
@@ -125,7 +125,7 @@
             </tr>
         {% for file in files %}
             <tr>
-                <td><a href="{{ bag.access_url }}/{{ file.0 }}">{{ file.0 }}</a></td>
+                <td>{{ bag.access_url|add:"/"|add:file.0|urlize|urlize_with_label:file.0}}</td>
                 <td>{{ file.1|filesizeformat }}</td>
             </tr>
         {% endfor %}
