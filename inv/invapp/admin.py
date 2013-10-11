@@ -32,8 +32,8 @@ class BagAdmin(admin.ModelAdmin):
 
 
 class CollectionAdmin(admin.ModelAdmin):
-    fields = ['id', 'name', 'manager', 'description', 'access_loc', 'created']
-    list_display = ('id', 'name', 'manager', 'description', 'access_loc',
+    fields = ['id', 'name', 'contact_person', 'description', 'access_loc', 'created']
+    list_display = ('id', 'name', 'contact_person', 'description', 'access_loc',
                     'created')
     search_fields = ['name']
     date_hierarchy = 'created'

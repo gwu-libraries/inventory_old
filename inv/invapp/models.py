@@ -39,7 +39,7 @@ class Collection(models.Model):
     name = models.CharField(max_length=256)
     created = models.DateTimeField(default=now)
     description = models.TextField(blank=True)
-    manager = models.CharField(max_length=256, blank=True)
+    contact_person = models.CharField(max_length=256, blank=True)
     access_loc = models.URLField(blank=True)
     stats = JSONField()
 

@@ -22,7 +22,7 @@
       "name": "Fake Collection 1",
       "created": "2013-01-01",
       "description": "A Fake Collection of Scanned Books",
-      "manager": "Joshua Gomez"
+      "contact_person": "Joshua Gomez"
     }
   },
   {
@@ -32,7 +32,7 @@
       "name": "Fake Collection 2",
       "created": "2013-02-01",
       "description": "A Fake Collection of Scanned Microfilm",
-      "manager": "Joshua Gomez"
+      "contact_person": "Joshua Gomez"
     }
   },
   {
@@ -42,7 +42,7 @@
       "name": "Fake Collection 3",
       "created": "2013-03-01",
       "description": "A Fake Collection of Research Data",
-      "manager": "Joshua Gomez"
+      "contact_person": "Joshua Gomez"
     }
   },
   {
@@ -51,7 +51,7 @@
     "fields": {
       "created": "2013-01-01",
       "name": "Fake Project 1",
-      "manager": "Joshua Gomez",
+      "contact_person": "Joshua Gomez",
       "collection": "12345/c00000000001",
       "start_date": "2013-01-01",
       "end_date": "2013-06-30"
@@ -63,7 +63,7 @@
     "fields": {
       "created": "2013-02-01",
       "name": "Fake Project 2",
-      "manager": "Joshua Gomez",
+      "contact_person": "Joshua Gomez",
       "collection": "12345/c00000000002",
       "start_date": "2013-02-01",
       "end_date": "2013-05-30"
@@ -75,7 +75,7 @@
     "fields": {
       "created": "2013-03-01",
       "name": "Fake Project 3",
-      "manager": "Joshua Gomez",
+      "contact_person": "Joshua Gomez",
       "collection": "12345/c00000000003",
       "start_date": "2013-03-01",
       "end_date": "2013-08-30"
@@ -87,7 +87,7 @@
     "fields": {
       "created": "2013-03-01",
       "name": "Fake Project 4",
-      "manager": "Joshua Gomez",
+      "contact_person": "Joshua Gomez",
       "collection": "12345/c00000000003",
       "start_date": "2013-03-01",
       "end_date": "2013-08-30"

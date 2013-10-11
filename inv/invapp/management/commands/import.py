@@ -17,7 +17,7 @@ All types can be imported, but to avoid bad references, import them in the
 following order: Collections, Projects, Items, Bags.  The first value for
 each line should be the item type. Below are the column orders for each type:
 
-Collection, id, name, created (date), description, manager
+Collection, id, name, created (date), description, contact_person
 
 Project, id, created (date), name, collection (id)
 
@@ -99,7 +99,7 @@ BagAction, bag (bagname), timestamp, action, note'''
                 name=row[2],
                 created=self._convert_datetime(row[3]),
                 description=row[4],
-                manager=row[5]
+                contact_person=row[5]
             )
             coll.save()
         except Exception, e:
