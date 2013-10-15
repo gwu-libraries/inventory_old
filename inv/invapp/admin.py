@@ -27,7 +27,7 @@ class ProjectAdmin(admin.ModelAdmin):
 class BagAdmin(admin.ModelAdmin):
     fields = ('bagname', 'item', 'machine', 'absolute_filesystem_path',
               'bag_type', 'created', 'payload')
-    list_display = ('bagname', 'item', 'machine', 'absolute_filesystem_path',
+    list_display = ('id', 'bagname', 'item', 'machine', 'absolute_filesystem_path',
                     'bag_type', 'created')
     search_fields = ['bagname']
     date_hierarchy = 'created'
