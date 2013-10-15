@@ -37,9 +37,10 @@ class Machine(models.Model):
 class Collection(models.Model):
     id = models.CharField(max_length=settings.ID_MAX_LENGTH, primary_key=True)
     name = models.CharField(max_length=256)
+    local_id = models.CharField(max_length=256, blank=True)
     created = models.DateTimeField(default=now)
     description = models.TextField(blank=True)
-    manager = models.CharField(max_length=256, blank=True)
+    contact_person = models.CharField(max_length=256, blank=True)
     access_loc = models.URLField(blank=True)
     stats = JSONField()
 

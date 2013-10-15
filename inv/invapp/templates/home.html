@@ -73,6 +73,7 @@
         <tr>
             <th>Collection</th>
             <th>ID</th>
+            <th>Local ID</th>
             <th>Contact</th>
             <th>Description</th>
         </tr>
@@ -80,7 +81,8 @@
             <tr class="collection">
                 <td><a href="{% url 'collection' collection.id %}">{{ collection.name }}</a></td>
                 <td>{{ collection.id }}</td>
-                <td>{{ collection.manager }}</td>
+                <td>{{ collection.local_id }}</td>
+                <td>{{ collection.contact_person }}</td>
                 <td>{{ collection.description }}</td>
             </tr>
         {% endfor %}
