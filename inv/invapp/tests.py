@@ -662,7 +662,7 @@ class ImportCommandTestCase(TestCase):
             datetime.strptime('2011-03-01 11:33:00', '%Y-%m-%d %H:%M:%S'),
             timezone.utc))
         self.assertEqual(c1.description, '')
-        self.assertEqual(c1.manager, 'Martha Whitaker')
+        self.assertEqual(c1.contact_person, 'Martha Whitaker')
 
         p1 = Project.objects.get(id='38989/c0102488q518')
         self.assertEqual(p1.name, 'IMLS Cost Analysis')

@@ -29,7 +29,7 @@ class CollectionResource(ModelResource):
             'id': 'exact',
             'name': ALL_WITH_RELATIONS,
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
-            'manager': ALL_WITH_RELATIONS
+            'contact_person': ALL_WITH_RELATIONS
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
                                              Authentication())
