@@ -4,6 +4,8 @@ from tastypie.admin import ApiKeyInline
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
+from invapp.idservice import mintandbind
+
 
 class UserModelAdmin(UserAdmin):
     inlines = UserAdmin.inlines + [ApiKeyInline]
@@ -25,18 +27,28 @@ class ProjectAdmin(admin.ModelAdmin):
 class BagAdmin(admin.ModelAdmin):
     fields = ('bagname', 'item', 'machine', 'absolute_filesystem_path',
               'bag_type', 'created', 'payload')
-    list_display = ('bagname', 'item', 'machine', 'absolute_filesystem_path',
+    list_display = ('id', 'bagname', 'item', 'machine', 'absolute_filesystem_path',
                     'bag_type', 'created')
     search_fields = ['bagname']
     date_hierarchy = 'created'
 
 
 class CollectionAdmin(admin.ModelAdmin):
-    fields = ['id', 'name', 'contact_person', 'description', 'access_loc', 'created']
-    list_display = ('id', 'name', 'contact_person', 'description', 'access_loc',
+    fields = ['name', 'local_id', 'contact_person', 'description', 'access_loc', 'created']
+    list_display = ('id', 'name', 'local_id', 'contact_person', 'description', 'access_loc',
                     'created')
-    search_fields = ['name']
+    search_fields = ['name', 'local_id']
     date_hierarchy = 'created'
+
+    def save_model(self, request, obj, form, change):
+
+        if not obj.id:
+            obj.id = mintandbind(objtype='c', objurl=obj.access_loc,
+                                 description=obj.name)
+        if not obj.stats:
+            obj.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+
+        obj.save()
 
 
 class ItemAdmin(admin.ModelAdmin):
