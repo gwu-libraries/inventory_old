@@ -28,6 +28,7 @@ class CollectionResource(ModelResource):
         filtering = {
             'id': 'exact',
             'name': ALL_WITH_RELATIONS,
+            'local_id': 'exact',
             'created': ['exact', 'gt', 'lt', 'gte', 'lte'],
             'contact_person': ALL_WITH_RELATIONS
         }

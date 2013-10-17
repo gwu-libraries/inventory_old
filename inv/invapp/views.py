@@ -96,6 +96,7 @@ def home(request):
     if search_collection:
         collections = Collection.objects.filter(
             Q(name__icontains=search_collection) |
+            Q(local_id__icontains=search_collection) |
             Q(id__icontains=search_collection))
     else:
         collections = Collection.objects.all()
@@ -191,6 +192,7 @@ def search_collection_autocomplete(request):
     result = []
     if search_collection:
         data = Collection.objects.filter(Q(name__icontains=search_collection) |
+                                         Q(local_id__icontains=search_collection) |
                                          Q(id__icontains=search_collection))
         result = serializers.serialize('json', data, fields=('name'))
     return HttpResponse(result, 'application/json')
