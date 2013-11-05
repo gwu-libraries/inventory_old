@@ -196,7 +196,7 @@ class Bag(models.Model):
         super(Bag, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.bagname
+        return '<Bag %s "%s">' % (self.id, self.bagname)
 
 
 class BagAction(models.Model):
