@@ -132,7 +132,8 @@ INSTALLED_APPS = (
     'invapp',
     'south',
     'tastypie',
-    'json_field'
+    'json_field',
+    'django_auth_ldap'
 )
 
 # A sample logging configuration. The only tangible logging

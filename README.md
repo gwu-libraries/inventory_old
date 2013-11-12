@@ -83,6 +83,8 @@ NAME, USER, and PASSWORD to the database you created above, and
 set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter
 appropriate values for requester, minter, url and port under IDSERVICE
 and TEST_IDSERVICE, and set an appropriate path for LOGS_DIRECTORY.
+   To enable LDAP Authentication, enter appropriate values for AUTH_LDAP_SERVER_URI,
+   AUTH_LDAP_BIND_DN, AUTH_LDAP_BIND_PASSWORD and AUTH_LDAP_USER_SEARCH
 
         $ vim local_settings.py
 

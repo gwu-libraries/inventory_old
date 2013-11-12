@@ -5,3 +5,5 @@ django-tastypie
 python-dateutil
 django-json-field
 requests
+python-ldap
+django_auth_ldap
