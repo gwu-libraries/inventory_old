@@ -203,7 +203,7 @@ class BagAction(models.Model):
     bag = models.ForeignKey(Bag, related_name='bag_action')
     timestamp = models.DateTimeField(default=now)
     action = models.CharField(max_length=1, choices=settings.ACTIONS)
-    note = models.TextField()
+    note = models.TextField(blank=True)
 
     class Meta:
         unique_together = ("bag", "action", "timestamp")
