@@ -4,8 +4,10 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.db import connection
 from django.utils.timezone import utc, make_aware
 from invapp.models import Collection, Project, Item, Bag, BagAction, Machine
+
 
 now = datetime.datetime.utcnow().replace(tzinfo=utc)
 
@@ -72,6 +74,9 @@ BagAction, bag (bagname), timestamp, action, note'''
             for error in errors:
                 error_log.write(error)
         f.close()
+
+        #Update bag pk sequence
+        self._update_bag_pk_sequence()
 
     def _convert_date(self, date_string, null=False):
         try:
@@ -182,3 +187,9 @@ BagAction, bag (bagname), timestamp, action, note'''
             machine = Machine.objects.create(name=row[1], url=row[2])
         except Exception, e:
             return e
+
+    def _update_bag_pk_sequence(self):
+
+        cursor = connection.cursor()
+        sql = 'select setval(\'invapp_bag_id_seq\', (select max(id) from invapp_bag));'
+        cursor.execute(sql)
