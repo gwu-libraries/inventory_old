@@ -3,9 +3,12 @@ import json
 from json_field import JSONField
 from tastypie.models import create_api_key
 
-from django.contrib.auth.models import User
-from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.management import call_command
+from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.utils.timezone import now
 
 from invapp.idservice import mintandbind
@@ -210,3 +213,15 @@ class BagAction(models.Model):
 
     def __unicode__(self):
         return '%s : %s' % (self.bag.bagname, self.action)
+
+
+@receiver(post_save, sender=Bag)
+@receiver(post_delete, sender=Bag)
+def update_item_stats_receiver(sender, instance, **kwargs):
+    call_command('update_stats', item=instance.item.id)
+
+
+@receiver(post_save, sender=Item)
+@receiver(post_delete, sender=Item)
+def update_collection_stats_receiver(sender, instance, **kwargs):
+    call_command('update_stats', collection=instance.collection.id)
