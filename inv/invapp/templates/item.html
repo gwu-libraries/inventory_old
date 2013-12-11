@@ -58,6 +58,29 @@
                     </tbody>
                 </table>
             </div>
+            {% if actions.count > 0 %}
+            <div class="span5">
+                <h3>History</h3>
+                <table class='table table-striped'>
+                    <thead>
+                        <tr>
+                            <th>Bagname</th>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for action in actions %}
+                        <tr class="action">
+                            <td><a href="{% url 'bag' action.bag.id %}">{{ action.bag.bagname }}</a></td>
+                            <td>{{ action.get_action_display }}</td>
+                            <td>{{ action.timestamp }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
     </header>
     <div id="bags" class="container-fluid">

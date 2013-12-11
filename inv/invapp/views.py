@@ -65,8 +65,9 @@ def item(request, id):
     item = get_object_or_404(Item, id=id)
     bags = Bag.objects.defer('created', 'bag_type', 'payload')
     bags = bags.filter(item=item)
+    actions = BagAction.objects.filter(bag__item=item).order_by('bag__bagname', 'timestamp')
     return render(request, 'item.html', {'title': 'item: %s' % item.title,
-                  'item': item, 'bags': bags})
+                  'item': item, 'bags': bags, 'actions': actions})
 
 
 @login_required
