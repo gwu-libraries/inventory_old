@@ -224,4 +224,5 @@ def update_item_stats_receiver(sender, instance, **kwargs):
 @receiver(post_save, sender=Item)
 @receiver(post_delete, sender=Item)
 def update_collection_stats_receiver(sender, instance, **kwargs):
-    call_command('update_stats', collection=instance.collection.id)
+    if instance.collection:
+        call_command('update_stats', collection=instance.collection.id)
