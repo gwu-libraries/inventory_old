@@ -848,27 +848,27 @@ class TemplateTagsTestCase(TestCase):
                         machine=self.m1, bag_type='1',
                         absolute_filesystem_path='/tmp/fakebag')
         self.bag1.payload = """/data/METADATA/0123456789-dc.xml 2655
-                           /data/METADATA/0123456789-MRC.xml 3256
-                           /data/IMAGES/0123456789_pg1.jp2 1778740
-                           /data/IMAGES/0123456789_pg2.jp2 1878756
-                           /data/IMAGES/0123456789_pg3.jp2 1915879
-                           /data/IMAGES/0123456789_pg1.tiff 1778740
-                           /data/IMAGES/0123456789_pg2.tiff 1878756
-                           /data/IMAGES/0123456789_pg3.tiff 1915879
-                           """
+/data/METADATA/0123456789-MRC.xml 3256
+/data/IMAGES/0123456789_pg1.jp2 1778740
+/data/IMAGES/0123456789_pg2.jp2 1878756
+/data/IMAGES/0123456789_pg3.jp2 1915879
+/data/IMAGES/0123456789_pg1.tiff 1778740
+/data/IMAGES/0123456789_pg2.tiff 1878756
+/data/IMAGES/0123456789_pg3.tiff 1915879
+"""
         self.bag1.save()
         self.bag2 = Bag(bagname='testBag2', item=self.item,
                         machine=self.m2, bag_type='1',
                         absolute_filesystem_path='/tmp/fakebag')
         self.bag2.payload = """/data/METADATA/0123456789-dc.xml 2655
-                           /data/METADATA/0123456789-MRC.xml 3256
-                           /data/IMAGES/0123456789_pg1.jp2 1778740
-                           /data/IMAGES/0123456789_pg2.jp2 1878756
-                           /data/IMAGES/0123456789_pg3.jp2 1915879
-                           /data/IMAGES/0123456789_pg1.tiff 1778740
-                           /data/IMAGES/0123456789_pg2.tiff 1878756
-                           /data/IMAGES/0123456789_pg3.tiff 1915879
-                           """
+/data/METADATA/0123456789-MRC.xml 3256
+/data/IMAGES/0123456789_pg1.jp2 1778740
+/data/IMAGES/0123456789_pg2.jp2 1878756
+/data/IMAGES/0123456789_pg3.jp2 1915879
+/data/IMAGES/0123456789_pg1.tiff 1778740
+/data/IMAGES/0123456789_pg2.tiff 1878756
+/data/IMAGES/0123456789_pg3.tiff 1915879
+"""
         self.bag2.save()
 
     def test_urlize_with_label_templatetag(self):
