@@ -52,7 +52,7 @@ class Collection(models.Model):
             self.id = mintandbind(objtype='c', objurl=self.access_loc,
                                   description=self.name)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Collection, self).save(*args, **kwargs)
 
     def collect_stats(self):
@@ -78,7 +78,7 @@ class Project(models.Model):
         if not self.id:
             self.id = mintandbind(objtype='p', description=self.name)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Project, self).save(*args, **kwargs)
 
     def collect_stats(self):
@@ -114,7 +114,7 @@ class Item(models.Model):
             self.id = mintandbind(objtype='i', objurl=self.access_loc,
                                   description=desc)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Item, self).save(*args, **kwargs)
 
     def collect_stats(self):
@@ -195,7 +195,7 @@ class Bag(models.Model):
                 copy_num = 1
             self.bagname = '%s_%s' % (bagname, copy_num)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Bag, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -213,6 +213,16 @@ class BagAction(models.Model):
 
     def __unicode__(self):
         return '%s : %s' % (self.bag.bagname, self.action)
+
+
+def disconnect_signal(signal, receiver, sender):
+    disconnect = getattr(signal, 'disconnect')
+    disconnect(receiver, sender)
+
+
+def reconnect_signal(signal, receiver, sender):
+    connect = getattr(signal, 'connect')
+    connect(receiver, sender=sender)
 
 
 @receiver(post_save, sender=Bag)
