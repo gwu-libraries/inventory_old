@@ -128,8 +128,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
     'invapp',
+    'django.contrib.admin',
     'south',
     'tastypie',
     'json_field'
