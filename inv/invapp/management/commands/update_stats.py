@@ -1,5 +1,4 @@
 from optparse import make_option
-from pprint import pprint
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -9,6 +8,10 @@ from invapp.models import Bag, Collection, Project, Item, \
     disconnect_signal, reconnect_signal, update_item_stats_receiver,\
     update_collection_stats_receiver
 from invapp import utils
+
+import logging
+
+log = logging.getLogger('inventory')
 
 
 class Command(BaseCommand):
@@ -51,37 +54,37 @@ If an Item and Proj or Coll are specified, Item will always be updated first
         # begin processing
         errors = []
         if options['item']:
-            print 'Updating Item with id=%s' % options['item']
+            log.info('Updating Item with id=%s' % options['item'])
             e = utils.update_object_stats_quietly(model=Item,
                                                   id=options['item'])
             if e:
                 errors.append(e)
-            print 'Stats for item %s:' % options['item']
-            pprint(Item.objects.get(id=options['item']).stats)
+            log.info('Stats for item %s:' % options['item'])
+            log.info(Item.objects.get(id=options['item']).stats)
         if options['Items']:
-            print 'Updating all Items'
+            log.info('Updating all Items')
             errors += utils.update_model_stats(Item)
         if options['project']:
-            print 'Updating Project with id=%s' % options['project']
+            log.info('Updating Project with id=%s' % options['project'])
             e = utils.update_object_stats_quietly(model=Project,
                                                   id=options['project'])
             if e:
                 errors.append(e)
-            print 'Stats for project %s:' % options['project']
-            pprint(Project.objects.get(id=options['project']).stats)
+            log.info('Stats for project %s:' % options['project'])
+            log.info(Project.objects.get(id=options['project']).stats)
         if options['Projects']:
-            print 'Updating all Projects'
+            log.info('Updating all Projects')
             errors += utils.update_model_stats(Project)
         if options['collection']:
-            print 'Updating Collection with id=%s' % options['collection']
+            log.info('Updating Collection with id=%s' % options['collection'])
             e = utils.update_object_stats_quietly(model=Collection,
                                                   id=options['collection'])
             if e:
                 errors.append(e)
-            print 'Stats for Collection %s:' % options['collection']
-            pprint(Collection.objects.get(id=options['collection']).stats)
+            log.info('Stats for Collection %s:' % options['collection'])
+            log.info(Collection.objects.get(id=options['collection']).stats)
         if options['Collections']:
-            print 'Updating all Collections'
+            log.info('Updating all Collections')
             errors += utils.update_model_stats(Collection)
         if options['All']:
             #Disconnect all signals
@@ -94,7 +97,7 @@ If an Item and Proj or Coll are specified, Item will always be updated first
             disconnect_signal(post_delete, update_collection_stats_receiver,
                               sender=Item)
 
-            print 'Updating entire system'
+            log.info('Updating entire system')
             errors += utils.update_all_stats()
 
             #Reconnect all signals
@@ -106,6 +109,6 @@ If an Item and Proj or Coll are specified, Item will always be updated first
                              sender=Item)
             reconnect_signal(post_delete, update_collection_stats_receiver,
                              sender=Item)
-        print 'Update process completed with %s errors' % len(errors)
+        log.info('Update process completed with %s errors' % len(errors))
         for e in errors:
-            print e
+            log.info(e)
