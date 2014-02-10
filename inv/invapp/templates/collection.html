@@ -88,7 +88,7 @@
             {% endif %}
         </div>
 
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <tr>
                 <th width='20%'>Local ID</th>
                 <th width='50%'>Title</th>
@@ -97,8 +97,8 @@
             </tr>
             {% for item in items %}
                 <tr class="item">
-                    <td>{{ item.local_id }}</td>
-                    <td><a href="{% url 'item' item.id %}">{{ item.title }}</a></td>
+                    <td><a href="{% url 'item' item.id %}">{{ item.local_id|default:"-" }}</a></td>
+                    <td><a href="{% url 'item' item.id %}">{{ item.title|default:"(no title)" }}</a></td>
                     <td>{{ item.id }}</td>
                     <td>{{ item.project.name }}</td>
                 </tr>
