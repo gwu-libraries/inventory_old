@@ -44,31 +44,9 @@
                 <h2>on storage: <a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></h2>
                 <p><a class="btn btn-primary" href="{{ bag.access_url }}">View all raw content</a></p>
             </div>
-            <div id="payload" class="span3">
-                <table class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th>type</th>
-                            <th>#</th>
-                            <th>size</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for ftype, values in bag.stats.types.items %}
-                        <tr>
-                            <td>{{ ftype }}</td>
-                            <td>{{ values.count }}</td>
-                            <td>{{ values.size|filesizeformat }}</td>
-                        </tr>
-                    {% endfor %}
-                        <tr>
-                            <td><b>Total</b></td>
-                            <td><strong>{{ bag.filecount }}</strong></td>
-                            <td><strong>{{ bag.size|filesizeformat }}</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            {% with bag as grouping %}
+                {% include "summary_file_stats.html" %}
+            {% endwith %}
         </div>
     </header>
 
