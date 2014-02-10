@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | Inventory admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">Inventory administration
+    - <a href="{% url 'home' %}">return to app</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

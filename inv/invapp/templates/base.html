@@ -1,4 +1,3 @@
-{% load url from future %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -56,8 +55,13 @@
                         <i class='icon-off icon-white'></i>&nbsp;<a href="{% url 'logout' %}">logout</a>
                     </div>
                     <div class="libheader-link" style="float:right;">
-                        <i class='icon-wrench icon-white'></i>&nbsp;<a href="{% url 'change_password' %}">change password</a>
+                        <i class='icon-cog icon-white'></i>&nbsp;<a href="{% url 'change_password' %}">settings</a>
                     </div>
+                    {% if user.is_staff %}
+                    <div class="libheader-link" style="float:right;">
+                        <i class='icon-wrench icon-white'></i>&nbsp;<a href="{% url 'admin:index' %}">admin</a>
+                    </div>
+                    {% endif %}
                     <div class="libheader-link" style="float:right;">
                         <i class='icon-user icon-white'></i>&nbsp;{{ request.user.username }}
                     </div>
