@@ -52,15 +52,9 @@
             <dt>Total Size</dt><dd>{{ project.stats.total_size|filesizeformat }}</dd>
         </dl>
     </div>
-    <div class="span3">
-        <dl>
-            <dt>File Types</dt><dd>
-            {% for key, value in project.stats.types.items %}
-            {{ key }} | {{ value.count }} | {{value.size|filesizeformat }}<br />
-            {% endfor %}
-            </dd>
-        </dl>
-    </div>
+    {% with project as grouping %}
+        {% include "summary_file_stats.html" %}
+    {% endwith %}
     </header>
     <div id="items" class="container-fluid">
 	<h3>Items in this project</h3>
@@ -68,22 +62,22 @@
        {% bootstrap_paginator_bar items 'items_page' %}
     {% endif %}
     <div class="search">
-        <form id="search_form" action="{% url 'project' project.id %}" method="GET">
+        <form id="search_form" class="form-inline" action="{% url 'project' project.id %}" method="GET">
             <label for="search_project_items"><h5>Search: </h5></label>
             <input id="search_project_items" name="search_project_items" type="text" />
         </form>
     </div>
 	<table class="table table-striped">
             <tr>
-                <th>ID</th>
-                <th>Title</th>
                 <th>Local ID</th>
+                <th>Title</th>
+                <th>ID</th>
             </tr>
             {% for item in items %}
                 <tr class="item">
-                    <td><a href="{% url 'item' item.id %}">{{ item.id }}</a></td>
-                    <td>{{ item.title }}</td>
                     <td>{{ item.local_id }}</td>
+                    <td><a href="{% url 'item' item.id %}">{{ item.title }}</a></td>
+                    <td>{{ item.id }}</td>
                 </tr>
             {% endfor %}
         </table>

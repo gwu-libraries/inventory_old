@@ -52,29 +52,9 @@
                     <dt># items</dt><dd>{{ items.paginator.count }}</dd>
                 </dl>
             </div>
-            <div class="span3">
-                <table class='table table-condensed table-striped'>
-                    <thead>
-                        <th>type</th>
-                        <th>#</th>
-                        <th>size</th>
-                    </thead>
-                    <tbody>
-                        {% for key, value in collection.stats.types.items %}
-                        <tr>
-                            <td>{{ key }}</td>
-                            <td>{{ value.count }}</td>
-                            <td>{{ value.size|filesizeformat }}</td>
-                        </tr>
-                        {% endfor %}
-                        <tr>
-                            <td><strong>total</strong></td>
-                            <td><strong>{{ collection.stats.total_count }}</strong</td>
-                            <td><strong>{{ collection.stats.total_size|filesizeformat }}</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            {% with collection as grouping %}
+                {% include "summary_file_stats.html" %}
+            {% endwith %}
         </div>
     </header>
 
