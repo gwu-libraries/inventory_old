@@ -3,9 +3,12 @@ import json
 from json_field import JSONField
 from tastypie.models import create_api_key
 
-from django.contrib.auth.models import User
-from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.management import call_command
+from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.utils.timezone import now
 
 from invapp.idservice import mintandbind
@@ -49,7 +52,7 @@ class Collection(models.Model):
             self.id = mintandbind(objtype='c', objurl=self.access_loc,
                                   description=self.name)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Collection, self).save(*args, **kwargs)
 
     def collect_stats(self):
@@ -75,7 +78,7 @@ class Project(models.Model):
         if not self.id:
             self.id = mintandbind(objtype='p', description=self.name)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Project, self).save(*args, **kwargs)
 
     def collect_stats(self):
@@ -111,7 +114,7 @@ class Item(models.Model):
             self.id = mintandbind(objtype='i', objurl=self.access_loc,
                                   description=desc)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Item, self).save(*args, **kwargs)
 
     def collect_stats(self):
@@ -192,7 +195,7 @@ class Bag(models.Model):
                 copy_num = 1
             self.bagname = '%s_%s' % (bagname, copy_num)
         if not self.stats:
-            self.stats = {'total_count': 0, 'total_size': 0, 'types': {}}
+            self.stats = self.collect_stats()
         super(Bag, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -210,3 +213,26 @@ class BagAction(models.Model):
 
     def __unicode__(self):
         return '%s : %s' % (self.bag.bagname, self.action)
+
+
+def disconnect_signal(signal, receiver, sender):
+    disconnect = getattr(signal, 'disconnect')
+    disconnect(receiver, sender)
+
+
+def reconnect_signal(signal, receiver, sender):
+    connect = getattr(signal, 'connect')
+    connect(receiver, sender=sender)
+
+
+@receiver(post_save, sender=Bag)
+@receiver(post_delete, sender=Bag)
+def update_item_stats_receiver(sender, instance, **kwargs):
+    call_command('update_stats', item=instance.item.id)
+
+
+@receiver(post_save, sender=Item)
+@receiver(post_delete, sender=Item)
+def update_collection_stats_receiver(sender, instance, **kwargs):
+    if instance.collection:
+        call_command('update_stats', collection=instance.collection.id)

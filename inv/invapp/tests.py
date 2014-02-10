@@ -29,13 +29,13 @@ class ModelTestCase(TestCase):
 
     def setUp(self):
         # set up hierarchy of fake objects for bag
-        self.c1 = Collection(id='cccccccccccccccccc',
+        self.c1 = Collection(id='collection_1',
                              name='test-collection-1', created=now())
         self.c1.save()
-        self.p1 = Project(id='pppppppppppppppppp', name='test-project-1',
+        self.p1 = Project(id='project_1', name='test-project-1',
                           collection=self.c1, created=now())
         self.p1.save()
-        self.i1 = Item(id='iiiiiiiiiiiiiiiiii', title='test-item-1',
+        self.i1 = Item(id='item_1', title='test-item-1',
                        project=self.p1, created=now(), original_item_type='1')
         self.i1.save()
         self.m1 = Machine(name='test-machine-1', url='http://test.url.com',
@@ -43,9 +43,9 @@ class ModelTestCase(TestCase):
         self.m1.save()
 
         # load bag with raw data
-        self.bag = Bag(bagname='test-bag-1', created=now(), item=self.i1,
+        self.bag = Bag(bagname='test-bag-11', created=now(), item=self.i1,
                        machine=self.m1,
-                       absolute_filesystem_path='/bags/partition1/test-bag-1',
+                       absolute_filesystem_path='/bags/partition1/test-bag-11',
                        bag_type='1')
         self.bag.stats = self.bag.collect_stats()
         self.bag.save()
@@ -87,13 +87,13 @@ class ModelTestCase(TestCase):
 
     def test_bag_access_path(self):
         self.assertEqual(self.bag.access_url(),
-                         'http://test.url.com/partition1/test-bag-1')
+                         'http://test.url.com/partition1/test-bag-11')
         self.m1.www_root = '/bags'
         self.assertEqual(self.bag.access_url(),
-                         'http://test.url.com/partition1/test-bag-1')
+                         'http://test.url.com/partition1/test-bag-11')
         self.m1.www_root = 'bags'
         self.assertEqual(self.bag.access_url(),
-                         'http://test.url.com/partition1/test-bag-1')
+                         'http://test.url.com/partition1/test-bag-11')
 
     @skipIf(not settings.TEST_IDSERVICE.get('url') or
             not settings.TEST_IDSERVICE.get('requester') or
@@ -148,19 +148,19 @@ class ModelTestCase(TestCase):
 class AggregateStatsTestCase(TestCase):
 
     def setUp(self):
-        c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
+        c1 = Collection(id='collection_1_1', name='test-collection-1',
                         created=now())
         c1.save()
-        p1 = Project(id='pppppppppppppppppp', name='test-project-1',
+        p1 = Project(id='project_1_1', name='test-project-1',
                      collection=c1, created=now())
         p1.save()
-        i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
+        i1 = Item(id='item_1_1', title='test-item-1', project=p1,
                   collection=c1, created=now(), original_item_type='1')
         i1.save()
-        i2 = Item(id='iiiiiiiiiiiiiiiii2', title='test-item-2', project=p1,
+        i2 = Item(id='item_1_2', title='test-item-2', project=p1,
                   collection=c1, created=now(), original_item_type='1')
         i2.save()
-        i3 = Item(id='iiiiiiiiiiiiiiiii3', title='test-item-3', project=p1,
+        i3 = Item(id='item_1_3', title='test-item-3', project=p1,
                   collection=c1, created=now(), original_item_type='1')
         i3.save()
         m1 = Machine(name='test-machine-1', url='test-url-1')
@@ -303,34 +303,31 @@ class AggregateStatsTestCase(TestCase):
         }
 
     def test_collect_stats_functions(self):
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
-        self.assertTrue(utils.compare_dicts(i1.stats, self.empty_stats))
+        i1 = Item.objects.get(id='item_1_1')
         i1.stats = i1.collect_stats()
         i1.save()
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
-        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
-        self.assertTrue(utils.compare_dicts(i2.stats, self.empty_stats))
+        i2 = Item.objects.get(id='item_1_2')
         i2.stats = i2.collect_stats()
         i2.save()
         self.assertTrue(utils.compare_dicts(i2.stats,
                         self.expected['items']['i2']))
 
-        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
-        self.assertTrue(utils.compare_dicts(i3.stats, self.empty_stats))
+        i3 = Item.objects.get(id='item_1_3')
         i3.stats = i3.collect_stats()
         i3.save()
         self.assertTrue(utils.compare_dicts(i3.stats,
                         self.expected['items']['i3']))
 
-        p1 = Project.objects.get(id='pppppppppppppppppp')
+        p1 = Project.objects.get(id='project_1_1')
         p1.stats = p1.collect_stats()
         p1.save()
         self.assertTrue(utils.compare_dicts(p1.stats,
                         self.expected['projects']['p1']))
 
-        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        c1 = Collection.objects.get(id='collection_1_1')
         c1.stats = c1.collect_stats()
         c1.save()
         self.assertTrue(utils.compare_dicts(c1.stats,
@@ -338,15 +335,14 @@ class AggregateStatsTestCase(TestCase):
 
     def test_update_object_stats(self):
         # test by passing object directly
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
-        self.assertTrue(utils.compare_dicts(i1.stats, self.empty_stats))
+        i1 = Item.objects.get(id='item_1_1')
         utils.update_object_stats(i1)
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
         # test by passing model and id
-        utils.update_object_stats(model=Item, id='iiiiiiiiiiiiiiiii2')
-        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        utils.update_object_stats(model=Item, id='item_1_2')
+        i2 = Item.objects.get(id='item_1_2')
         self.assertTrue(utils.compare_dicts(i2.stats,
                         self.expected['items']['i2']))
 
@@ -355,15 +351,15 @@ class AggregateStatsTestCase(TestCase):
         self.assertEqual(errors, [])
         self.assertTrue(not errors)
 
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        i1 = Item.objects.get(id='item_1_1')
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
-        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        i2 = Item.objects.get(id='item_1_2')
         self.assertTrue(utils.compare_dicts(i2.stats,
                         self.expected['items']['i2']))
 
-        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        i3 = Item.objects.get(id='item_1_3')
         self.assertTrue(utils.compare_dicts(i3.stats,
                         self.expected['items']['i3']))
 
@@ -372,23 +368,23 @@ class AggregateStatsTestCase(TestCase):
         self.assertEqual(errors, [])
         self.assertTrue(not errors)
 
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        i1 = Item.objects.get(id='item_1_1')
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
-        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        i2 = Item.objects.get(id='item_1_2')
         self.assertTrue(utils.compare_dicts(i2.stats,
                         self.expected['items']['i2']))
 
-        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        i3 = Item.objects.get(id='item_1_3')
         self.assertTrue(utils.compare_dicts(i3.stats,
                         self.expected['items']['i3']))
 
-        p1 = Project.objects.get(id='pppppppppppppppppp')
+        p1 = Project.objects.get(id='project_1_1')
         self.assertTrue(utils.compare_dicts(p1.stats,
                         self.expected['projects']['p1']))
 
-        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        c1 = Collection.objects.get(id='collection_1_1')
         self.assertTrue(utils.compare_dicts(c1.stats,
                         self.expected['collections']['c1']))
 
@@ -415,55 +411,55 @@ class AggregateStatsTestCase(TestCase):
     def test_mgmt_cmd_all(self):
         call_command('update_stats', All=True)
 
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        i1 = Item.objects.get(id='item_1_1')
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
-        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        i2 = Item.objects.get(id='item_1_2')
         self.assertTrue(utils.compare_dicts(i2.stats,
                         self.expected['items']['i2']))
 
-        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        i3 = Item.objects.get(id='item_1_3')
         self.assertTrue(utils.compare_dicts(i3.stats,
                         self.expected['items']['i3']))
 
-        p1 = Project.objects.get(id='pppppppppppppppppp')
+        p1 = Project.objects.get(id='project_1_1')
         self.assertTrue(utils.compare_dicts(p1.stats,
                         self.expected['projects']['p1']))
 
-        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        c1 = Collection.objects.get(id='collection_1_1')
         self.assertTrue(utils.compare_dicts(c1.stats,
                         self.expected['collections']['c1']))
 
     def test_mgmt_cmd_single_item(self):
-        call_command('update_stats', item='iiiiiiiiiiiiiiiii1')
+        call_command('update_stats', item='item_1_1')
 
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        i1 = Item.objects.get(id='item_1_1')
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
     def test_mgmt_cmd_many_item_single_proj_single_coll(self):
         call_command('update_stats', Items=True)
-        call_command('update_stats', project='pppppppppppppppppp')
-        call_command('update_stats', collection='cccccccccccccccccc')
+        call_command('update_stats', project='project_1_1')
+        call_command('update_stats', collection='collection_1_1')
 
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        i1 = Item.objects.get(id='item_1_1')
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
-        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        i2 = Item.objects.get(id='item_1_2')
         self.assertTrue(utils.compare_dicts(i2.stats,
                         self.expected['items']['i2']))
 
-        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        i3 = Item.objects.get(id='item_1_3')
         self.assertTrue(utils.compare_dicts(i3.stats,
                         self.expected['items']['i3']))
 
-        p1 = Project.objects.get(id='pppppppppppppppppp')
+        p1 = Project.objects.get(id='project_1_1')
         self.assertTrue(utils.compare_dicts(p1.stats,
                         self.expected['projects']['p1']))
 
-        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        c1 = Collection.objects.get(id='collection_1_1')
         self.assertTrue(utils.compare_dicts(c1.stats,
                         self.expected['collections']['c1']))
 
@@ -472,23 +468,23 @@ class AggregateStatsTestCase(TestCase):
         call_command('update_stats', Projects=True)
         call_command('update_stats', Collections=True)
 
-        i1 = Item.objects.get(id='iiiiiiiiiiiiiiiii1')
+        i1 = Item.objects.get(id='item_1_1')
         self.assertTrue(utils.compare_dicts(i1.stats,
                         self.expected['items']['i1']))
 
-        i2 = Item.objects.get(id='iiiiiiiiiiiiiiiii2')
+        i2 = Item.objects.get(id='item_1_2')
         self.assertTrue(utils.compare_dicts(i2.stats,
                         self.expected['items']['i2']))
 
-        i3 = Item.objects.get(id='iiiiiiiiiiiiiiiii3')
+        i3 = Item.objects.get(id='item_1_3')
         self.assertTrue(utils.compare_dicts(i3.stats,
                         self.expected['items']['i3']))
 
-        p1 = Project.objects.get(id='pppppppppppppppppp')
+        p1 = Project.objects.get(id='project_1_1')
         self.assertTrue(utils.compare_dicts(p1.stats,
                         self.expected['projects']['p1']))
 
-        c1 = Collection.objects.get(id='cccccccccccccccccc')
+        c1 = Collection.objects.get(id='collection_1_1')
         self.assertTrue(utils.compare_dicts(c1.stats,
                         self.expected['collections']['c1']))
 
@@ -498,13 +494,13 @@ class PaginationTestCase(TestCase):
     def test_pagination(self):
         self.maxDiff = None
 
-        c1 = Collection(id='cccccccccccccccccc', name='test-collection-1',
+        c1 = Collection(id='collection_1_1_1', name='test-collection-1',
                         created=now())
         c1.save()
-        p1 = Project(id='pppppppppppppppppp', name='test-project-1',
+        p1 = Project(id='project_1_1_1', name='test-project-1',
                      collection=c1, created=now())
         p1.save()
-        i1 = Item(id='iiiiiiiiiiiiiiiii1', title='test-item-1', project=p1,
+        i1 = Item(id='item_1_1_1', title='test-item-1', project=p1,
                   collection=c1, created=now(), original_item_type='1')
         i1.save()
         m1 = Machine(name='test-machine-1', url='test-url-1')
@@ -852,27 +848,27 @@ class TemplateTagsTestCase(TestCase):
                         machine=self.m1, bag_type='1',
                         absolute_filesystem_path='/tmp/fakebag')
         self.bag1.payload = """/data/METADATA/0123456789-dc.xml 2655
-                           /data/METADATA/0123456789-MRC.xml 3256
-                           /data/IMAGES/0123456789_pg1.jp2 1778740
-                           /data/IMAGES/0123456789_pg2.jp2 1878756
-                           /data/IMAGES/0123456789_pg3.jp2 1915879
-                           /data/IMAGES/0123456789_pg1.tiff 1778740
-                           /data/IMAGES/0123456789_pg2.tiff 1878756
-                           /data/IMAGES/0123456789_pg3.tiff 1915879
-                           """
+/data/METADATA/0123456789-MRC.xml 3256
+/data/IMAGES/0123456789_pg1.jp2 1778740
+/data/IMAGES/0123456789_pg2.jp2 1878756
+/data/IMAGES/0123456789_pg3.jp2 1915879
+/data/IMAGES/0123456789_pg1.tiff 1778740
+/data/IMAGES/0123456789_pg2.tiff 1878756
+/data/IMAGES/0123456789_pg3.tiff 1915879
+"""
         self.bag1.save()
         self.bag2 = Bag(bagname='testBag2', item=self.item,
                         machine=self.m2, bag_type='1',
                         absolute_filesystem_path='/tmp/fakebag')
         self.bag2.payload = """/data/METADATA/0123456789-dc.xml 2655
-                           /data/METADATA/0123456789-MRC.xml 3256
-                           /data/IMAGES/0123456789_pg1.jp2 1778740
-                           /data/IMAGES/0123456789_pg2.jp2 1878756
-                           /data/IMAGES/0123456789_pg3.jp2 1915879
-                           /data/IMAGES/0123456789_pg1.tiff 1778740
-                           /data/IMAGES/0123456789_pg2.tiff 1878756
-                           /data/IMAGES/0123456789_pg3.tiff 1915879
-                           """
+/data/METADATA/0123456789-MRC.xml 3256
+/data/IMAGES/0123456789_pg1.jp2 1778740
+/data/IMAGES/0123456789_pg2.jp2 1878756
+/data/IMAGES/0123456789_pg3.jp2 1915879
+/data/IMAGES/0123456789_pg1.tiff 1778740
+/data/IMAGES/0123456789_pg2.tiff 1878756
+/data/IMAGES/0123456789_pg3.tiff 1915879
+"""
         self.bag2.save()
 
     def test_urlize_with_label_templatetag(self):
