@@ -11,7 +11,7 @@
                 },
                 source: function(request, response) {
                     $.ajax({
-                        url: "/ajax/search_collection_autocomplete/",
+                        url: "{% url 'search_collection_autocomplete' %}",
                         dataType: "json",
                         data: { search: request.term },
                         success: function(data) {
@@ -34,7 +34,7 @@
                 },
                 source: function(request, response) {
                     $.ajax({
-                        url: "/ajax/search_project_autocomplete/",
+                        url: "{% url 'search_project_autocomplete' %}",
                         dataType: "json",
                         data: { search: request.term },
                         success: function(data) {

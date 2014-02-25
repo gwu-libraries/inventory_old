@@ -11,7 +11,7 @@
                     },
                     source: function(request, response) {
                         $.ajax({
-                            url: "/ajax/collection_items_autocomplete/?collection={{collection.id}}",
+                            url: "{% url 'collection_items_autocomplete' collection.id %}",
                             datatype: 'json',
                             data: { search: request.term },
                             success: function(data) {
