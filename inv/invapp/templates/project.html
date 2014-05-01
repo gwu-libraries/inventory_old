@@ -15,7 +15,7 @@
             },
             source: function(request, response) {
                 $.ajax({
-                    url: "/ajax/project_items_autocomplete/?project={{project.id}}",
+                    url: "{% url 'project_items_autocomplete' project.id %}",
                     datatype: 'json',
                     data: { search: request.term },
                     success: function(data) {

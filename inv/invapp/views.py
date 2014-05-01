@@ -175,9 +175,8 @@ def change_password_done(request):
     return redirect('home')
 
 
-def collection_items_autocomplete(request):
+def collection_items_autocomplete(request, collection):
     item_name = request.GET.get('search')
-    collection = request.GET.get('collection')
     result = []
     if item_name:
         data = Item.objects.filter(collection=collection).filter(
@@ -209,9 +208,8 @@ def search_project_autocomplete(request):
     return HttpResponse(result, 'application/json')
 
 
-def project_items_autocomplete(request):
+def project_items_autocomplete(request, project):
     item_name = request.GET.get('search')
-    project = request.GET.get('project')
     result = []
     if item_name:
         data = Item.objects.filter(project=project).filter(
