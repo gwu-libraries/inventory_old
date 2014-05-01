@@ -152,7 +152,7 @@ class Bag(models.Model):
         if not url:
             return None
         mach_path_parts = self.machine.www_root.strip('/').split('/')
-        path_parts = self.absolute_filesystem_path.strip('/').split('/')
+        path_parts = self.absolute_filesystem_path.replace(' ', '%20').strip('/').split('/')
         for i, value in enumerate(path_parts):
             if i == len(mach_path_parts) or value != mach_path_parts[i]:
                 return '/'.join([url] + path_parts[i:])
