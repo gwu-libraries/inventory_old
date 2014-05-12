@@ -40,8 +40,12 @@
 
         <div class='row-fluid'>
             <div class='span3'>
-                <h2>on storage: <a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></h2>
-                <p><a class="btn btn-primary" href="{{ bag.access_url }}">View all raw content</a></p>
+                {% if bag.is_deleted %}
+                    <h2>This bag has been deleted from <a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></h2>
+                {% else %}
+                    <h2>on storage: <a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></h2>
+                    <p><a class="btn btn-primary" href="{{ bag.access_url }}">View all raw content</a></p>
+                {% endif %}
             </div>
             {% with bag as grouping %}
                 {% include "summary_file_stats.html" %}
@@ -57,12 +61,14 @@
                 <th>Action</th>
                 <th>Timestamp</th>
                 <th>Note</th>
+                <th>Parent Bag</th>
             </tr>
                 {% for action in actions %}
                 <tr class="action">
                     <td>{{ action.get_action_display }}</td>
                     <td>{{ action.timestamp }}</td>
                     <td>{{ action.note }}</td>
+                    <td><a href="{% url 'bag' action.bag.parent_bag.id %}">{{ action.bag.parent_bag.bagname }}</a></td>
                 </tr>
                 {% endfor %}
         </table>
@@ -102,7 +108,11 @@
             </tr>
         {% for file in files %}
             <tr>
-                <td>{{ bag.access_url|add:"/"|add:file.0|urlize|urlize_with_label:file.0}}</td>
+                {% if bag.is_deleted %}
+                    <td>{{ file.0 }}</td>
+                {% else %}
+                    <td>{{ bag.access_url|add:"/"|add:file.0|urlize|urlize_with_label:file.0 }}</td>
+                {% endif %}
                 <td>{{ file.1|filesizeformat }}</td>
             </tr>
         {% endfor %}

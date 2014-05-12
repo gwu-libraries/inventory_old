@@ -46,6 +46,7 @@
                             <th>Bagname</th>
                             <th>Action</th>
                             <th>Timestamp</th>
+                            <th>Parent Bag</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,6 +55,7 @@
                             <td><a href="{% url 'bag' action.bag.id %}">{{ action.bag.bagname }}</a></td>
                             <td>{{ action.get_action_display }}</td>
                             <td>{{ action.timestamp }}</td>
+                            <td><a href="{% url 'bag' action.bag.parent_bag.id %}">{{ action.bag.parent_bag.bagname }}</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -71,6 +73,7 @@
                     <th>Storage</th>
                     <th>Raw content URL</th>
                     <th>Type</th>
+                    <th>Deleted</th>
                 </tr>
             </thead>
             <tbody>
@@ -78,8 +81,9 @@
                 <tr class="bag">
                     <td><a href="{% url 'bag' bag.id %}">{{ bag.bagname }}</a></td>
                     <td><a href="{% url 'machine' bag.machine.id %}">{{ bag.machine.name }}</a></td>
-                    <td>{{ bag.access_url|urlize }}</td>
+                    <td>{% if not bag.is_deleted %} {{ bag.access_url|urlize }} {% endif %}</td>
                     <td>{{ bag.get_bag_type_display }}</td>
+                    <td>{% if bag.is_deleted %} Yes {% endif %}</td>
                 </tr>
             {% endfor %}
             </tbody>

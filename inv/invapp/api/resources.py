@@ -80,6 +80,7 @@ class ItemResource(ModelResource):
 class BagResource(ModelResource):
     item = fields.ForeignKey(ItemResource, 'item')
     machine = fields.ForeignKey(MachineResource, 'machine')
+    parent_bag = fields.ForeignKey('self', 'parent_bag', null=True, blank=True)
 
     class Meta:
         queryset = Bag.objects.all()
@@ -90,6 +91,7 @@ class BagResource(ModelResource):
             'item': ALL_WITH_RELATIONS,
             'absolute_filesystem_path': ALL_WITH_RELATIONS,
             'bag_type': ALL,
+            'parent_bag': ALL_WITH_RELATIONS,
         }
         authentication = MultiAuthentication(ApiKeyAuthentication(),
                                              Authentication())

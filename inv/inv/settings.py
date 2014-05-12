@@ -193,7 +193,8 @@ ACTIONS = (
     ('2', 'moved'),
     ('3', 'validated'),
     ('4', 'imported to DSpace'),
-    ('5', 'added')
+    ('5', 'added'),
+    ('6', 'deleted')
     # and so on...
 )
 

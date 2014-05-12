@@ -137,6 +137,10 @@ class Bag(models.Model):
     absolute_filesystem_path = models.CharField(max_length=255)
     bag_type = models.CharField(max_length=1, choices=settings.BAG_TYPES)
     payload = models.TextField(blank=True)
+    parent_bag = models.ForeignKey('self', related_name='child_bags',
+                                   blank=True, null=True,
+                                   on_delete=models.PROTECT)
+    is_deleted = models.BooleanField(default=False)
     stats = JSONField()
     '''
     lines in payload should be formatted as such:
