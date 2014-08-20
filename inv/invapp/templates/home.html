@@ -16,10 +16,12 @@
                         data: { search: request.term },
                         success: function(data) {
                             response($.map(data, function(item) {
-                                    return {
-                                        value: item.pk,
-                                        label: item.pk + " : " + item.fields.name
+                                    var obj = {value: item.pk, label: ""};
+                                    if(item.fields.local_id != "") {
+                                        obj.label = item.fields.local_id + " | "
                                     }
+                                    obj.label += item.pk + " : " + item.fields.name
+                                    return obj
                             }));
                         },     
                    });

@@ -194,7 +194,8 @@ def search_collection_autocomplete(request):
         data = Collection.objects.filter(Q(name__icontains=search_collection) |
                                          Q(local_id__icontains=search_collection) |
                                          Q(id__icontains=search_collection))
-        result = serializers.serialize('json', data, fields=('name'))
+        result = serializers.serialize('json', data, fields=('name',
+                                                             'local_id'))
     return HttpResponse(result, 'application/json')
 
 
