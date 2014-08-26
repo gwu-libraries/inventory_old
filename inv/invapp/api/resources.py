@@ -100,6 +100,14 @@ class BagResource(ModelResource):
     def dehydrate_payload(self, bundle):
         return bundle.obj.list_payload()
 
+    def hydrate_parent_bag(self, bundle):
+        if bundle.data['parent_bag'] is None or \
+                bundle.data['parent_bag'] == '':
+            bundle.obj.parent_bag = None
+            del bundle.data['parent_bag']
+
+        return bundle
+
 
 class BagActionResource(ModelResource):
     bag = fields.ForeignKey(BagResource, 'bag')
